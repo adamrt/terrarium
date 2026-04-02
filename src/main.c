@@ -10,6 +10,8 @@
 #include <SDL_render.h>
 #include <SDL_video.h>
 
+#include "ak/types.h"
+
 enum {
     SCREEN_WIDTH = 800,
     SCREEN_HEIGHT = 600,
@@ -21,23 +23,23 @@ enum {
 #define GREEN (0x00FF00FF)
 #define BLUE (0x0000FFFF)
 
-uint32_t pixels[SCREEN_WIDTH * SCREEN_HEIGHT];
+u32 pixels[SCREEN_WIDTH * SCREEN_HEIGHT];
 
-void clear_pixels(uint32_t color) {
-    for (int y = 0; y < SCREEN_HEIGHT; ++y) {
-        for (int x = 0; x < SCREEN_WIDTH; ++x) {
+void clear_pixels(u32 color) {
+    for (i32 y = 0; y < SCREEN_HEIGHT; ++y) {
+        for (i32 x = 0; x < SCREEN_WIDTH; ++x) {
             pixels[y * SCREEN_WIDTH + x] = color;
         }
     }
 }
 
-void draw_pixel(uint32_t x, uint32_t y, uint32_t color) {
+void draw_pixel(u32 x, u32 y, u32 color) {
     pixels[y * SCREEN_WIDTH + x] = color;
 }
 
-int main(int argc, char* argv[]) {
-    (void)argc;
-    (void)argv;
+i32 main(i32 argc, char* argv[]) {
+    UNUSED(argc);
+    UNUSED(argv);
 
     assert(SDL_Init(SDL_INIT_VIDEO) >= 0);
 
@@ -61,18 +63,18 @@ int main(int argc, char* argv[]) {
 
         clear_pixels(BLACK);
 
-        for (int x = 0; x < SCREEN_WIDTH; ++x) {
+        for (i32 x = 0; x < SCREEN_WIDTH; ++x) {
             pixels[200 * SCREEN_WIDTH + x] = RED;
         }
-        for (int x = 0; x < SCREEN_WIDTH; ++x) {
+        for (i32 x = 0; x < SCREEN_WIDTH; ++x) {
             pixels[300 * SCREEN_WIDTH + x] = GREEN;
         }
-        for (int x = 0; x < SCREEN_WIDTH; ++x) {
+        for (i32 x = 0; x < SCREEN_WIDTH; ++x) {
             pixels[400 * SCREEN_WIDTH + x] = BLUE;
         }
 
         SDL_RenderClear(renderer);
-        SDL_UpdateTexture(texture, NULL, pixels, SCREEN_WIDTH * sizeof(uint32_t));
+        SDL_UpdateTexture(texture, NULL, pixels, SCREEN_WIDTH * sizeof(u32));
         SDL_RenderCopy(renderer, texture, NULL, NULL);
         SDL_RenderPresent(renderer);
     }

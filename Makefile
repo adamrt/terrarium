@@ -4,7 +4,7 @@ CFLAGS = -std=c99 -Wall -Wextra -Werror `pkg-config --cflags sdl2`
 LDFLAGS = `pkg-config --libs sdl2`
 
 BUILD_DIR = build
-SOURCES = $(wildcard *.c)
+SOURCES = $(wildcard src/*.c)
 OBJECTS = $(SOURCES:%.c=$(BUILD_DIR)/%.o)
 
 .PHONY: all
@@ -30,3 +30,4 @@ run:
 
 $(BUILD_DIR):
 	mkdir -p $@
+	mkdir -p $@/src
