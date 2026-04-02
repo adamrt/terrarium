@@ -11,6 +11,7 @@
 #include <SDL_video.h>
 
 #include "ak/types.h"
+#include "gfx/color.h"
 #include "gfx/draw.h"
 #include "gfx/surface.h"
 #include "os/os.h"
@@ -19,12 +20,6 @@ enum {
     SCREEN_WIDTH = 800,
     SCREEN_HEIGHT = 600,
 };
-
-#define BLACK (0x000000FF)
-#define WHITE (0xFFFFFFFF)
-#define RED (0xFF0000FF)
-#define GREEN (0x00FF00FF)
-#define BLUE (0x0000FFFF)
 
 i32 main(i32 argc, char* argv[]) {
     UNUSED(argc);
@@ -46,16 +41,16 @@ i32 main(i32 argc, char* argv[]) {
             }
         }
 
-        gfx_surface_clear(surface, BLACK);
+        gfx_surface_clear(surface, gfx_black);
 
         for (i32 x = 0; x < SCREEN_WIDTH; ++x) {
-            gfx_draw_pixel(surface, x, 200, RED);
+            gfx_draw_pixel(surface, x, 200, gfx_red);
         }
         for (i32 x = 0; x < SCREEN_WIDTH; ++x) {
-            gfx_draw_pixel(surface, x, 300, GREEN);
+            gfx_draw_pixel(surface, x, 300, gfx_green);
         }
         for (i32 x = 0; x < SCREEN_WIDTH; ++x) {
-            gfx_draw_pixel(surface, x, 400, BLUE);
+            gfx_draw_pixel(surface, x, 400, gfx_blue);
         }
 
         os_display_present(display, surface);
