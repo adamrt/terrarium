@@ -1,10 +1,10 @@
 TARGET = terrarium
 CC = gcc
-CFLAGS = -std=c99 -Wall -Wextra -Werror `pkg-config --cflags sdl2`
+CFLAGS = -std=c99 -Wall -Wextra -Werror `pkg-config --cflags sdl2` -Isrc
 LDFLAGS = `pkg-config --libs sdl2`
 
 BUILD_DIR = build
-SOURCES = $(wildcard src/*.c)
+SOURCES = $(shell find src/ -name "*.c")
 OBJECTS = $(SOURCES:%.c=$(BUILD_DIR)/%.o)
 
 .PHONY: all
@@ -28,6 +28,8 @@ clean:
 run:
 	./$(BUILD_DIR)/$(TARGET)
 
-$(BUILD_DIR):
-	mkdir -p $@
+$(BUILD_DIR): 
 	mkdir -p $@/src
+	mkdir -p $@/src/ak
+	mkdir -p $@/src/os
+	mkdir -p $@/src/gfx

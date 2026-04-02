@@ -11,6 +11,7 @@
 #include <SDL_video.h>
 
 #include "ak/types.h"
+#include "os/os.h"
 
 enum {
     SCREEN_WIDTH = 800,
@@ -41,14 +42,9 @@ i32 main(i32 argc, char* argv[]) {
     UNUSED(argc);
     UNUSED(argv);
 
-    assert(SDL_Init(SDL_INIT_VIDEO) >= 0);
+    os_init();
 
-    SDL_Window* window = SDL_CreateWindow("Terrarium", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
-    assert(window);
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    assert(renderer);
-    SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
-    assert(texture);
+    os_display_t* display = os_display_create(SCREEN_WIDTH, SCREEN_HEIGHT);
 
     bool is_running = true;
     SDL_Event event = { 0 };
@@ -73,16 +69,10 @@ i32 main(i32 argc, char* argv[]) {
             pixels[400 * SCREEN_WIDTH + x] = BLUE;
         }
 
-        SDL_RenderClear(renderer);
-        SDL_UpdateTexture(texture, NULL, pixels, SCREEN_WIDTH * sizeof(u32));
-        SDL_RenderCopy(renderer, texture, NULL, NULL);
-        SDL_RenderPresent(renderer);
+        os_display_present(display, pixels);
     }
 
-    SDL_DestroyTexture(texture);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
+    os_shutdown();
 
-    SDL_Quit();
     return 0;
 }
