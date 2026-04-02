@@ -11,6 +11,8 @@
 #include <SDL_video.h>
 
 #include "ak/types.h"
+#include "gfx/draw.h"
+#include "gfx/surface.h"
 #include "os/os.h"
 
 enum {
@@ -24,20 +26,6 @@ enum {
 #define GREEN (0x00FF00FF)
 #define BLUE (0x0000FFFF)
 
-u32 pixels[SCREEN_WIDTH * SCREEN_HEIGHT];
-
-void clear_pixels(u32 color) {
-    for (i32 y = 0; y < SCREEN_HEIGHT; ++y) {
-        for (i32 x = 0; x < SCREEN_WIDTH; ++x) {
-            pixels[y * SCREEN_WIDTH + x] = color;
-        }
-    }
-}
-
-void draw_pixel(u32 x, u32 y, u32 color) {
-    pixels[y * SCREEN_WIDTH + x] = color;
-}
-
 i32 main(i32 argc, char* argv[]) {
     UNUSED(argc);
     UNUSED(argv);
@@ -45,6 +33,7 @@ i32 main(i32 argc, char* argv[]) {
     os_init();
 
     os_display_t* display = os_display_create(SCREEN_WIDTH, SCREEN_HEIGHT);
+    gfx_surface_t* surface = gfx_surface_create(SCREEN_WIDTH, SCREEN_HEIGHT);
 
     bool is_running = true;
     SDL_Event event = { 0 };
@@ -57,19 +46,19 @@ i32 main(i32 argc, char* argv[]) {
             }
         }
 
-        clear_pixels(BLACK);
+        gfx_surface_clear(surface, BLACK);
 
         for (i32 x = 0; x < SCREEN_WIDTH; ++x) {
-            pixels[200 * SCREEN_WIDTH + x] = RED;
+            gfx_draw_pixel(surface, x, 200, RED);
         }
         for (i32 x = 0; x < SCREEN_WIDTH; ++x) {
-            pixels[300 * SCREEN_WIDTH + x] = GREEN;
+            gfx_draw_pixel(surface, x, 300, GREEN);
         }
         for (i32 x = 0; x < SCREEN_WIDTH; ++x) {
-            pixels[400 * SCREEN_WIDTH + x] = BLUE;
+            gfx_draw_pixel(surface, x, 400, BLUE);
         }
 
-        os_display_present(display, pixels);
+        os_display_present(display, surface);
     }
 
     os_shutdown();

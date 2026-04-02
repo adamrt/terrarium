@@ -1,4 +1,5 @@
 #include "ak/types.h"
+#include "gfx/surface.h"
 #include "os/os.h"
 
 #include <assert.h>
@@ -51,9 +52,12 @@ void os_display_destroy(os_display_t* display) {
     free(display);
 }
 
-void os_display_present(os_display_t* display, u32* pixels) {
+void os_display_present(os_display_t* display, gfx_surface_t* surface) {
+    assert(display->width == surface->width);
+    assert(display->height == surface->height);
+
     SDL_RenderClear(display->renderer);
-    SDL_UpdateTexture(display->texture, NULL, pixels, display->width * sizeof(u32));
+    SDL_UpdateTexture(display->texture, NULL, surface->data, surface->width * sizeof(u32));
     SDL_RenderCopy(display->renderer, display->texture, NULL, NULL);
     SDL_RenderPresent(display->renderer);
 }
