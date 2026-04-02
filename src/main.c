@@ -26,7 +26,6 @@ i32 main(i32 argc, char* argv[]) {
     UNUSED(argv);
 
     os_init();
-
     os_display_t* display = os_display_create(SCREEN_WIDTH, SCREEN_HEIGHT);
     gfx_surface_t* surface = gfx_surface_create(SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -56,6 +55,8 @@ i32 main(i32 argc, char* argv[]) {
         os_display_present(display, surface);
     }
 
+    gfx_surface_destroy(surface);
+    os_display_destroy(display);
     os_shutdown();
 
     return 0;
