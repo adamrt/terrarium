@@ -4,10 +4,6 @@
 #include "os/os.h"
 
 #include <SDL2/SDL.h>
-#include <SDL_events.h>
-#include <SDL_pixels.h>
-#include <SDL_render.h>
-#include <SDL_video.h>
 
 struct os_display {
     SDL_Window* window;

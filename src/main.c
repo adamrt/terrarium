@@ -4,10 +4,6 @@
 #include <string.h>
 
 #include <SDL2/SDL.h>
-#include <SDL_events.h>
-#include <SDL_pixels.h>
-#include <SDL_render.h>
-#include <SDL_video.h>
 
 #include "ak/types.h"
 #include "gfx/color.h"
