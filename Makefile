@@ -36,3 +36,7 @@ clean:
 .PHONY: run
 run: $(BUILD_DIR)/$(TARGET)
 	./$<
+
+.PHONY: fmt
+fmt:
+	find -X src -type f -name "*.c" -o -name "*.h" | xargs clang-format -i
