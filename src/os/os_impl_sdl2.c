@@ -55,8 +55,10 @@ void os_display_present(os_display_t* display, gfx_surface_t* surface) {
     ASSERT(display->width == surface->width);
     ASSERT(display->height == surface->height);
 
+    i32 pitch = surface->width * (i32)sizeof(u32);
+
     SDL_RenderClear(display->renderer);
-    SDL_UpdateTexture(display->texture, NULL, surface->data, surface->width * sizeof(u32));
+    SDL_UpdateTexture(display->texture, NULL, surface->data, pitch);
     SDL_RenderCopy(display->renderer, display->texture, NULL, NULL);
     SDL_RenderPresent(display->renderer);
 }

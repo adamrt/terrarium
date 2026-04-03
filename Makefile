@@ -1,7 +1,11 @@
 TARGET = terrarium
 CC = gcc
-CFLAGS = -std=c99 -Wall -Wextra -Werror `pkg-config --cflags sdl2` -Isrc -MMD -MP
-LDFLAGS = `pkg-config --libs sdl2`
+
+WARN_FLAGS = -Wall -Wextra -Werror -Wshadow -Wdouble-promotion -Wundef -Wformat=2 -Wvla -Wconversion
+DEBUG_FLAGS = -g3 -O0 -fstack-protector-strong -fsanitize=address,undefined
+
+CFLAGS = -std=c99 -Isrc -MMD -MP $(DEBUG_FLAGS) $(WARN_FLAGS) `pkg-config --cflags sdl2`
+LDFLAGS = $(DEBUG_FLAGS) `pkg-config --libs sdl2`
 
 BUILD_DIR = build
 SOURCES = $(shell find src/ -name "*.c")

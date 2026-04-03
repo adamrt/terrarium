@@ -12,7 +12,7 @@ gfx_surface_t* gfx_surface_create(i32 width, i32 height) {
     gfx_surface_t* surface = calloc(1, sizeof(*surface));
     ASSERT(surface);
 
-    surface->data = calloc(1, width * height * sizeof(u32));
+    surface->data = calloc(1, (size_t)width * (size_t)height * sizeof(u32));
     ASSERT(surface->data);
 
     surface->width = width;
