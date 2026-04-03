@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ak/types.h"
+#include "gfx/color.h"
 #include "gfx/surface.h"
 
-void gfx_draw_pixel(gfx_surface_t* surface, u32 x, u32 y, u32 color);
+void gfx_draw_pixel(gfx_surface_t* surface, i32 x, i32 y, gfx_color_t color);

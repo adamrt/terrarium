@@ -1,6 +1,7 @@
 #include "gfx/surface.h"
 #include "ak/assert.h"
 #include "ak/types.h"
+#include "gfx/color.h"
 
 #include <stdlib.h>
 
@@ -28,7 +29,7 @@ void gfx_surface_destroy(gfx_surface_t* surface) {
     free(surface);
 }
 
-void gfx_surface_clear(gfx_surface_t* surface, u32 color) {
+void gfx_surface_clear(gfx_surface_t* surface, gfx_color_t color) {
     ASSERT(surface);
 
     for (i32 y = 0; y < surface->height; ++y) {
