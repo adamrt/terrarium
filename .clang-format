@@ -2,6 +2,7 @@
 BasedOnStyle: WebKit
 
 AlignEscapedNewlines: Left
+AlignConsecutiveMacros: true
 AlignTrailingComments:
     Kind: Always
     OverEmptyLines: 0
