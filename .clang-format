@@ -6,7 +6,6 @@ AlignConsecutiveMacros: true
 AlignTrailingComments:
     Kind: Always
     OverEmptyLines: 0
-BreakBeforeBraces: Custom
 IndentPPDirectives: AfterHash
 InsertNewlineAtEOF: true
 LineEnding: LF

@@ -5,7 +5,8 @@
 
 #include <stdlib.h>
 
-gfx_surface_t* gfx_surface_create(i32 width, i32 height) {
+gfx_surface_t* gfx_surface_create(i32 width, i32 height)
+{
     ASSERT(width > 0);
     ASSERT(height > 0);
 
@@ -21,7 +22,8 @@ gfx_surface_t* gfx_surface_create(i32 width, i32 height) {
     return surface;
 }
 
-void gfx_surface_destroy(gfx_surface_t* surface) {
+void gfx_surface_destroy(gfx_surface_t* surface)
+{
     ASSERT(surface);
     ASSERT(surface->data);
 
@@ -29,7 +31,8 @@ void gfx_surface_destroy(gfx_surface_t* surface) {
     free(surface);
 }
 
-void gfx_surface_clear(gfx_surface_t* surface, gfx_color_t color) {
+void gfx_surface_clear(gfx_surface_t* surface, gfx_color_t color)
+{
     ASSERT(surface);
 
     for (i32 y = 0; y < surface->height; ++y) {

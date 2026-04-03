@@ -20,7 +20,8 @@ enum {
     SCREEN_HEIGHT = 600,
 };
 
-i32 main(i32 argc, char* argv[]) {
+i32 main(i32 argc, char* argv[])
+{
     UNUSED(argc);
     UNUSED(argv);
 

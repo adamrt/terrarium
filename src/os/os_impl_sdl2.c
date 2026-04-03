@@ -16,15 +16,18 @@ struct os_display {
     i32 width, height;
 };
 
-void os_init(void) {
+void os_init(void)
+{
     ASSERT(SDL_Init(SDL_INIT_VIDEO) >= 0);
 }
 
-void os_shutdown(void) {
+void os_shutdown(void)
+{
     SDL_Quit();
 }
 
-os_display_t* os_display_create(i32 width, i32 height) {
+os_display_t* os_display_create(i32 width, i32 height)
+{
     ASSERT(width > 0);
     ASSERT(height > 0);
 
@@ -44,14 +47,16 @@ os_display_t* os_display_create(i32 width, i32 height) {
     return display;
 }
 
-void os_display_destroy(os_display_t* display) {
+void os_display_destroy(os_display_t* display)
+{
     SDL_DestroyTexture(display->texture);
     SDL_DestroyRenderer(display->renderer);
     SDL_DestroyWindow(display->window);
     free(display);
 }
 
-void os_display_present(os_display_t* display, gfx_surface_t* surface) {
+void os_display_present(os_display_t* display, gfx_surface_t* surface)
+{
     ASSERT(display->width == surface->width);
     ASSERT(display->height == surface->height);
 
