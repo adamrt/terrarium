@@ -1,5 +1,5 @@
 TARGET = terrarium
-CC = gcc
+CC = clang
 
 WARN_FLAGS = -Wall -Wextra -Werror -Wshadow -Wdouble-promotion -Wundef -Wformat=2 -Wvla -Wconversion
 DEBUG_FLAGS = -g3 -O0 -fstack-protector-strong -fsanitize=address,undefined
