@@ -1,4 +1,3 @@
-#include "SDL_events.h"
 #include "ak/assert.h"
 #include "ak/types.h"
 #include "gfx/surface.h"
@@ -86,6 +85,24 @@ bool os_event_poll(os_event_t* out)
         out->type = OS_EVENT_MOUSE_MOVE;
         out->u.mouse_move.x = event.motion.x;
         out->u.mouse_move.y = event.motion.y;
+        return true;
+    case SDL_MOUSEBUTTONDOWN:
+    case SDL_MOUSEBUTTONUP:
+        out->type = OS_EVENT_MOUSE_BUTTON;
+        out->u.mouse_button.pos_x = event.button.x;
+        out->u.mouse_button.pos_y = event.button.y;
+        out->u.mouse_button.is_pressed = event.button.state == SDL_PRESSED;
+        switch (event.button.button) {
+        case SDL_BUTTON_LEFT:
+            out->u.mouse_button.button = OS_MOUSE_BUTTON_LEFT;
+            break;
+        case SDL_BUTTON_RIGHT:
+            out->u.mouse_button.button = OS_MOUSE_BUTTON_RIGHT;
+            break;
+        case SDL_BUTTON_MIDDLE:
+            out->u.mouse_button.button = OS_MOUSE_BUTTON_MIDDLE;
+            break;
+        }
         return true;
     default:
         return false;

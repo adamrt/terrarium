@@ -34,6 +34,8 @@ i32 main(i32 argc, char* argv[])
                 break;
             case OS_EVENT_MOUSE_MOVE:
                 break;
+            case OS_EVENT_MOUSE_BUTTON:
+                break;
             case OS_EVENT_UNKNOWN:
                 break;
             }

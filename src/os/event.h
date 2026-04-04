@@ -3,10 +3,18 @@
 #include "ak/types.h"
 
 typedef enum {
+    OS_MOUSE_BUTTON_UNKNOWN = 0,
+    OS_MOUSE_BUTTON_LEFT,
+    OS_MOUSE_BUTTON_RIGHT,
+    OS_MOUSE_BUTTON_MIDDLE,
+} os_mouse_button_e;
+
+typedef enum {
     OS_EVENT_UNKNOWN = 0,
     OS_EVENT_QUIT,
 
     OS_EVENT_MOUSE_MOVE,
+    OS_EVENT_MOUSE_BUTTON,
 } os_event_type_e;
 
 // clang-format off
@@ -15,6 +23,7 @@ typedef struct {
 
     union {
         struct { i32 x, y; } mouse_move;
+        struct { i32 pos_x, pos_y; bool is_pressed; os_mouse_button_e button; } mouse_button;
     } u;
 
 } os_event_t;
