@@ -1,13 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <SDL2/SDL.h>
-
 #include "ak/types.h"
 #include "gfx/color.h"
 #include "gfx/draw.h"
 #include "gfx/surface.h"
 #include "os/display.h"
+#include "os/event.h"
 #include "os/os.h"
 
 enum {
@@ -25,11 +24,11 @@ i32 main(i32 argc, char* argv[])
     gfx_surface_t* surface = gfx_surface_create(SCREEN_WIDTH, SCREEN_HEIGHT);
 
     bool is_running = true;
-    SDL_Event event = { 0 };
+    os_event_t event = { 0 };
 
     while (is_running) {
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
+        while (os_event_poll(&event)) {
+            if (event.type == OS_EVENT_QUIT) {
                 is_running = false;
                 break;
             }

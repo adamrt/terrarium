@@ -2,6 +2,7 @@
 #include "ak/types.h"
 #include "gfx/surface.h"
 #include "os/display.h"
+#include "os/event.h"
 #include "os/os.h"
 
 #include <SDL2/SDL.h>
@@ -63,4 +64,26 @@ void os_display_present(os_display_t* display, gfx_surface_t* surface)
     SDL_UpdateTexture(display->texture, NULL, surface->data, pitch);
     SDL_RenderCopy(display->renderer, display->texture, NULL, NULL);
     SDL_RenderPresent(display->renderer);
+}
+
+bool os_event_poll(os_event_t* out)
+{
+    ASSERT(out);
+
+    memset(out, 0, sizeof(*out));
+
+    SDL_Event event = { 0 };
+    if (SDL_PollEvent(&event) == 0) {
+        return false;
+    }
+
+    switch (event.type) {
+    case SDL_QUIT:
+        out->type = OS_EVENT_QUIT;
+        return true;
+    default:
+        return false;
+    }
+
+    __builtin_unreachable();
 }
