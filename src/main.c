@@ -38,6 +38,8 @@ i32 main(i32 argc, char* argv[])
                 break;
             case OS_EVENT_MOUSE_WHEEL:
                 break;
+            case OS_EVENT_KEY:
+                break;
             case OS_EVENT_UNKNOWN:
                 break;
             }

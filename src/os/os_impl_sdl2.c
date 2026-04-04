@@ -7,6 +7,9 @@
 
 #include <SDL2/SDL.h>
 
+// Forward declarations
+static os_key_code_e scancode_to_keycode(SDL_Scancode scancode);
+
 struct os_display {
     SDL_Window* window;
     SDL_Renderer* renderer;
@@ -120,9 +123,68 @@ bool os_event_poll(os_event_t* out)
         out->u.mouse_wheel.scroll_y = event.wheel.preciseY;
         return true;
 
+    case SDL_KEYDOWN:
+    case SDL_KEYUP:
+        out->type = OS_EVENT_KEY;
+        out->u.key.is_pressed = event.key.state == SDL_PRESSED;
+        out->u.key.is_repeat = event.key.repeat != 0;
+        out->u.key.code = scancode_to_keycode(event.key.keysym.scancode);
+        return true;
+
     default:
         return false;
     }
 
     __builtin_unreachable();
+}
+
+// All unsupported scancodes will return the 0 value (OS_KEY_UNKNOWN).
+static os_key_code_e scancode_to_keycode(SDL_Scancode scancode)
+{
+    ASSERT(scancode >= 0, "Negative scancode: %d\n", scancode);
+    ASSERT(scancode < SDL_NUM_SCANCODES, "Invalid scancode: %d\n", scancode);
+
+    static const os_key_code_e table[SDL_NUM_SCANCODES] = {
+        [SDL_SCANCODE_UNKNOWN] = OS_KEY_UNKNOWN,
+
+        [SDL_SCANCODE_1] = OS_KEY_1,
+        [SDL_SCANCODE_2] = OS_KEY_2,
+        [SDL_SCANCODE_3] = OS_KEY_3,
+        [SDL_SCANCODE_4] = OS_KEY_4,
+        [SDL_SCANCODE_5] = OS_KEY_5,
+        [SDL_SCANCODE_6] = OS_KEY_6,
+        [SDL_SCANCODE_7] = OS_KEY_7,
+        [SDL_SCANCODE_8] = OS_KEY_8,
+        [SDL_SCANCODE_9] = OS_KEY_9,
+        [SDL_SCANCODE_0] = OS_KEY_0,
+
+        [SDL_SCANCODE_A] = OS_KEY_A,
+        [SDL_SCANCODE_B] = OS_KEY_B,
+        [SDL_SCANCODE_C] = OS_KEY_C,
+        [SDL_SCANCODE_D] = OS_KEY_D,
+        [SDL_SCANCODE_E] = OS_KEY_E,
+        [SDL_SCANCODE_F] = OS_KEY_F,
+        [SDL_SCANCODE_G] = OS_KEY_G,
+        [SDL_SCANCODE_H] = OS_KEY_H,
+        [SDL_SCANCODE_I] = OS_KEY_I,
+        [SDL_SCANCODE_J] = OS_KEY_J,
+        [SDL_SCANCODE_K] = OS_KEY_K,
+        [SDL_SCANCODE_L] = OS_KEY_L,
+        [SDL_SCANCODE_M] = OS_KEY_M,
+        [SDL_SCANCODE_N] = OS_KEY_N,
+        [SDL_SCANCODE_O] = OS_KEY_O,
+        [SDL_SCANCODE_P] = OS_KEY_P,
+        [SDL_SCANCODE_Q] = OS_KEY_Q,
+        [SDL_SCANCODE_R] = OS_KEY_R,
+        [SDL_SCANCODE_S] = OS_KEY_S,
+        [SDL_SCANCODE_T] = OS_KEY_T,
+        [SDL_SCANCODE_U] = OS_KEY_U,
+        [SDL_SCANCODE_V] = OS_KEY_V,
+        [SDL_SCANCODE_W] = OS_KEY_W,
+        [SDL_SCANCODE_X] = OS_KEY_X,
+        [SDL_SCANCODE_Y] = OS_KEY_Y,
+        [SDL_SCANCODE_Z] = OS_KEY_Z,
+    };
+
+    return table[scancode];
 }
