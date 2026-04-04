@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 set -euo pipefail
 
 if [[ $# -lt 2 || $# -gt 3 ]]; then
