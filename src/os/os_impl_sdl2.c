@@ -1,6 +1,7 @@
 #include "ak/assert.h"
 #include "ak/types.h"
 #include "gfx/surface.h"
+#include "os/display.h"
 #include "os/os.h"
 
 #include <SDL2/SDL.h>

@@ -7,6 +7,7 @@
 #include "gfx/color.h"
 #include "gfx/draw.h"
 #include "gfx/surface.h"
+#include "os/display.h"
 #include "os/os.h"
 
 enum {
