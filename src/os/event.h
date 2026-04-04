@@ -15,6 +15,7 @@ typedef enum {
 
     OS_EVENT_MOUSE_MOVE,
     OS_EVENT_MOUSE_BUTTON,
+    OS_EVENT_MOUSE_WHEEL,
 } os_event_type_e;
 
 // clang-format off
@@ -22,8 +23,9 @@ typedef struct {
     os_event_type_e type;
 
     union {
-        struct { i32 x, y; } mouse_move;
+        struct { i32 pos_x, pos_y;                                            } mouse_move;
         struct { i32 pos_x, pos_y; bool is_pressed; os_mouse_button_e button; } mouse_button;
+        struct { i32 pos_x, pos_y; f32 scroll_x, scroll_y;                    } mouse_wheel;
     } u;
 
 } os_event_t;

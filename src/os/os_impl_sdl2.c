@@ -78,20 +78,24 @@ bool os_event_poll(os_event_t* out)
     }
 
     switch (event.type) {
+
     case SDL_QUIT:
         out->type = OS_EVENT_QUIT;
         return true;
+
     case SDL_MOUSEMOTION:
         out->type = OS_EVENT_MOUSE_MOVE;
-        out->u.mouse_move.x = event.motion.x;
-        out->u.mouse_move.y = event.motion.y;
+        out->u.mouse_move.pos_x = event.motion.x;
+        out->u.mouse_move.pos_y = event.motion.y;
         return true;
+
     case SDL_MOUSEBUTTONDOWN:
     case SDL_MOUSEBUTTONUP:
         out->type = OS_EVENT_MOUSE_BUTTON;
         out->u.mouse_button.pos_x = event.button.x;
         out->u.mouse_button.pos_y = event.button.y;
         out->u.mouse_button.is_pressed = event.button.state == SDL_PRESSED;
+
         switch (event.button.button) {
         case SDL_BUTTON_LEFT:
             out->u.mouse_button.button = OS_MOUSE_BUTTON_LEFT;
@@ -102,8 +106,20 @@ bool os_event_poll(os_event_t* out)
         case SDL_BUTTON_MIDDLE:
             out->u.mouse_button.button = OS_MOUSE_BUTTON_MIDDLE;
             break;
+        default:
+            ASSERT(false, "Unknown button: %d\n", event.button.button);
         }
+
         return true;
+
+    case SDL_MOUSEWHEEL:
+        out->type = OS_EVENT_MOUSE_WHEEL;
+        out->u.mouse_wheel.pos_x = event.wheel.mouseX;
+        out->u.mouse_wheel.pos_y = event.wheel.mouseY;
+        out->u.mouse_wheel.scroll_x = event.wheel.preciseX;
+        out->u.mouse_wheel.scroll_y = event.wheel.preciseY;
+        return true;
+
     default:
         return false;
     }
