@@ -1,3 +1,4 @@
+#include "SDL_events.h"
 #include "ak/assert.h"
 #include "ak/types.h"
 #include "gfx/surface.h"
@@ -80,6 +81,11 @@ bool os_event_poll(os_event_t* out)
     switch (event.type) {
     case SDL_QUIT:
         out->type = OS_EVENT_QUIT;
+        return true;
+    case SDL_MOUSEMOTION:
+        out->type = OS_EVENT_MOUSE_MOVE;
+        out->u.mouse_move.x = event.motion.x;
+        out->u.mouse_move.y = event.motion.y;
         return true;
     default:
         return false;

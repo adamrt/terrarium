@@ -28,8 +28,13 @@ i32 main(i32 argc, char* argv[])
 
     while (is_running) {
         while (os_event_poll(&event)) {
-            if (event.type == OS_EVENT_QUIT) {
+            switch (event.type) {
+            case OS_EVENT_QUIT:
                 is_running = false;
+                break;
+            case OS_EVENT_MOUSE_MOVE:
+                break;
+            case OS_EVENT_UNKNOWN:
                 break;
             }
         }
