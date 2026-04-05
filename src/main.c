@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "ak/mem.h"
 #include "ak/types.h"
 #include "gfx/color.h"
 #include "gfx/draw.h"
@@ -20,8 +21,10 @@ i32 main(i32 argc, char* argv[])
     UNUSED(argv);
 
     os_init();
-    os_display_t* display = os_display_create(SCREEN_WIDTH, SCREEN_HEIGHT);
-    gfx_surface_t* surface = gfx_surface_create(SCREEN_WIDTH, SCREEN_HEIGHT);
+    mem_allocator_t* alloc = mem_heap_create();
+
+    os_display_t* display = os_display_create(alloc, SCREEN_WIDTH, SCREEN_HEIGHT);
+    gfx_surface_t* surface = gfx_surface_create(alloc, SCREEN_WIDTH, SCREEN_HEIGHT);
 
     bool is_running = true;
     os_event_t event = { 0 };
@@ -60,8 +63,10 @@ i32 main(i32 argc, char* argv[])
         os_display_present(display, surface);
     }
 
-    gfx_surface_destroy(surface);
-    os_display_destroy(display);
+    gfx_surface_destroy(alloc, surface);
+    os_display_destroy(alloc, display);
+
+    mem_shutdown(alloc);
     os_shutdown();
 
     return 0;

@@ -1,4 +1,5 @@
 #include "ak/assert.h"
+#include "ak/mem.h"
 #include "ak/types.h"
 #include "gfx/surface.h"
 #include "os/display.h"
@@ -27,12 +28,12 @@ void os_shutdown(void)
     SDL_Quit();
 }
 
-os_display_t* os_display_create(i32 width, i32 height)
+os_display_t* os_display_create(mem_allocator_t* alloc, i32 width, i32 height)
 {
     ASSERT(width > 0);
     ASSERT(height > 0);
 
-    os_display_t* display = calloc(1, sizeof(*display));
+    os_display_t* display = mem_alloc(alloc, sizeof(*display));
     ASSERT(display);
 
     display->window = SDL_CreateWindow("Terrarium", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
@@ -48,12 +49,12 @@ os_display_t* os_display_create(i32 width, i32 height)
     return display;
 }
 
-void os_display_destroy(os_display_t* display)
+void os_display_destroy(mem_allocator_t* alloc, os_display_t* display)
 {
     SDL_DestroyTexture(display->texture);
     SDL_DestroyRenderer(display->renderer);
     SDL_DestroyWindow(display->window);
-    free(display);
+    mem_free(alloc, display);
 }
 
 void os_display_present(os_display_t* display, gfx_surface_t* surface)

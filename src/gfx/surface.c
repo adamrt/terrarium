@@ -1,20 +1,18 @@
 #include "gfx/surface.h"
 #include "ak/assert.h"
+#include "ak/mem.h"
 #include "ak/types.h"
 #include "gfx/color.h"
 
 #include <stdlib.h>
 
-gfx_surface_t* gfx_surface_create(i32 width, i32 height)
+gfx_surface_t* gfx_surface_create(mem_allocator_t* alloc, i32 width, i32 height)
 {
     ASSERT(width > 0);
     ASSERT(height > 0);
 
-    gfx_surface_t* surface = calloc(1, sizeof(*surface));
-    ASSERT(surface);
-
-    surface->data = calloc(1, (size_t)width * (size_t)height * sizeof(u32));
-    ASSERT(surface->data);
+    gfx_surface_t* surface = mem_alloc(alloc, sizeof(*surface));
+    surface->data = mem_alloc(alloc, (size_t)width * (size_t)height * sizeof(u32));
 
     surface->width = width;
     surface->height = height;
@@ -22,13 +20,13 @@ gfx_surface_t* gfx_surface_create(i32 width, i32 height)
     return surface;
 }
 
-void gfx_surface_destroy(gfx_surface_t* surface)
+void gfx_surface_destroy(mem_allocator_t* alloc, gfx_surface_t* surface)
 {
     ASSERT(surface);
     ASSERT(surface->data);
 
-    free(surface->data);
-    free(surface);
+    mem_free(alloc, surface->data);
+    mem_free(alloc, surface);
 }
 
 void gfx_surface_clear(gfx_surface_t* surface, gfx_color_t color)
