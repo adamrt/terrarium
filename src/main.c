@@ -21,7 +21,7 @@ i32 main(i32 argc, char* argv[])
     UNUSED(argv);
 
     os_init();
-    mem_allocator_t* alloc = mem_heap_create();
+    mem_allocator_t* alloc = mem_debug_create();
 
     os_display_t* display = os_display_create(alloc, SCREEN_WIDTH, SCREEN_HEIGHT);
     gfx_surface_t* surface = gfx_surface_create(alloc, SCREEN_WIDTH, SCREEN_HEIGHT);

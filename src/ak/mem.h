@@ -11,6 +11,7 @@ typedef struct {
 } mem_allocator_t;
 
 mem_allocator_t* mem_heap_create(void);
+mem_allocator_t* mem_debug_create(void);
 
 #define mem_alloc(a, size) ((a)->func_alloc((a)->ctx, size, __FILE__, __LINE__))
 #define mem_free(a, ptr)   ((a)->func_free((a)->ctx, ptr, __FILE__, __LINE__))
