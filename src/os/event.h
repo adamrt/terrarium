@@ -54,6 +54,8 @@ typedef enum {
     OS_MOD_CONTROL,
     OS_MOD_SHIFT,
     OS_MOD_SUPER,
+
+    OS_MOD__COUNT,
 } os_mod_e;
 
 static char static_assert_key_code[(OS_KEY__COUNT == 66) ? 1 : -1];
@@ -85,6 +87,6 @@ typedef struct {
 
 bool os_event_poll(os_event_t* out);
 
-os_mod_e os_key_to_mod(os_key_code_e);
-void os_mod_bitset_set(os_mod_e code, bool is_down);
 u8 os_mod_bitset(void);
+void os_mod_bitset_set(os_mod_e code, bool is_down);
+os_mod_e os_key_to_mod(os_key_code_e);
