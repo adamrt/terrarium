@@ -47,6 +47,15 @@ typedef enum {
 } os_key_code_e;
 // clang-format on
 
+typedef enum {
+    OS_MOD_UNKNOWN = 0,
+
+    OS_MOD_ALT,
+    OS_MOD_CONTROL,
+    OS_MOD_SHIFT,
+    OS_MOD_SUPER,
+} os_mod_e;
+
 static char static_assert_key_code[(OS_KEY__COUNT == 66) ? 1 : -1];
 
 typedef enum {
@@ -65,13 +74,17 @@ typedef struct {
     os_event_type_e type;
 
     union {
-        struct { i32 pos_x, pos_y;                                            } mouse_move;
-        struct { i32 pos_x, pos_y; os_mouse_button_e button; bool is_pressed; } mouse_button;
-        struct { i32 pos_x, pos_y; f32 scroll_x, scroll_y;                    } mouse_wheel;
-        struct { os_key_code_e code; bool is_pressed; bool is_repeat;         } key;
+        struct { i32 pos_x, pos_y;                                             } mouse_move;
+        struct { i32 pos_x, pos_y; os_mouse_button_e button; bool is_pressed;  } mouse_button;
+        struct { i32 pos_x, pos_y; f32 scroll_x, scroll_y;                     } mouse_wheel;
+        struct { os_key_code_e code; bool is_pressed; bool is_repeat; u8 mods; } key;
     } u;
 
 } os_event_t;
 // clang-format on
 
 bool os_event_poll(os_event_t* out);
+
+os_mod_e os_key_to_mod(os_key_code_e);
+void os_mod_bitset_set(os_mod_e code, bool is_down);
+u8 os_mod_bitset(void);

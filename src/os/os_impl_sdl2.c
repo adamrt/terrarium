@@ -129,6 +129,13 @@ bool os_event_poll(os_event_t* out)
         out->u.key.is_pressed = event.key.state == SDL_PRESSED;
         out->u.key.is_repeat = event.key.repeat != 0;
         out->u.key.code = scancode_to_keycode(event.key.keysym.scancode);
+        out->u.key.mods = os_mod_bitset();
+
+        os_mod_e mod = os_key_to_mod(out->u.key.code);
+        if (mod != OS_MOD_UNKNOWN) {
+            os_mod_bitset_set(mod, out->u.key.is_pressed);
+        }
+
         return true;
 
     default:
@@ -205,12 +212,12 @@ static os_key_code_e scancode_to_keycode(SDL_Scancode scancode)
         [SDL_SCANCODE_SLASH] = OS_KEY_FORWARDSLASH,
 
         [SDL_SCANCODE_LALT] = OS_KEY_LEFTALT,
-        [SDL_SCANCODE_LCTRL] = OS_KEY_LEFTCONTROL,
-        [SDL_SCANCODE_LSHIFT] = OS_KEY_LEFTSHIFT,
-        [SDL_SCANCODE_LGUI] = OS_KEY_LEFTSUPER,
         [SDL_SCANCODE_RALT] = OS_KEY_RIGHTALT,
+        [SDL_SCANCODE_LCTRL] = OS_KEY_LEFTCONTROL,
         [SDL_SCANCODE_RCTRL] = OS_KEY_RIGHTCONTROL,
+        [SDL_SCANCODE_LSHIFT] = OS_KEY_LEFTSHIFT,
         [SDL_SCANCODE_RSHIFT] = OS_KEY_RIGHTSHIFT,
+        [SDL_SCANCODE_LGUI] = OS_KEY_LEFTSUPER,
         [SDL_SCANCODE_RGUI] = OS_KEY_RIGHTSUPER,
 
         [SDL_SCANCODE_UP] = OS_KEY_UP,
