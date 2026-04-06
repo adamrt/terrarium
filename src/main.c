@@ -38,6 +38,9 @@ i32 main(i32 argc, char* argv[])
             case OS_EVENT_MOUSE_WHEEL:
                 break;
             case OS_EVENT_KEY:
+                if (event.u.key.code == OS_KEY_ESCAPE) {
+                    is_running = false;
+                }
                 break;
             case OS_EVENT_UNKNOWN:
                 break;
