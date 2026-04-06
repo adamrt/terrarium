@@ -8,7 +8,7 @@
 static const u32 MEM_MAGIC_ALLOC = 0xA110CAA1;
 
 typedef struct header {
-    u32 magic;
+    alignas(max_align_t) u32 magic;
     i32 line;
     size_t size;
     const char* file;
