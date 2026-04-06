@@ -33,9 +33,11 @@ void gfx_surface_clear(gfx_surface_t* surface, gfx_color_t color)
 {
     ASSERT(surface);
 
+    gfx_pixel_t packed = gfx_color_pack(color);
+
     for (i32 y = 0; y < surface->height; ++y) {
         for (i32 x = 0; x < surface->width; ++x) {
-            surface->data[y * surface->width + x] = color;
+            surface->data[y * surface->width + x] = packed;
         }
     }
 }

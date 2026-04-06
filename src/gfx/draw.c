@@ -5,5 +5,6 @@
 
 void gfx_draw_pixel(gfx_surface_t* surface, i32 x, i32 y, gfx_color_t color)
 {
-    surface->data[y * surface->width + x] = color;
+    gfx_pixel_t packed = gfx_color_pack(color);
+    surface->data[y * surface->width + x] = packed;
 }

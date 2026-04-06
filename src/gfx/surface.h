@@ -5,7 +5,7 @@
 #include "gfx/color.h"
 
 typedef struct {
-    gfx_color_t* data;
+    gfx_pixel_t* data;
     i32 width, height;
 } gfx_surface_t;
 
