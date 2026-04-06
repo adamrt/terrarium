@@ -3,12 +3,9 @@
 
 #include "ak/mem.h"
 #include "ak/types.h"
-#include "gfx/color.h"
-#include "gfx/draw.h"
-#include "gfx/surface.h"
-#include "os/display.h"
 #include "os/event.h"
 #include "os/os.h"
+#include "ws/server.h"
 
 enum {
     SCREEN_WIDTH = 800,
@@ -20,15 +17,14 @@ i32 main(i32 argc, char* argv[])
     UNUSED(argc);
     UNUSED(argv);
 
+    // Initialization
     os_init();
     mem_allocator_t* alloc = mem_debug_create();
+    ws_server_t* server = ws_server_create(alloc, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    os_display_t* display = os_display_create(alloc, SCREEN_WIDTH, SCREEN_HEIGHT);
-    gfx_surface_t* surface = gfx_surface_create(alloc, SCREEN_WIDTH, SCREEN_HEIGHT);
-
+    // Event Loop
     bool is_running = true;
     os_event_t event = { 0 };
-
     while (is_running) {
         while (os_event_poll(&event)) {
             switch (event.type) {
@@ -48,24 +44,11 @@ i32 main(i32 argc, char* argv[])
             }
         }
 
-        gfx_surface_clear(surface, gfx_black);
-
-        for (i32 x = 0; x < SCREEN_WIDTH; ++x) {
-            gfx_draw_pixel(surface, x, 200, gfx_red);
-        }
-        for (i32 x = 0; x < SCREEN_WIDTH; ++x) {
-            gfx_draw_pixel(surface, x, 300, gfx_green);
-        }
-        for (i32 x = 0; x < SCREEN_WIDTH; ++x) {
-            gfx_draw_pixel(surface, x, 400, gfx_blue);
-        }
-
-        os_display_present(display, surface);
+        ws_server_render(server);
     }
 
-    gfx_surface_destroy(alloc, surface);
-    os_display_destroy(alloc, display);
-
+    // Shutdown
+    ws_server_destroy(alloc, server);
     mem_shutdown(alloc);
     os_shutdown();
 
