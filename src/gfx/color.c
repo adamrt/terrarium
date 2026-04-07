@@ -17,6 +17,32 @@ gfx_color_t gfx_color_rgba(u8 r, u8 g, u8 b, u8 a)
     return (gfx_color_t) { r, g, b, a };
 }
 
+gfx_color_t gfx_color_scale(gfx_color_t color, f32 scale)
+{
+    scale = f32_clamp(scale, 0.0f, 1.0f);
+
+    return (gfx_color_t) {
+        .r = (u8)((f32)color.r * scale),
+        .g = (u8)((f32)color.g * scale),
+        .b = (u8)((f32)color.b * scale),
+        .a = (u8)((f32)color.a * scale),
+    };
+}
+
+// (1.0f - t) * a + t * b
+gfx_color_t gfx_color_lerp(gfx_color_t a, gfx_color_t b, f32 t)
+{
+    t = f32_clamp(t, 0.0f, 1.0f);
+    f32 inv_t = 1.0f - t;
+
+    return (gfx_color_t) {
+        .r = (u8)(inv_t * (f32)a.r + t * (f32)b.r),
+        .g = (u8)(inv_t * (f32)a.g + t * (f32)b.g),
+        .b = (u8)(inv_t * (f32)a.b + t * (f32)b.b),
+        .a = (u8)(inv_t * (f32)a.a + t * (f32)b.a),
+    };
+}
+
 gfx_color_t gfx_color_unpack(gfx_pixel_t color)
 {
     return (gfx_color_t) {
