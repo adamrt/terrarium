@@ -91,7 +91,7 @@ void ws_server_render(ws_server_t* server)
     for (i32 i = 0; i < server->window_count; ++i) {
         ws_window_t* window = server->windows[i];
         gfx_surface_clear(window->content, window->content_color);
-        gfx_surface_blit(server->composited, window->content, window->x, window->y);
+        gfx_surface_blit(server->composited, window->content, window->rect.x, window->rect.y);
     }
     os_display_present(server->display, server->composited);
 }

@@ -16,10 +16,10 @@ ws_window_t* ws_window_create(mem_allocator_t* alloc, i32 x, i32 y, i32 width, i
     gfx_surface_t* content = gfx_surface_create(alloc, width, height);
     ASSERT(content);
 
-    window->x = x;
-    window->y = y;
-    window->width = width;
-    window->height = height;
+    window->rect.x = x;
+    window->rect.y = y;
+    window->rect.width = width;
+    window->rect.height = height;
     window->content_color = gfx_green;
 
     window->content = content;
