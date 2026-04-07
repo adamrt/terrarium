@@ -34,13 +34,15 @@ i32 main(i32 argc, char* argv[])
             case OS_EVENT_QUIT:
                 is_running = false;
                 break;
-            case OS_EVENT_MOUSE_MOVE:
+            case OS_EVENT_MOUSEMOVE:
                 break;
-            case OS_EVENT_MOUSE_BUTTON:
+            case OS_EVENT_MOUSEBUTTON_DOWN:
+            case OS_EVENT_MOUSEBUTTON_UP:
                 break;
-            case OS_EVENT_MOUSE_WHEEL:
+            case OS_EVENT_MOUSEWHEEL:
                 break;
-            case OS_EVENT_KEY:
+            case OS_EVENT_KEY_DOWN:
+            case OS_EVENT_KEY_UP:
                 if (event.u.key.code == OS_KEY_ESCAPE) {
                     is_running = false;
                 }

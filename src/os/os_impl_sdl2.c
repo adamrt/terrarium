@@ -84,27 +84,26 @@ bool os_event_poll(os_event_t* out)
         return true;
 
     case SDL_MOUSEMOTION:
-        out->type = OS_EVENT_MOUSE_MOVE;
-        out->u.mouse_move.pos_x = event.motion.x;
-        out->u.mouse_move.pos_y = event.motion.y;
+        out->type = OS_EVENT_MOUSEMOVE;
+        out->u.mousemove.pos_x = event.motion.x;
+        out->u.mousemove.pos_y = event.motion.y;
         return true;
 
     case SDL_MOUSEBUTTONDOWN:
     case SDL_MOUSEBUTTONUP:
-        out->type = OS_EVENT_MOUSE_BUTTON;
-        out->u.mouse_button.pos_x = event.button.x;
-        out->u.mouse_button.pos_y = event.button.y;
-        out->u.mouse_button.is_pressed = event.button.state == SDL_PRESSED;
+        out->type = event.type == SDL_MOUSEBUTTONDOWN ? OS_EVENT_MOUSEBUTTON_DOWN : OS_EVENT_MOUSEBUTTON_UP;
+        out->u.mousebutton.pos_x = event.button.x;
+        out->u.mousebutton.pos_y = event.button.y;
 
         switch (event.button.button) {
         case SDL_BUTTON_LEFT:
-            out->u.mouse_button.button = OS_MOUSE_BUTTON_LEFT;
+            out->u.mousebutton.button = OS_MOUSE_BUTTON_LEFT;
             break;
         case SDL_BUTTON_RIGHT:
-            out->u.mouse_button.button = OS_MOUSE_BUTTON_RIGHT;
+            out->u.mousebutton.button = OS_MOUSE_BUTTON_RIGHT;
             break;
         case SDL_BUTTON_MIDDLE:
-            out->u.mouse_button.button = OS_MOUSE_BUTTON_MIDDLE;
+            out->u.mousebutton.button = OS_MOUSE_BUTTON_MIDDLE;
             break;
         default:
             ASSERT(false, "Unknown button: %d\n", event.button.button);
@@ -113,24 +112,23 @@ bool os_event_poll(os_event_t* out)
         return true;
 
     case SDL_MOUSEWHEEL:
-        out->type = OS_EVENT_MOUSE_WHEEL;
-        out->u.mouse_wheel.pos_x = event.wheel.mouseX;
-        out->u.mouse_wheel.pos_y = event.wheel.mouseY;
-        out->u.mouse_wheel.scroll_x = event.wheel.preciseX;
-        out->u.mouse_wheel.scroll_y = event.wheel.preciseY;
+        out->type = OS_EVENT_MOUSEWHEEL;
+        out->u.mousewheel.pos_x = event.wheel.mouseX;
+        out->u.mousewheel.pos_y = event.wheel.mouseY;
+        out->u.mousewheel.scroll_x = event.wheel.preciseX;
+        out->u.mousewheel.scroll_y = event.wheel.preciseY;
         return true;
 
     case SDL_KEYDOWN:
     case SDL_KEYUP:
-        out->type = OS_EVENT_KEY;
-        out->u.key.is_pressed = event.key.state == SDL_PRESSED;
+        out->type = event.type == SDL_KEYDOWN ? OS_EVENT_KEY_DOWN : OS_EVENT_KEY_UP;
         out->u.key.is_repeat = event.key.repeat != 0;
         out->u.key.code = scancode_to_keycode(event.key.keysym.scancode);
         out->u.key.mods = os_mod_bitset();
 
         os_mod_e mod = os_key_to_mod(out->u.key.code);
         if (mod != OS_MOD_UNKNOWN) {
-            os_mod_bitset_set(mod, out->u.key.is_pressed);
+            os_mod_bitset_set(mod, out->type == OS_EVENT_KEY_DOWN);
         }
 
         return true;
