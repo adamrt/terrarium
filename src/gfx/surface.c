@@ -42,24 +42,23 @@ void gfx_surface_clear(gfx_surface_t* surface, gfx_color_t color)
     }
 }
 
-void gfx_surface_blit(gfx_surface_t* target, const gfx_surface_t* source, i32 x, i32 y)
+// FIXME: This can be much faster by memcpy'ing each row.
+void gfx_surface_blit(gfx_surface_t* target, const gfx_surface_t* source, i32 target_x, i32 target_y)
 {
-    i32 dx_start = x;
-    i32 dy_start = y;
-    i32 dx_end = dx_start + source->width;
-    i32 dy_end = dy_start + source->height;
+    ASSERT(target);
+    ASSERT(source);
 
-    i32 sx = 0;
-    i32 sy = 0;
+    target_x = i32_clamp(target_x, 0, target->width - 1);
+    target_y = i32_clamp(target_y, 0, target->height - 1);
 
-    for (i32 dy = dy_start; dy < dy_end; ++dy) {
-        for (i32 dx = dx_start; dx < dx_end; ++dx) {
-            i32 d_index = dy * target->width + dx;
-            i32 s_index = sy * source->width + sx;
-            target->data[d_index] = source->data[s_index];
-            sx++;
+    i32 source_x_end = i32_clamp(source->width, target_x, source->width);
+    i32 source_y_end = i32_clamp(source->height, target_y, source->height);
+
+    for (i32 source_y = 0; source_y < source_y_end; ++source_y) {
+        for (i32 source_x = 0; source_x < source_x_end; ++source_x) {
+            i32 tx = target_x + source_x;
+            i32 ty = target_y + source_y;
+            target->data[ty * target->width + tx] = source->data[source_y * source->width + source_x];
         }
-        sy++;
-        sx = 0;
     }
 }
