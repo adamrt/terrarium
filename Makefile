@@ -5,7 +5,7 @@ WARN_FLAGS = -Wall -Wextra -Werror -Wshadow -Wdouble-promotion -Wundef -Wformat=
 DEBUG_FLAGS = -g3 -O0 -fstack-protector-strong -fsanitize=address,undefined
 
 CFLAGS = -std=c11 -Isrc -MMD -MP $(DEBUG_FLAGS) $(WARN_FLAGS) `pkg-config --cflags sdl2`
-LDFLAGS = $(DEBUG_FLAGS) `pkg-config --libs sdl2`
+LDFLAGS = $(DEBUG_FLAGS) -lm `pkg-config --libs sdl2`
 
 BUILD_DIR = build
 SOURCES = $(shell find src/ -name "*.c")
