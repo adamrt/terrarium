@@ -3,6 +3,7 @@
 #include "ws/ws.h"
 
 typedef struct {
+    mem_allocator_t* alloc;
     f32 timer;
     gfx_color_t color_a;
     gfx_color_t color_b;
@@ -20,8 +21,11 @@ void func_draw(ws_window_t* window)
     state->timer += 0.015f;
 }
 
-void func_shutdown(mem_allocator_t* alloc, ws_window_t* window)
+void func_close(ws_window_t* window)
 {
+    dummy_state_t* state = window->ctx;
+    mem_allocator_t* alloc = state->alloc; // Needed for ws_window_destroy
+
     mem_free(alloc, window->ctx);
     ws_window_destroy(alloc, window);
 }
@@ -34,12 +38,13 @@ ws_window_t* exp_dummy_create(mem_allocator_t* alloc)
     dummy_state_t* state = mem_alloc(alloc, sizeof(*state));
     ASSERT(state);
 
+    state->alloc = alloc;
     state->timer = 0.0f;
     state->color_a = gfx_white;
     state->color_b = gfx_blue;
 
     window->func_draw = func_draw;
-    window->func_shutdown = func_shutdown;
+    window->func_close = func_close;
     window->ctx = state;
 
     return window;

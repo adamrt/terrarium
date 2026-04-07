@@ -62,7 +62,7 @@ void ws_server_destroy(mem_allocator_t* alloc, ws_server_t* server)
 
     for (i32 i = 0; i < server->window_count; ++i) {
         ws_window_t* window = server->windows[i];
-        window->func_shutdown(alloc, window);
+        window->func_close(window);
     }
 
     mem_free(alloc, server);
@@ -88,7 +88,7 @@ void ws_server_window_take(ws_server_t* server, ws_window_t* window)
 {
     ASSERT(server->window_count + 1 < WS_SERVER_WINDOW_MAX);
     ASSERT(window->func_draw);
-    ASSERT(window->func_shutdown);
+    ASSERT(window->func_close);
 
     server->windows[server->window_count++] = window;
 }

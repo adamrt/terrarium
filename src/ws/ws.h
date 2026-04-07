@@ -12,7 +12,7 @@ typedef struct ws_window {
     gfx_surface_t* content;
 
     void (*func_draw)(struct ws_window* window);
-    void (*func_shutdown)(mem_allocator_t* alloc, struct ws_window* window);
+    void (*func_close)(struct ws_window* window);
 
     void* ctx;
 } ws_window_t;
