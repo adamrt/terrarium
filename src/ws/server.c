@@ -71,17 +71,7 @@ void ws_server_destroy(mem_allocator_t* alloc, ws_server_t* server)
 void ws_server_render(ws_server_t* server)
 {
     gfx_surface_clear(server->desktop, server->background);
-    {
-        for (i32 x = 0; x < server->width; ++x) {
-            gfx_draw_pixel(server->desktop, x, 200, gfx_red);
-        }
-        for (i32 x = 0; x < server->width; ++x) {
-            gfx_draw_pixel(server->desktop, x, 300, gfx_green);
-        }
-        for (i32 x = 0; x < server->width; ++x) {
-            gfx_draw_pixel(server->desktop, x, 400, gfx_blue);
-        }
-    }
+    gfx_surface_draw_wallpaper(server->desktop, server->width, server->height);
 
     gfx_surface_blit(server->composited, server->desktop, 0, 0);
     for (i32 i = 0; i < server->window_count; ++i) {
