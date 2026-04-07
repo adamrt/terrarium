@@ -18,6 +18,11 @@ typedef int64_t i64;
 typedef float f32;
 typedef double f64;
 
+// i32
+static inline i32 i32_min(i32 a, i32 b) { return (a < b) ? a : b; }
+static inline i32 i32_max(i32 a, i32 b) { return (a > b) ? a : b; }
+static inline i32 i32_clamp(i32 value, i32 lo, i32 hi) { return i32_min(i32_max(value, lo), hi); }
+
 #define UNUSED(x) ((void)(x))
 
 // This signifies that the variable is not owned by this scope.
