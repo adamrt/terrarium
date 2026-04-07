@@ -62,7 +62,7 @@ void ws_server_destroy(mem_allocator_t* alloc, ws_server_t* server)
 
     for (i32 i = 0; i < server->window_count; ++i) {
         ws_window_t* window = server->windows[i];
-        ws_window_destroy(alloc, window);
+        window->func_shutdown(alloc, window);
     }
 
     mem_free(alloc, server);
@@ -74,16 +74,21 @@ void ws_server_render(ws_server_t* server)
     gfx_surface_draw_wallpaper(server->desktop, server->width, server->height);
 
     gfx_surface_blit(server->composited, server->desktop, 0, 0);
+
     for (i32 i = 0; i < server->window_count; ++i) {
         ws_window_t* window = server->windows[i];
-        gfx_surface_clear(window->content, window->content_color);
+        window->func_draw(window);
         gfx_surface_blit(server->composited, window->content, window->rect.x, window->rect.y);
     }
+
     os_display_present(server->display, server->composited);
 }
 
 void ws_server_window_take(ws_server_t* server, ws_window_t* window)
 {
     ASSERT(server->window_count + 1 < WS_SERVER_WINDOW_MAX);
+    ASSERT(window->func_draw);
+    ASSERT(window->func_shutdown);
+
     server->windows[server->window_count++] = window;
 }

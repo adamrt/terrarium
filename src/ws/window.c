@@ -18,7 +18,6 @@ ws_window_t* ws_window_create(mem_allocator_t* alloc, i32 x, i32 y, i32 width, i
     window->rect.y = y;
     window->rect.width = width;
     window->rect.height = height;
-    window->content_color = gfx_green;
 
     window->content = content;
 

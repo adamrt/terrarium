@@ -1,0 +1,46 @@
+#include "ak/ak.h"
+#include "gfx/gfx.h"
+#include "ws/ws.h"
+
+typedef struct {
+    f32 timer;
+    gfx_color_t color_a;
+    gfx_color_t color_b;
+} dummy_state_t;
+
+void func_draw(ws_window_t* window)
+{
+    dummy_state_t* state = window->ctx;
+
+    f32 t = (f32_sin(state->timer) + 1.0f) * 0.5f;
+
+    gfx_color_t color = gfx_color_lerp(state->color_a, state->color_b, t);
+    gfx_surface_clear(window->content, color);
+
+    state->timer += 0.015f;
+}
+
+void func_shutdown(mem_allocator_t* alloc, ws_window_t* window)
+{
+    mem_free(alloc, window->ctx);
+    ws_window_destroy(alloc, window);
+}
+
+ws_window_t* exp_dummy_create(mem_allocator_t* alloc)
+{
+    ws_window_t* window = ws_window_create(alloc, 100, 150, 300, 300);
+    ASSERT(window);
+
+    dummy_state_t* state = mem_alloc(alloc, sizeof(*state));
+    ASSERT(state);
+
+    state->timer = 0.0f;
+    state->color_a = gfx_white;
+    state->color_b = gfx_blue;
+
+    window->func_draw = func_draw;
+    window->func_shutdown = func_shutdown;
+    window->ctx = state;
+
+    return window;
+}

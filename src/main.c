@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "ak/ak.h"
+#include "exp/dummy/app.h"
 #include "os/os.h"
 #include "ws/ws.h"
 
@@ -19,8 +20,8 @@ i32 main(i32 argc, char* argv[])
     os_init();
     mem_allocator_t* alloc = mem_debug_create();
     ws_server_t* server = ws_server_create(alloc, SCREEN_WIDTH, SCREEN_HEIGHT);
-    ws_window_t* window = ws_window_create(alloc, 100, 100, 300, 250);
 
+    ws_window_t* window = exp_dummy_create(alloc);
     ws_server_window_take(server, window);
     TAKEN(window);
 
