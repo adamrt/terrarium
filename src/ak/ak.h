@@ -1,5 +1,6 @@
 #pragma once
 
+#include <math.h>
 #include <stdalign.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -27,6 +28,13 @@ typedef double f64;
 static inline i32 i32_min(i32 a, i32 b) { return (a < b) ? a : b; }
 static inline i32 i32_max(i32 a, i32 b) { return (a > b) ? a : b; }
 static inline i32 i32_clamp(i32 value, i32 lo, i32 hi) { return i32_min(i32_max(value, lo), hi); }
+
+// f32
+static inline f32 f32_min(f32 a, f32 b) { return (a < b) ? a : b; }
+static inline f32 f32_max(f32 a, f32 b) { return (a > b) ? a : b; }
+static inline f32 f32_clamp(f32 value, f32 lo, f32 hi) { return f32_min(f32_max(value, lo), hi); }
+static inline f32 f32_sin(f32 value) { return sinf(value); }
+static inline f32 f32_cos(f32 value) { return cosf(value); }
 
 //
 // Memory
