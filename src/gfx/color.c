@@ -1,4 +1,5 @@
-#include "gfx/color.h"
+#include "ak/ak.h"
+#include "gfx/gfx.h"
 
 const gfx_color_t gfx_black = { 0, 0, 0, 255 };
 const gfx_color_t gfx_white = { 255, 255, 255, 255 };

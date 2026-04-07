@@ -1,9 +1,7 @@
-#include "ak/assert.h"
-#include "ak/mem.h"
-#include "ak/types.h"
-
 #include <stdlib.h>
 #include <string.h>
+
+#include "ak/ak.h"
 
 static const u32 MEM_MAGIC_ALLOC = 0xA110CAA1;
 

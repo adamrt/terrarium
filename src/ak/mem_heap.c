@@ -1,8 +1,6 @@
-#include "ak/assert.h"
-#include "ak/mem.h"
-#include "ak/types.h"
-
 #include <stdlib.h>
+
+#include "ak/ak.h"
 
 void* heap_alloc(void* ctx, size_t size, const char* file, i32 line)
 {

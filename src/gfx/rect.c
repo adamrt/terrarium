@@ -1,4 +1,4 @@
-#include "gfx/rect.h"
+#include "gfx/gfx.h"
 
 bool gfx_rect_contains(gfx_rect_t rect, i32 x, i32 y)
 {

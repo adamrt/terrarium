@@ -1,11 +1,7 @@
-#include "ws/server.h"
-#include "ak/assert.h"
-#include "ak/types.h"
-#include "gfx/color.h"
-#include "gfx/draw.h"
-#include "gfx/surface.h"
-#include "os/display.h"
-#include "ws/window.h"
+#include "ak/ak.h"
+#include "gfx/gfx.h"
+#include "os/os.h"
+#include "ws/ws.h"
 
 enum {
     WS_SERVER_WINDOW_MAX = 3,

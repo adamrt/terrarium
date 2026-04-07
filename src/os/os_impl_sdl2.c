@@ -1,12 +1,8 @@
-#include "ak/assert.h"
-#include "ak/mem.h"
-#include "ak/types.h"
-#include "gfx/surface.h"
-#include "os/display.h"
-#include "os/event.h"
-#include "os/os.h"
-
 #include <SDL2/SDL.h>
+
+#include "ak/ak.h"
+#include "gfx/gfx.h"
+#include "os/os.h"
 
 // Forward declarations
 static os_key_code_e scancode_to_keycode(SDL_Scancode scancode);

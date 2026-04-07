@@ -1,10 +1,7 @@
-#include "gfx/surface.h"
-#include "ak/assert.h"
-#include "ak/mem.h"
-#include "ak/types.h"
-#include "gfx/color.h"
-
 #include <stdlib.h>
+
+#include "ak/ak.h"
+#include "gfx/gfx.h"
 
 gfx_surface_t* gfx_surface_create(mem_allocator_t* alloc, i32 width, i32 height)
 {

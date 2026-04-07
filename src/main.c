@@ -1,12 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "ak/mem.h"
-#include "ak/types.h"
-#include "os/event.h"
+#include "ak/ak.h"
 #include "os/os.h"
-#include "ws/server.h"
-#include "ws/window.h"
+#include "ws/ws.h"
 
 enum {
     SCREEN_WIDTH = 800,

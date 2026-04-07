@@ -1,8 +1,6 @@
 #include <stdbool.h>
 
-#include "ak/assert.h"
-#include "ak/bitset.h"
-#include "ak/types.h"
+#include "ak/ak.h"
 
 // We use a single set() with a bool value to handle both setting and clearing.
 // This avoids branching (if/else) by using the following bitmasking logic:

@@ -1,8 +1,6 @@
-#include "ws/window.h"
-#include "ak/assert.h"
-#include "ak/mem.h"
-#include "gfx/color.h"
-#include "gfx/surface.h"
+#include "ak/ak.h"
+#include "gfx/gfx.h"
+#include "ws/ws.h"
 
 ws_window_t* ws_window_create(mem_allocator_t* alloc, i32 x, i32 y, i32 width, i32 height)
 {
