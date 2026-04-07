@@ -80,7 +80,8 @@ typedef enum {
     OS_MOD__COUNT,
 } os_mod_e;
 
-static char static_assert_key_code[(OS_KEY__COUNT == 66) ? 1 : -1];
+// We track this so we know how many bits required for key state.
+STATIC_ASSERT(OS_KEY__COUNT == 66);
 
 typedef enum {
     OS_EVENT_UNKNOWN = 0,

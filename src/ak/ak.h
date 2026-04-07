@@ -2,7 +2,6 @@
 
 #include <math.h>
 #include <stdalign.h>
-#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -23,6 +22,10 @@ typedef int64_t i64;
 
 typedef float f32;
 typedef double f64;
+
+typedef _Bool bool;
+#define true  1
+#define false 0
 
 // i32
 static inline i32 i32_min(i32 a, i32 b) { return (a < b) ? a : b; }
@@ -78,6 +81,7 @@ bool bitset64_get(u64 bitset, u8 position);
 #define BYTES_TO_KB(x) ((f64)(x) / 1024.0)
 #define BYTES_TO_MB(x) ((f64)(x) / (1024.0 * 1024.0))
 
+#define STATIC_ASSERT(exp) _Static_assert(exp, #exp)
 #define ASSERT(cond, ...)                                                                                      \
     do {                                                                                                       \
         if (!(cond)) {                                                                                         \

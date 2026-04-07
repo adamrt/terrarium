@@ -1,5 +1,3 @@
-#include <stdbool.h>
-
 #include "ak/ak.h"
 
 // We use a single set() with a bool value to handle both setting and clearing.
