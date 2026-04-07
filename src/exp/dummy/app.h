@@ -7,11 +7,11 @@ typedef struct {
     f32 timer;
     gfx_color_t color_a;
     gfx_color_t color_b;
-} dummy_state_t;
+} state_t;
 
 void func_draw(ws_window_t* window)
 {
-    dummy_state_t* state = window->ctx;
+    state_t* state = window->ctx;
 
     f32 t = (f32_sin(state->timer) + 1.0f) * 0.5f;
 
@@ -23,7 +23,7 @@ void func_draw(ws_window_t* window)
 
 void func_close(ws_window_t* window)
 {
-    dummy_state_t* state = window->ctx;
+    state_t* state = window->ctx;
     mem_allocator_t* alloc = state->alloc; // Needed for ws_window_destroy
 
     mem_free(alloc, window->ctx);
@@ -35,7 +35,7 @@ ws_window_t* exp_dummy_create(mem_allocator_t* alloc)
     ws_window_t* window = ws_window_create(alloc, 100, 150, 300, 300);
     ASSERT(window);
 
-    dummy_state_t* state = mem_alloc(alloc, sizeof(*state));
+    state_t* state = mem_alloc(alloc, sizeof(*state));
     ASSERT(state);
 
     state->alloc = alloc;
