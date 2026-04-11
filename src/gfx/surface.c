@@ -45,14 +45,24 @@ void gfx_surface_blit(gfx_surface_t* target, const gfx_surface_t* source, i32 ta
     ASSERT(target);
     ASSERT(source);
 
-    target_x = i32_clamp(target_x, 0, target->width - 1);
-    target_y = i32_clamp(target_y, 0, target->height - 1);
+    // target_x = -5
+    // source_x_start = 5
+    i32 source_x_start = i32_max(0, -target_x);
+    i32 source_y_start = i32_max(0, -target_y);
 
-    i32 source_x_end = i32_clamp(source->width, target_x, source->width);
-    i32 source_y_end = i32_clamp(source->height, target_y, source->height);
+    // target->width = 100
+    // source->width = 20
+    // target_x = 95
+    // source_x_end = 5
+    i32 source_x_end = i32_min(source->width, target->width - target_x);
+    i32 source_y_end = i32_min(source->height, target->height - target_y);
 
-    for (i32 source_y = 0; source_y < source_y_end; ++source_y) {
-        for (i32 source_x = 0; source_x < source_x_end; ++source_x) {
+    if (source_x_start > source_x_end || source_y_start > source_y_end) {
+        return;
+    }
+
+    for (i32 source_y = source_y_start; source_y < source_y_end; ++source_y) {
+        for (i32 source_x = source_x_start; source_x < source_x_end; ++source_x) {
             i32 tx = target_x + source_x;
             i32 ty = target_y + source_y;
             target->data[ty * target->width + tx] = source->data[source_y * source->width + source_x];
