@@ -37,6 +37,10 @@ clean:
 run: $(BUILD_DIR)/$(TARGET)
 	./$<
 
+.PHONY: debug
+debug: $(BUILD_DIR)/$(TARGET)
+	lldb ./$<
+
 .PHONY: fmt
 fmt:
 	find -X src -type f -name "*.c" -o -name "*.h" | xargs clang-format -i
