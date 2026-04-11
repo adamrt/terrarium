@@ -29,26 +29,11 @@ i32 main(i32 argc, char* argv[])
     os_event_t event = { 0 };
     while (is_running) {
         while (os_event_poll(&event)) {
-            switch (event.type) {
-            case OS_EVENT_QUIT:
+            if (event.type == OS_EVENT_QUIT || (event.type == OS_EVENT_KEY_DOWN && event.u.key.code == OS_KEY_ESCAPE)) {
                 is_running = false;
                 break;
-            case OS_EVENT_MOUSEMOVE:
-                break;
-            case OS_EVENT_MOUSEBUTTON_DOWN:
-            case OS_EVENT_MOUSEBUTTON_UP:
-                break;
-            case OS_EVENT_MOUSEWHEEL:
-                break;
-            case OS_EVENT_KEY_DOWN:
-            case OS_EVENT_KEY_UP:
-                if (event.u.key.code == OS_KEY_ESCAPE) {
-                    is_running = false;
-                }
-                break;
-            case OS_EVENT_UNKNOWN:
-                break;
             }
+            ws_server_event_handle(server, &event);
         }
 
         ws_server_render(server);

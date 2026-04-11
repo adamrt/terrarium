@@ -3,9 +3,43 @@
 #include "os/os.h"
 #include "ws/ws.h"
 
+#include <string.h>
+
 enum {
     WS_SERVER_WINDOW_MAX = 3,
 };
+
+static inline ws_event_t event_from_os_event(const ws_window_t* window, const os_event_t* os_event)
+{
+    ws_event_t ws_event = { 0 };
+
+    // Conver type
+    ws_event.type = (ws_event_type_e)os_event->type;
+
+    // Copy all data
+    (void)memcpy(&ws_event.u, &os_event->u, sizeof(os_event->u));
+
+    // Localize events to the window
+    switch (ws_event.type) {
+    case WS_EVENT_MOUSEMOVE:
+        ws_event.u.mousemove.pos_x -= window->rect.x;
+        ws_event.u.mousemove.pos_y -= window->rect.y;
+        break;
+    case WS_EVENT_MOUSEBUTTON_DOWN:
+    case WS_EVENT_MOUSEBUTTON_UP:
+        ws_event.u.mousebutton.pos_x -= window->rect.x;
+        ws_event.u.mousebutton.pos_y -= window->rect.y;
+        break;
+    case WS_EVENT_MOUSEWHEEL:
+        ws_event.u.mousewheel.pos_x -= window->rect.x;
+        ws_event.u.mousewheel.pos_y -= window->rect.y;
+        break;
+    default:
+        break;
+    }
+
+    return ws_event;
+}
 
 struct ws_server {
     i32 width, height;
@@ -94,4 +128,17 @@ void ws_server_window_take(ws_server_t* server, ws_window_t** window_take)
     ASSERT(window->func_close);
 
     server->windows[server->window_count++] = window;
+}
+
+void ws_server_event_handle(ws_server_t* server, const os_event_t* os_event)
+{
+    ASSERT(server);
+
+    // Loop and do hit testing
+    ws_window_t* window = server->windows[0];
+
+    ws_event_t ws_event = event_from_os_event(window, os_event);
+
+    // FIXME: pass to the hit window
+    (void)ws_event;
 }
