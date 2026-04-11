@@ -84,8 +84,11 @@ void ws_server_render(ws_server_t* server)
     os_display_present(server->display, server->composited);
 }
 
-void ws_server_window_take(ws_server_t* server, ws_window_t* window)
+void ws_server_window_take(ws_server_t* server, ws_window_t** window_take)
 {
+    ws_window_t* window = *window_take;
+    *window_take = NULL;
+
     ASSERT(server->window_count + 1 < WS_SERVER_WINDOW_MAX);
     ASSERT(window->func_draw);
     ASSERT(window->func_close);

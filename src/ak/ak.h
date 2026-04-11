@@ -75,8 +75,6 @@ bool bitset64_get(u64 bitset, u8 position);
 //
 
 #define UNUSED(x) ((void)(x))
-// This signifies that the variable is not owned by this scope.
-#define TAKEN(x) ((x) = NULL)
 
 #define BYTES_TO_KB(x) ((f64)(x) / 1024.0)
 #define BYTES_TO_MB(x) ((f64)(x) / (1024.0 * 1024.0))
