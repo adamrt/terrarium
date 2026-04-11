@@ -97,14 +97,19 @@ typedef enum {
 } os_event_type_e;
 
 // clang-format off
+typedef struct { i32 pos_x, pos_y;                            } os_event_mousemove_t;
+typedef struct { i32 pos_x, pos_y; os_mouse_button_e button;  } os_event_mousebutton_t;
+typedef struct { i32 pos_x, pos_y; f32 scroll_x, scroll_y;    } os_event_mousewheel_t;
+typedef struct { os_key_code_e code; bool is_repeat; u8 mods; } os_event_key_t;
+
 typedef struct {
     os_event_type_e type;
 
     union {
-        struct { i32 pos_x, pos_y;                            } mousemove;
-        struct { i32 pos_x, pos_y; os_mouse_button_e button;  } mousebutton;
-        struct { i32 pos_x, pos_y; f32 scroll_x, scroll_y;    } mousewheel;
-        struct { os_key_code_e code; bool is_repeat; u8 mods; } key;
+        os_event_mousemove_t mousemove;
+        os_event_mousebutton_t mousebutton;
+        os_event_mousewheel_t mousewheel;
+        os_event_key_t key;
     } u;
 
 } os_event_t;
