@@ -43,6 +43,14 @@ gfx_color_t gfx_color_lerp(gfx_color_t a, gfx_color_t b, f32 t)
     };
 }
 
+gfx_color_t gfx_color_random(void)
+{
+    u8 r = (u8)rnd_i32_range(0, 255);
+    u8 g = (u8)rnd_i32_range(0, 255);
+    u8 b = (u8)rnd_i32_range(0, 255);
+    return gfx_color_rgb(r, g, b);
+}
+
 gfx_color_t gfx_color_unpack(gfx_pixel_t color)
 {
     return (gfx_color_t) {

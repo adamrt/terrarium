@@ -71,6 +71,13 @@ void bitset64_set(u64* bitset, u8 position, bool value);
 bool bitset64_get(u64 bitset, u8 position);
 
 //
+// Random
+//
+
+void rnd_init(void);
+i32 rnd_i32_range(i32 min, i32 max);
+
+//
 // Macros
 //
 

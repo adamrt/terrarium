@@ -18,6 +18,8 @@ i32 main(i32 argc, char* argv[])
 
     // Initialization
     os_init();
+    rnd_init();
+
     mem_allocator_t* alloc = mem_debug_create();
     ws_server_t* server = ws_server_create(alloc, SCREEN_WIDTH, SCREEN_HEIGHT);
 

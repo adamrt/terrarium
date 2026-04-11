@@ -18,6 +18,7 @@ gfx_color_t gfx_color_rgb(u8 r, u8 g, u8 b);
 gfx_color_t gfx_color_rgba(u8 r, u8 g, u8 b, u8 a);
 gfx_color_t gfx_color_scale(gfx_color_t color, f32 scale);
 gfx_color_t gfx_color_lerp(gfx_color_t a, gfx_color_t b, f32 t);
+gfx_color_t gfx_color_random(void);
 
 // Convert gfx_color_t <-> gfx_pixel_t
 gfx_color_t gfx_pixel_unpack(gfx_pixel_t color);
