@@ -8,6 +8,13 @@ void gfx_surface_draw_pixel(gfx_surface_t* surface, i32 x, i32 y, gfx_pixel_t pi
 {
     ASSERT(surface);
 
+    // You can return early instead of asserting, but we want our caller
+    // functions to handle their own overdraw.
+    ASSERT(x >= 0);
+    ASSERT(y >= 0);
+    ASSERT(x < surface->width);
+    ASSERT(y < surface->height);
+
     surface->data[y * surface->width + x] = pixel;
 }
 
@@ -17,8 +24,18 @@ void gfx_surface_fill_rect(gfx_surface_t* surface, gfx_rect_t rect, gfx_color_t 
 
     gfx_pixel_t packed = gfx_color_pack(color);
 
-    for (i32 y = rect.y; y < rect.y + rect.height; ++y) {
-        for (i32 x = rect.x; x < rect.x + rect.width; ++x) {
+    i32 x_start = i32_max(0, rect.x);
+    i32 y_start = i32_max(0, rect.y);
+
+    i32 x_end = i32_min(surface->width, rect.x + rect.width);
+    i32 y_end = i32_min(surface->height, rect.y + rect.height);
+
+    if (x_start >= x_end || y_start >= y_end) {
+        return;
+    }
+
+    for (i32 y = y_start; y < y_end; ++y) {
+        for (i32 x = x_start; x < x_end; ++x) {
             surface->data[y * surface->width + x] = packed;
         }
     }
