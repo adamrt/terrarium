@@ -1,7 +1,10 @@
-#include <stdlib.h>
-#include <string.h>
+// Copyright 2026 Adam Patterson
+// SPDX-License-Identifier: ISC
 
 #include "ak/ak.h"
+
+#include <stdlib.h>
+#include <string.h>
 
 static const u32 MEM_MAGIC_ALLOC = 0xA110CAA1;
 

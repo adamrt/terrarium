@@ -1,6 +1,9 @@
-#include <stdlib.h>
+// Copyright 2026 Adam Patterson
+// SPDX-License-Identifier: ISC
 
 #include "ak/ak.h"
+
+#include <stdlib.h>
 
 void* heap_alloc(void* ctx, size_t size, const char* file, i32 line)
 {

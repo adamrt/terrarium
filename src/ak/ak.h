@@ -1,3 +1,6 @@
+// Copyright 2026 Adam Patterson
+// SPDX-License-Identifier: ISC
+
 #pragma once
 
 #include <math.h>

@@ -1,3 +1,6 @@
+// Copyright 2026 Adam Patterson
+// SPDX-License-Identifier: ISC
+
 #include "ak/ak.h"
 
 static u32 s_state = 0;

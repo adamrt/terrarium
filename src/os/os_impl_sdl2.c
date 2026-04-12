@@ -1,8 +1,11 @@
-#include <SDL2/SDL.h>
+// Copyright 2026 Adam Patterson
+// SPDX-License-Identifier: ISC
 
 #include "ak/ak.h"
 #include "gfx/gfx.h"
 #include "os/os.h"
+
+#include <SDL2/SDL.h>
 
 // Forward declarations
 static os_key_code_e scancode_to_keycode(SDL_Scancode scancode);

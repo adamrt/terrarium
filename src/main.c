@@ -1,10 +1,13 @@
-#include <stdio.h>
-#include <string.h>
+// Copyright 2026 Adam Patterson
+// SPDX-License-Identifier: ISC
 
 #include "ak/ak.h"
 #include "exp/dummy/app.h"
 #include "os/os.h"
 #include "ws/ws.h"
+
+#include <stdio.h>
+#include <string.h>
 
 enum {
     SCREEN_WIDTH = 800,

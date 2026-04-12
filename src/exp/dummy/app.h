@@ -1,3 +1,8 @@
+// Copyright 2026 Adam Patterson
+// SPDX-License-Identifier: ISC
+
+#pragma once
+
 #include "ak/ak.h"
 #include "gfx/gfx.h"
 #include "ws/ws.h"

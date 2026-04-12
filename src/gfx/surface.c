@@ -1,7 +1,10 @@
-#include <stdlib.h>
+// Copyright 2026 Adam Patterson
+// SPDX-License-Identifier: ISC
 
 #include "ak/ak.h"
 #include "gfx/gfx.h"
+
+#include <stdlib.h>
 
 gfx_surface_t* gfx_surface_create(mem_allocator_t* alloc, i32 width, i32 height)
 {
