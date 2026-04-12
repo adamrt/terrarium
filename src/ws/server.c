@@ -143,15 +143,44 @@ void ws_server_window_take(ws_server_t* server, ws_window_t** window_take)
     server->windows[server->window_count++] = window;
 }
 
+ws_hit_t ws_server_window_hit_check(ws_server_t* server, i32 mx, i32 my)
+{
+    // FIXME: Probably shoudl reverse this order
+    for (i32 i = 0; i < server->window_count; ++i) {
+        ws_window_t* window = server->windows[i];
+        gfx_rect_t content_rect = ws_window_rect_content(window);
+        if (gfx_rect_contains(content_rect, mx, my)) {
+            return (ws_hit_t) { .window = window, .type = WS_HIT_CONTENT };
+        } else if (gfx_rect_contains(window->rect, mx, my)) {
+            return (ws_hit_t) { .window = window, .type = WS_HIT_FRAME };
+        }
+    }
+
+    return (ws_hit_t) { .window = NULL, .type = WS_HIT_NONE };
+}
+
 void ws_server_event_handle(ws_server_t* server, const os_event_t* os_event)
 {
     ASSERT(server);
 
+    if (os_event->type == OS_EVENT_MOUSEBUTTON_DOWN) {
+        i32 mx = os_event->u.mousebutton.pos_x;
+        i32 my = os_event->u.mousebutton.pos_y;
+        ws_hit_t hit = ws_server_window_hit_check(server, mx, my);
+        switch (hit.type) {
+        case WS_HIT_NONE:
+            ASSERT(hit.window == NULL);
+            break;
+        case WS_HIT_FRAME:
+            ASSERT(hit.window);
+            break;
+        case WS_HIT_CONTENT:
+            ASSERT(hit.window);
+            ws_event_t ws_event = event_from_os_event(hit.window, os_event);
+            UNUSED(ws_event);
+            break;
+        }
+    }
+
     // Loop and do hit testing
-    ws_window_t* window = server->windows[0];
-
-    ws_event_t ws_event = event_from_os_event(window, os_event);
-
-    // FIXME: pass to the hit window
-    (void)ws_event;
 }

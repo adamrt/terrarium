@@ -58,6 +58,17 @@ typedef struct {
 
 } ws_event_t;
 
+typedef enum {
+    WS_HIT_NONE,
+    WS_HIT_FRAME,
+    WS_HIT_CONTENT,
+} ws_hit_type_e;
+
+typedef struct {
+    ws_window_t* window;
+    ws_hit_type_e type;
+} ws_hit_t;
+
 //
 // Window Server
 //
