@@ -50,11 +50,14 @@ struct ws_server {
 
     os_display_t* display;
     gfx_surface_t* desktop;
-
     gfx_surface_t* composited;
 
     ws_window_t* windows[WS_SERVER_WINDOW_MAX];
     i32 window_count;
+    struct {
+        ws_window_t* window;
+        i32 dx, dy;
+    } drag;
 };
 
 ws_server_t* ws_server_create(mem_allocator_t* alloc, i32 width, i32 height)
@@ -84,6 +87,9 @@ ws_server_t* ws_server_create(mem_allocator_t* alloc, i32 width, i32 height)
     server->composited = composited;
 
     server->window_count = 0;
+    server->drag.window = NULL;
+    server->drag.dx = 0;
+    server->drag.dy = 0;
 
     return server;
 }
@@ -173,12 +179,25 @@ void ws_server_event_handle(ws_server_t* server, const os_event_t* os_event)
             break;
         case WS_HIT_FRAME:
             ASSERT(hit.window);
+            server->drag.window = hit.window;
+            server->drag.dx = mx - hit.window->rect.x;
+            server->drag.dy = my - hit.window->rect.y;
             break;
         case WS_HIT_CONTENT:
             ASSERT(hit.window);
             ws_event_t ws_event = event_from_os_event(hit.window, os_event);
             UNUSED(ws_event);
             break;
+        }
+        return;
+    } else if (os_event->type == OS_EVENT_MOUSEBUTTON_UP) {
+        server->drag.window = NULL;
+        return;
+    } else if (os_event->type == OS_EVENT_MOUSEMOVE) {
+        if (server->drag.window) {
+            server->drag.window->rect.x = os_event->u.mousemove.pos_x - server->drag.dx;
+            server->drag.window->rect.y = os_event->u.mousemove.pos_y - server->drag.dy;
+            return;
         }
     }
 
