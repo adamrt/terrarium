@@ -12,37 +12,8 @@ enum {
     WS_SERVER_WINDOW_MAX = 3,
 };
 
-static inline ws_event_t event_from_os_event(const ws_window_t* window, const os_event_t* os_event)
-{
-    ws_event_t ws_event = { 0 };
-
-    // Conver type
-    ws_event.type = (ws_event_type_e)os_event->type;
-
-    // Copy all data
-    (void)memcpy(&ws_event.u, &os_event->u, sizeof(os_event->u));
-
-    // Localize events to the window
-    switch (ws_event.type) {
-    case WS_EVENT_MOUSEMOVE:
-        ws_event.u.mousemove.pos_x -= window->rect.x;
-        ws_event.u.mousemove.pos_y -= window->rect.y;
-        break;
-    case WS_EVENT_MOUSEBUTTON_DOWN:
-    case WS_EVENT_MOUSEBUTTON_UP:
-        ws_event.u.mousebutton.pos_x -= window->rect.x;
-        ws_event.u.mousebutton.pos_y -= window->rect.y;
-        break;
-    case WS_EVENT_MOUSEWHEEL:
-        ws_event.u.mousewheel.pos_x -= window->rect.x;
-        ws_event.u.mousewheel.pos_y -= window->rect.y;
-        break;
-    default:
-        break;
-    }
-
-    return ws_event;
-}
+// Forward declarations
+static inline ws_event_t event_from_os_event(const ws_window_t* window, const os_event_t* os_event);
 
 struct ws_server {
     i32 width, height;
@@ -171,7 +142,9 @@ void ws_server_event_handle(ws_server_t* server, const os_event_t* os_event)
     if (os_event->type == OS_EVENT_MOUSEBUTTON_DOWN) {
         i32 mx = os_event->u.mousebutton.pos_x;
         i32 my = os_event->u.mousebutton.pos_y;
+
         ws_hit_t hit = ws_server_window_hit_check(server, mx, my);
+
         switch (hit.type) {
         case WS_HIT_NONE:
             ASSERT(hit.window == NULL);
@@ -201,4 +174,36 @@ void ws_server_event_handle(ws_server_t* server, const os_event_t* os_event)
     }
 
     // Loop and do hit testing
+}
+
+static inline ws_event_t event_from_os_event(const ws_window_t* window, const os_event_t* os_event)
+{
+    ws_event_t ws_event = { 0 };
+
+    // Conver type
+    ws_event.type = (ws_event_type_e)os_event->type;
+
+    // Copy all data
+    (void)memcpy(&ws_event.u, &os_event->u, sizeof(os_event->u));
+
+    // Localize events to the window
+    switch (ws_event.type) {
+    case WS_EVENT_MOUSEMOVE:
+        ws_event.u.mousemove.pos_x -= window->rect.x;
+        ws_event.u.mousemove.pos_y -= window->rect.y;
+        break;
+    case WS_EVENT_MOUSEBUTTON_DOWN:
+    case WS_EVENT_MOUSEBUTTON_UP:
+        ws_event.u.mousebutton.pos_x -= window->rect.x;
+        ws_event.u.mousebutton.pos_y -= window->rect.y;
+        break;
+    case WS_EVENT_MOUSEWHEEL:
+        ws_event.u.mousewheel.pos_x -= window->rect.x;
+        ws_event.u.mousewheel.pos_y -= window->rect.y;
+        break;
+    default:
+        break;
+    }
+
+    return ws_event;
 }
