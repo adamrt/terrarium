@@ -21,7 +21,7 @@ void func_draw(ws_window_t* window)
     f32 t = (f32_sin(state->timer) + 1.0f) * 0.5f;
 
     gfx_color_t color = gfx_color_lerp(state->color_a, state->color_b, t);
-    gfx_surface_clear(window->content, color);
+    gfx_surface_fill(window->content, color);
 
     state->timer += 0.015f;
 }

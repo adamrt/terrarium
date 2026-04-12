@@ -18,6 +18,20 @@ void gfx_surface_draw_pixel(gfx_surface_t* surface, i32 x, i32 y, gfx_pixel_t pi
     surface->data[y * surface->width + x] = pixel;
 }
 
+void gfx_surface_fill(gfx_surface_t* surface, gfx_color_t color)
+{
+    ASSERT(surface);
+
+    // rect of entire surface
+    gfx_rect_t rect = {
+        .x = 0,
+        .y = 0,
+        .width = surface->width,
+        .height = surface->height,
+    };
+    gfx_surface_fill_rect(surface, rect, color);
+}
+
 void gfx_surface_fill_rect(gfx_surface_t* surface, gfx_rect_t rect, gfx_color_t color)
 {
     ASSERT(surface);

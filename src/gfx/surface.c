@@ -29,19 +29,6 @@ void gfx_surface_destroy(mem_allocator_t* alloc, gfx_surface_t* surface)
     mem_free(alloc, surface);
 }
 
-void gfx_surface_clear(gfx_surface_t* surface, gfx_color_t color)
-{
-    ASSERT(surface);
-
-    gfx_pixel_t packed = gfx_color_pack(color);
-
-    for (i32 y = 0; y < surface->height; ++y) {
-        for (i32 x = 0; x < surface->width; ++x) {
-            surface->data[y * surface->width + x] = packed;
-        }
-    }
-}
-
 // FIXME: This can be much faster by memcpy'ing each row.
 void gfx_surface_blit(gfx_surface_t* target, const gfx_surface_t* source, i32 target_x, i32 target_y)
 {

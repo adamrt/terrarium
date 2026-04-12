@@ -86,7 +86,7 @@ void ws_server_render(ws_server_t* server)
 {
     ASSERT(server);
 
-    gfx_surface_clear(server->desktop, server->background);
+    gfx_surface_fill(server->desktop, server->background);
     gfx_surface_draw_wallpaper(server->desktop, server->width, server->height);
 
     gfx_surface_blit(server->composited, server->desktop, 0, 0);
