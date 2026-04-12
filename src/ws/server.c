@@ -151,8 +151,7 @@ void ws_server_window_take(ws_server_t* server, ws_window_t** window_take)
 
 ws_hit_t ws_server_window_hit_check(ws_server_t* server, i32 mx, i32 my)
 {
-    // FIXME: Probably shoudl reverse this order
-    for (i32 i = 0; i < server->window_count; ++i) {
+    for (i32 i = server->window_count - 1; i >= 0; --i) {
         ws_window_t* window = server->windows[i];
         gfx_rect_t content_rect = ws_window_rect_content(window);
         if (gfx_rect_contains(content_rect, mx, my)) {
