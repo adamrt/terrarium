@@ -107,15 +107,25 @@ void ws_server_destroy(mem_allocator_t* alloc, ws_server_t* server)
 
 void ws_server_render(ws_server_t* server)
 {
+    ASSERT(server);
+
     gfx_surface_clear(server->desktop, server->background);
     gfx_surface_draw_wallpaper(server->desktop, server->width, server->height);
 
     gfx_surface_blit(server->composited, server->desktop, 0, 0);
 
+    gfx_color_t frame_color = gfx_color_rgb(100, 100, 100);
+
     for (i32 i = 0; i < server->window_count; ++i) {
         ws_window_t* window = server->windows[i];
+
+        // Draw frame
+        gfx_surface_fill_rect(server->composited, window->rect, frame_color);
+
+        // Draw content
         window->func_draw(window);
-        gfx_surface_blit(server->composited, window->content, window->rect.x, window->rect.y);
+        gfx_rect_t content_rect = ws_window_rect_content(window);
+        gfx_surface_blit(server->composited, window->content, content_rect.x, content_rect.y);
     }
 
     os_display_present(server->display, server->composited);
