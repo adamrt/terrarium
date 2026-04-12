@@ -63,5 +63,9 @@ void gfx_surface_draw_wallpaper(gfx_surface_t* surface, i32 width, i32 height);
 //
 
 void gfx_surface_fill(gfx_surface_t* surface, gfx_color_t color);
-void gfx_surface_draw_pixel(gfx_surface_t* surface, i32 x, i32 y, gfx_pixel_t pixel);
 void gfx_surface_fill_rect(gfx_surface_t* surface, gfx_rect_t rect, gfx_color_t color);
+
+void gfx_surface_draw_pixel(gfx_surface_t* surface, i32 x, i32 y, gfx_pixel_t pixel);
+void gfx_surface_draw_line_h(gfx_surface_t* surface, i32 x, i32 y, i32 len, gfx_color_t color);
+void gfx_surface_draw_line_v(gfx_surface_t* surface, i32 x, i32 y, i32 len, gfx_color_t color);
+void gfx_surface_draw_rect(gfx_surface_t* surface, gfx_rect_t rect, gfx_color_t color);

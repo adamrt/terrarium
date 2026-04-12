@@ -23,6 +23,9 @@ typedef struct ws_window {
 
 ws_window_t* ws_window_create(mem_allocator_t* alloc, i32 x, i32 y, i32 width, i32 height);
 void ws_window_destroy(mem_allocator_t* alloc, ws_window_t* window);
+gfx_rect_t ws_window_rect_total(const ws_window_t* window);
+gfx_rect_t ws_window_rect_frame(const ws_window_t* window);
+gfx_rect_t ws_window_rect_content_border(const ws_window_t* window);
 gfx_rect_t ws_window_rect_content(const ws_window_t* window);
 
 //

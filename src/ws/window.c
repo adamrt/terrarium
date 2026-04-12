@@ -42,17 +42,37 @@ void ws_window_destroy(mem_allocator_t* alloc, ws_window_t* window)
     mem_free(alloc, window);
 }
 
+gfx_rect_t ws_window_rect_total(const ws_window_t* window)
+{
+    return window->rect;
+}
+
+gfx_rect_t ws_window_rect_frame(const ws_window_t* window)
+{
+    gfx_rect_t rect = ws_window_rect_total(window);
+    rect.x += WS_FRAME_BORDER_SIZE;
+    rect.y += WS_FRAME_BORDER_SIZE;
+    rect.width -= (WS_FRAME_BORDER_SIZE * 2);
+    rect.height -= (WS_FRAME_BORDER_SIZE * 2);
+    return rect;
+}
+
+gfx_rect_t ws_window_rect_content_border(const ws_window_t* window)
+{
+    gfx_rect_t rect = ws_window_rect_frame(window);
+    rect.x += WS_FRAME_PADDING_SIZE;
+    rect.y += WS_FRAME_PADDING_SIZE;
+    rect.width -= (WS_FRAME_PADDING_SIZE * 2);
+    rect.height -= (WS_FRAME_PADDING_SIZE * 2);
+    return rect;
+}
+
 gfx_rect_t ws_window_rect_content(const ws_window_t* window)
 {
-    ASSERT(window);
-
-    i32 pos_add = (2 * WS_FRAME_BORDER_SIZE + WS_FRAME_PADDING_SIZE);
-    i32 dim_sub = (4 * WS_FRAME_BORDER_SIZE + 2 * WS_FRAME_PADDING_SIZE);
-
-    return (gfx_rect_t) {
-        .x = window->rect.x + pos_add,
-        .y = window->rect.y + pos_add,
-        .width = window->rect.width - dim_sub,
-        .height = window->rect.height - dim_sub,
-    };
+    gfx_rect_t rect = ws_window_rect_content_border(window);
+    rect.x += WS_FRAME_BORDER_SIZE;
+    rect.y += WS_FRAME_BORDER_SIZE;
+    rect.width -= (WS_FRAME_BORDER_SIZE * 2);
+    rect.height -= (WS_FRAME_BORDER_SIZE * 2);
+    return rect;
 }
