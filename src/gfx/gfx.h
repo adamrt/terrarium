@@ -63,4 +63,5 @@ void gfx_surface_draw_wallpaper(gfx_surface_t* surface, i32 width, i32 height);
 // Draw
 //
 
-void gfx_draw_pixel(gfx_surface_t* surface, i32 x, i32 y, gfx_color_t color);
+void gfx_surface_draw_pixel(gfx_surface_t* surface, i32 x, i32 y, gfx_color_t color);
+void gfx_surface_fill_rect(gfx_surface_t* surface, gfx_rect_t rect, gfx_color_t color);

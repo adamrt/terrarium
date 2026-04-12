@@ -72,21 +72,3 @@ void gfx_surface_blit(gfx_surface_t* target, const gfx_surface_t* source, i32 ta
         }
     }
 }
-
-void gfx_surface_draw_wallpaper(gfx_surface_t* surface, i32 width, i32 height)
-{
-    i32 gap = height / 6;
-    i32 y1 = gap * 1;
-    i32 y2 = gap * 2;
-    i32 y3 = gap * 3;
-
-    for (i32 x = 0; x < width; ++x) {
-        gfx_draw_pixel(surface, x, y1, gfx_red);
-    }
-    for (i32 x = 0; x < width; ++x) {
-        gfx_draw_pixel(surface, x, y2, gfx_green);
-    }
-    for (i32 x = 0; x < width; ++x) {
-        gfx_draw_pixel(surface, x, y3, gfx_blue);
-    }
-}
