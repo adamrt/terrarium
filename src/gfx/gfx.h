@@ -56,7 +56,6 @@ typedef struct {
 gfx_surface_t* gfx_surface_create(mem_allocator_t* alloc, i32 width, i32 height);
 void gfx_surface_destroy(mem_allocator_t* alloc, gfx_surface_t* surface);
 void gfx_surface_blit(gfx_surface_t* target, const gfx_surface_t* source, i32 x, i32 y);
-void gfx_surface_draw_wallpaper(gfx_surface_t* surface, i32 width, i32 height);
 
 //
 // Draw

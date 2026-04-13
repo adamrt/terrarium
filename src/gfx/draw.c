@@ -109,27 +109,3 @@ void gfx_surface_fill_rect(gfx_surface_t* surface, gfx_rect_t rect, gfx_color_t 
         }
     }
 }
-
-void gfx_surface_draw_wallpaper(gfx_surface_t* surface, i32 width, i32 height)
-{
-    ASSERT(surface);
-
-    i32 gap = height / 6;
-    i32 y1 = gap * 1;
-    i32 y2 = gap * 2;
-    i32 y3 = gap * 3;
-
-    u32 red = gfx_color_pack(gfx_red);
-    u32 green = gfx_color_pack(gfx_green);
-    u32 blue = gfx_color_pack(gfx_blue);
-
-    for (i32 x = 0; x < width; ++x) {
-        gfx_surface_draw_pixel(surface, x, y1, red);
-    }
-    for (i32 x = 0; x < width; ++x) {
-        gfx_surface_draw_pixel(surface, x, y2, green);
-    }
-    for (i32 x = 0; x < width; ++x) {
-        gfx_surface_draw_pixel(surface, x, y3, blue);
-    }
-}
