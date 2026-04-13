@@ -76,3 +76,15 @@ gfx_rect_t ws_window_rect_content(const ws_window_t* window)
     rect.height -= (WS_FRAME_BORDER_SIZE * 2);
     return rect;
 }
+
+gfx_rect_t ws_window_rect_handle_resize(const ws_window_t* window)
+{
+    i32 handle_dim = 20;
+
+    gfx_rect_t rect = ws_window_rect_frame(window);
+    rect.x = rect.x + rect.width - handle_dim;
+    rect.y = rect.y + rect.height - handle_dim;
+    rect.width = handle_dim;
+    rect.height = handle_dim;
+    return rect;
+}

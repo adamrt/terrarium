@@ -12,6 +12,12 @@ enum {
     WS_SERVER_WINDOW_MAX = 3,
 };
 
+typedef enum {
+    WS_DRAG_NONE,
+    WS_DRAG_MOVE,
+    WS_DRAG_RESIZE,
+} ws_drag_type_e;
+
 // Forward declarations
 static inline ws_event_t event_from_os_event(const ws_window_t* window, const os_event_t* os_event);
 
@@ -26,6 +32,7 @@ struct ws_server {
     ws_window_t* windows[WS_SERVER_WINDOW_MAX];
     i32 window_count;
     struct {
+        ws_drag_type_e type;
         ws_window_t* window;
         i32 dx, dy;
     } drag;
@@ -101,6 +108,9 @@ static void ws_server_window_draw(ws_server_t* server, ws_window_t* window)
     // Draw content
     gfx_rect_t content_rect = ws_window_rect_content(window);
     gfx_surface_blit(server->composited, window->content, content_rect.x, content_rect.y);
+
+    // Draw resize handle on top of content
+    gfx_surface_fill_rect(server->composited, ws_window_rect_handle_resize(window), gfx_black);
 }
 
 void ws_server_render(ws_server_t* server)
@@ -134,10 +144,13 @@ ws_hit_t ws_server_window_hit_check(ws_server_t* server, i32 mx, i32 my)
 {
     for (i32 i = server->window_count - 1; i >= 0; --i) {
         ws_window_t* window = server->windows[i];
-        gfx_rect_t content_rect = ws_window_rect_content(window);
-        if (gfx_rect_contains(content_rect, mx, my)) {
+
+        if (gfx_rect_contains(ws_window_rect_handle_resize(window), mx, my)) {
+            return (ws_hit_t) { .window = window, .type = WS_HIT_RESIZE };
+        } else if (gfx_rect_contains(ws_window_rect_content(window), mx, my)) {
             return (ws_hit_t) { .window = window, .type = WS_HIT_CONTENT };
-        } else if (gfx_rect_contains(window->rect, mx, my)) {
+        } else if (gfx_rect_contains(ws_window_rect_total(window), mx, my)) {
+            // Use rect_total to include border
             return (ws_hit_t) { .window = window, .type = WS_HIT_FRAME };
         }
     }
@@ -161,9 +174,17 @@ void ws_server_event_handle(ws_server_t* server, const os_event_t* os_event)
             break;
         case WS_HIT_FRAME:
             ASSERT(hit.window);
+            server->drag.type = WS_DRAG_MOVE;
             server->drag.window = hit.window;
             server->drag.dx = mx - hit.window->rect.x;
             server->drag.dy = my - hit.window->rect.y;
+            break;
+        case WS_HIT_RESIZE:
+            ASSERT(hit.window);
+            server->drag.type = WS_DRAG_RESIZE;
+            server->drag.window = hit.window;
+            server->drag.dx = mx - hit.window->rect.width;
+            server->drag.dy = my - hit.window->rect.height;
             break;
         case WS_HIT_CONTENT:
             ASSERT(hit.window);
@@ -173,17 +194,37 @@ void ws_server_event_handle(ws_server_t* server, const os_event_t* os_event)
         }
         return;
     } else if (os_event->type == OS_EVENT_MOUSEBUTTON_UP) {
+        server->drag.type = WS_DRAG_NONE;
         server->drag.window = NULL;
+        server->drag.dx = 0;
+        server->drag.dy = 0;
         return;
     } else if (os_event->type == OS_EVENT_MOUSEMOVE) {
         if (server->drag.window) {
-            server->drag.window->rect.x = os_event->u.mousemove.pos_x - server->drag.dx;
-            server->drag.window->rect.y = os_event->u.mousemove.pos_y - server->drag.dy;
+            ASSERT(server->drag.type != WS_DRAG_NONE);
+
+            ws_window_t* window = server->drag.window;
+            i32 mx = os_event->u.mousemove.pos_x;
+            i32 my = os_event->u.mousemove.pos_y;
+
+            switch (server->drag.type) {
+            case WS_DRAG_NONE:
+                __builtin_unreachable();
+            case WS_DRAG_MOVE:
+                window->rect.x = mx - server->drag.dx;
+                window->rect.y = my - server->drag.dy;
+                break;
+            case WS_DRAG_RESIZE:
+                window->rect.width = mx - server->drag.dx;
+                window->rect.height = my - server->drag.dy;
+
+                window->rect.width = i32_max(window->rect.width, 50);
+                window->rect.height = i32_max(window->rect.height, 50);
+                break;
+            }
             return;
         }
     }
-
-    // Loop and do hit testing
 }
 
 static inline ws_event_t event_from_os_event(const ws_window_t* window, const os_event_t* os_event)
