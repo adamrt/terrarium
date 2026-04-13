@@ -158,7 +158,7 @@ ws_hit_t ws_server_window_hit_check(ws_server_t* server, i32 mx, i32 my)
     return (ws_hit_t) { .window = NULL, .type = WS_HIT_NONE };
 }
 
-void ws_server_event_handle(ws_server_t* server, const os_event_t* os_event)
+void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const os_event_t* os_event)
 {
     ASSERT(server);
 
@@ -220,6 +220,8 @@ void ws_server_event_handle(ws_server_t* server, const os_event_t* os_event)
 
                 window->rect.width = i32_max(window->rect.width, 50);
                 window->rect.height = i32_max(window->rect.height, 50);
+
+                ws_window_resize(alloc, window, window->rect.width, window->rect.height);
                 break;
             }
             return;

@@ -38,7 +38,7 @@ i32 main(i32 argc, char* argv[])
                 is_running = false;
                 break;
             }
-            ws_server_event_handle(server, &event);
+            ws_server_event_handle(alloc, server, &event);
         }
 
         ws_server_render(server);

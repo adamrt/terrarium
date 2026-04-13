@@ -16,6 +16,8 @@ gfx_surface_t* gfx_surface_create(mem_allocator_t* alloc, i32 width, i32 height)
 
     surface->width = width;
     surface->height = height;
+    surface->width_capacity = width;
+    surface->height_capacity = height;
 
     return surface;
 }
@@ -27,6 +29,27 @@ void gfx_surface_destroy(mem_allocator_t* alloc, gfx_surface_t* surface)
 
     mem_free(alloc, surface->data);
     mem_free(alloc, surface);
+}
+
+void gfx_surface_resize(mem_allocator_t* alloc, gfx_surface_t* surface, i32 width, i32 height)
+{
+    ASSERT(alloc);
+    ASSERT(surface);
+
+    if (width <= surface->width_capacity && height <= surface->height_capacity) {
+        surface->width = width;
+        surface->height = height;
+        return;
+    }
+
+    surface->width = width;
+    surface->height = height;
+    surface->width_capacity = i32_max(width, surface->width_capacity * 2);
+    surface->height_capacity = i32_max(height, surface->height_capacity * 2);
+
+    size_t new_size = (size_t)surface->width_capacity * (size_t)surface->height_capacity * sizeof(gfx_pixel_t);
+    surface->data = mem_realloc(alloc, surface->data, new_size);
+    ASSERT(surface->data);
 }
 
 // FIXME: This can be much faster by memcpy'ing each row.

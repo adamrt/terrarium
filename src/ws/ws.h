@@ -23,6 +23,7 @@ typedef struct ws_window {
 
 ws_window_t* ws_window_create(mem_allocator_t* alloc, i32 x, i32 y, i32 width, i32 height);
 void ws_window_destroy(mem_allocator_t* alloc, ws_window_t* window);
+void ws_window_resize(mem_allocator_t* alloc, ws_window_t* window, i32 width, i32 height);
 gfx_rect_t ws_window_rect_total(const ws_window_t* window);
 gfx_rect_t ws_window_rect_frame(const ws_window_t* window);
 gfx_rect_t ws_window_rect_content_border(const ws_window_t* window);
@@ -49,7 +50,6 @@ typedef enum {
     WS_EVENT_WINDOW_LEAVE,
 } ws_event_type_e;
 
-// clang-format off
 typedef struct {
     ws_event_type_e type;
 
@@ -84,4 +84,4 @@ ws_server_t* ws_server_create(mem_allocator_t* alloc, i32 width, i32 height);
 void ws_server_destroy(mem_allocator_t* alloc, ws_server_t* server);
 void ws_server_render(ws_server_t* server);
 void ws_server_window_take(ws_server_t* server, ws_window_t** window);
-void ws_server_event_handle(ws_server_t* server, const os_event_t* os_event);
+void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const os_event_t* os_event);

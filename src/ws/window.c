@@ -42,6 +42,18 @@ void ws_window_destroy(mem_allocator_t* alloc, ws_window_t* window)
     mem_free(alloc, window);
 }
 
+void ws_window_resize(mem_allocator_t* alloc, ws_window_t* window, i32 width, i32 height)
+{
+    ASSERT(alloc);
+    ASSERT(window);
+
+    window->rect.width = width;
+    window->rect.height = height;
+
+    gfx_rect_t content_rect = ws_window_rect_content(window);
+    gfx_surface_resize(alloc, window->content, content_rect.width, content_rect.height);
+}
+
 gfx_rect_t ws_window_rect_total(const ws_window_t* window)
 {
     return window->rect;
