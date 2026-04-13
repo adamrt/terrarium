@@ -51,7 +51,7 @@ ws_server_t* ws_server_create(mem_allocator_t* alloc, i32 width, i32 height)
 
     server->width = width;
     server->height = height;
-    server->background = gfx_black;
+    server->background = gfx_color_rgb(82, 151, 153);
 
     server->display = display;
     server->desktop = desktop;
@@ -82,26 +82,37 @@ void ws_server_destroy(mem_allocator_t* alloc, ws_server_t* server)
     mem_free(alloc, server);
 }
 
+static void ws_server_desktop_draw(ws_server_t* server)
+{
+    gfx_surface_fill(server->desktop, server->background);
+    gfx_surface_blit(server->composited, server->desktop, 0, 0);
+}
+
+static void ws_server_window_draw(ws_server_t* server, ws_window_t* window)
+{
+    gfx_color_t frame_color = gfx_white;
+    gfx_color_t border_color = gfx_black;
+
+    // Draw frame
+    gfx_surface_draw_rect(server->composited, ws_window_rect_total(window), border_color);
+    gfx_surface_fill_rect(server->composited, ws_window_rect_frame(window), frame_color);
+    gfx_surface_draw_rect(server->composited, ws_window_rect_content_border(window), border_color);
+
+    // Draw content
+    gfx_rect_t content_rect = ws_window_rect_content(window);
+    gfx_surface_blit(server->composited, window->content, content_rect.x, content_rect.y);
+}
+
 void ws_server_render(ws_server_t* server)
 {
     ASSERT(server);
 
-    gfx_surface_fill(server->desktop, server->background);
-
-    gfx_surface_blit(server->composited, server->desktop, 0, 0);
-
-    gfx_color_t frame_color = gfx_color_rgb(100, 100, 100);
+    ws_server_desktop_draw(server);
 
     for (i32 i = 0; i < server->window_count; ++i) {
         ws_window_t* window = server->windows[i];
-
-        // Draw frame
-        gfx_surface_fill_rect(server->composited, window->rect, frame_color);
-
-        // Draw content
         window->func_draw(window);
-        gfx_rect_t content_rect = ws_window_rect_content(window);
-        gfx_surface_blit(server->composited, window->content, content_rect.x, content_rect.y);
+        ws_server_window_draw(server, window);
     }
 
     os_display_present(server->display, server->composited);
