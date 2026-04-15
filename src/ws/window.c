@@ -42,10 +42,25 @@ void ws_window_destroy(mem_allocator_t* alloc, ws_window_t* window)
     mem_free(alloc, window);
 }
 
+void ws_window_move(ws_window_t* window, i32 x, i32 y)
+{
+    ASSERT(window);
+
+    window->rect.x = x;
+    window->rect.y = y;
+}
+
 void ws_window_resize(mem_allocator_t* alloc, ws_window_t* window, i32 width, i32 height)
 {
     ASSERT(alloc);
     ASSERT(window);
+
+    width = i32_max(width, 50);
+    height = i32_max(height, 50);
+
+    if (window->rect.width == width && window->rect.height == height) {
+        return;
+    }
 
     window->rect.width = width;
     window->rect.height = height;
