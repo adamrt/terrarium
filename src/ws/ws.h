@@ -15,9 +15,11 @@ typedef struct ws_window {
     gfx_rect_t rect;
     gfx_surface_t* content;
 
+    bool is_maximized;
+    gfx_rect_t restore_rect; // Rect prior to max
+
     void (*func_draw)(struct ws_window* window);
     void (*func_close)(struct ws_window* window);
-
     void* ctx;
 } ws_window_t;
 
@@ -63,6 +65,7 @@ typedef enum {
     WS_HIT_FRAME,
     WS_HIT_RESIZE,
     WS_HIT_CLOSE,
+    WS_HIT_MAXIMIZE,
     WS_HIT_CONTENT,
 } ws_hit_type_e;
 

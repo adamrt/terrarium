@@ -19,6 +19,8 @@ ws_window_t* ws_window_create(mem_allocator_t* alloc, i32 x, i32 y, i32 width, i
     window->rect.y = y;
     window->rect.width = width;
     window->rect.height = height;
+    window->restore_rect = (gfx_rect_t) { 0 };
+    window->is_maximized = false;
 
     gfx_rect_t content_rect = ws_window_rect_content(window);
     gfx_surface_t* content = gfx_surface_create(alloc, content_rect.width, content_rect.height);
@@ -94,6 +96,16 @@ gfx_rect_t ws_window_rect_button_close(const ws_window_t* window)
 {
     gfx_rect_t rect = ws_window_rect_titlebar(window);
     rect.x += 0;
+    rect.y += 0;
+    rect.width = WS_FRAME_BUTTON_SIZE;
+    rect.height = WS_FRAME_BUTTON_SIZE;
+    return rect;
+}
+
+gfx_rect_t ws_window_rect_button_maximize(const ws_window_t* window)
+{
+    gfx_rect_t rect = ws_window_rect_titlebar(window);
+    rect.x += rect.width - WS_FRAME_BUTTON_SIZE;
     rect.y += 0;
     rect.width = WS_FRAME_BUTTON_SIZE;
     rect.height = WS_FRAME_BUTTON_SIZE;

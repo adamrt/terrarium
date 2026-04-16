@@ -110,6 +110,12 @@ static void ws_server_window_draw(ws_server_t* server, ws_window_t* window)
     gfx_surface_fill_rect(server->composited, ws_window_rect_titlebar(window), frame_color);
     gfx_surface_draw_rect(server->composited, ws_window_rect_button_close(window), border_color);
 
+    // Maximize button
+    gfx_rect_t max_rect = ws_window_rect_button_maximize(window);
+    gfx_surface_draw_rect(server->composited, max_rect, border_color);
+    i32 half = max_rect.width - WS_FRAME_BUTTON_SIZE / 2;
+    gfx_surface_draw_rect(server->composited, (gfx_rect_t) { max_rect.x, max_rect.y, half, half }, border_color);
+
     // Draw content
     gfx_surface_draw_rect(server->composited, ws_window_rect_content_border(window), border_color);
     gfx_rect_t content_rect = ws_window_rect_content(window);
@@ -158,6 +164,8 @@ static ws_hit_t ws_server_window_hit_check(ws_server_t* server, i32 mx, i32 my)
             return (ws_hit_t) { .window = window, .type = WS_HIT_RESIZE };
         } else if (gfx_rect_contains(ws_window_rect_button_close(window), mx, my)) {
             return (ws_hit_t) { .window = window, .type = WS_HIT_CLOSE };
+        } else if (gfx_rect_contains(ws_window_rect_button_maximize(window), mx, my)) {
+            return (ws_hit_t) { .window = window, .type = WS_HIT_MAXIMIZE };
         } else if (gfx_rect_contains(ws_window_rect_content(window), mx, my)) {
             return (ws_hit_t) { .window = window, .type = WS_HIT_CONTENT };
         } else if (gfx_rect_contains(ws_window_rect_total(window), mx, my)) {
@@ -177,6 +185,34 @@ static void ws_server_window_close(mem_allocator_t* alloc, ws_server_t* server, 
     window->func_close(window);
     ws_window_destroy(alloc, window);
     server->window_count--;
+}
+
+static void ws_server_window_maximize_toggle(mem_allocator_t* alloc, ws_server_t* server, ws_window_t* window)
+{
+    ASSERT(server);
+    ASSERT(window);
+
+    if (!window->is_maximized) {
+        ASSERT(window->restore_rect.width == 0);
+        ASSERT(window->restore_rect.height == 0);
+
+        window->is_maximized = true;
+        window->restore_rect = window->rect;
+        window->rect.x = 0;
+        window->rect.y = 0;
+        ws_window_resize(alloc, window, server->width, server->height);
+    } else {
+        ASSERT(window->restore_rect.width != 0);
+        ASSERT(window->restore_rect.height != 0);
+
+        gfx_rect_t rect = window->restore_rect;
+
+        window->is_maximized = false;
+        window->restore_rect = (gfx_rect_t) { 0 };
+        window->rect.x = rect.x;
+        window->rect.y = rect.y;
+        ws_window_resize(alloc, window, rect.width, rect.height);
+    }
 }
 
 void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const os_event_t* os_event)
@@ -205,6 +241,11 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
             ASSERT(hit.window);
             // FIXME: This should actually happen on mousebutton up
             ws_server_window_close(alloc, server, hit.window);
+            break;
+        case WS_HIT_MAXIMIZE:
+            ASSERT(hit.window);
+            // FIXME: This should actually happen on mousebutton up
+            ws_server_window_maximize_toggle(alloc, server, hit.window);
             break;
         case WS_HIT_RESIZE:
             ASSERT(hit.window);
