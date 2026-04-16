@@ -62,11 +62,15 @@ typedef struct {
 
 typedef enum {
     WS_HIT_NONE,
+
+    // FIXME: Prefix all these with WS_HIT_WINDOW_
     WS_HIT_FRAME,
     WS_HIT_RESIZE,
     WS_HIT_CLOSE,
     WS_HIT_MAXIMIZE,
     WS_HIT_CONTENT,
+
+    WS_HIT_NEW_WIN,
 } ws_hit_type_e;
 
 typedef struct {

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: ISC
 
 #include "ak/ak.h"
+#include "exp/dummy/app.h"
 #include "gfx/gfx.h"
 #include "os/os.h"
 #include "ws/ws.h"
@@ -10,7 +11,7 @@
 #include <string.h>
 
 enum {
-    WS_SERVER_WINDOW_MAX = 3,
+    WS_SERVER_WINDOW_MAX = 10,
 };
 
 typedef enum {
@@ -85,7 +86,8 @@ void ws_server_destroy(mem_allocator_t* alloc, ws_server_t* server)
     gfx_surface_destroy(alloc, server->desktop);
     gfx_surface_destroy(alloc, server->composited);
 
-    for (i32 i = 0; i < server->window_count; ++i) {
+    i32 window_count = server->window_count;
+    for (i32 i = 0; i < window_count; ++i) {
         ws_window_t* window = server->windows[i];
         ws_server_window_close(alloc, server, window);
     }
@@ -128,11 +130,18 @@ static void ws_server_window_draw(ws_server_t* server, ws_window_t* window)
     gfx_surface_draw_line_v(server->composited, handle_rect.x, handle_rect.y, handle_rect.height - WS_FRAME_PADDING_SIZE, border_color);
 }
 
+static gfx_rect_t ws_server_rect_new_window_button(void)
+{
+    return (gfx_rect_t) { 0, 0, 50, 20 };
+}
+
 void ws_server_render(ws_server_t* server)
 {
     ASSERT(server);
 
     ws_server_desktop_draw(server);
+
+    gfx_surface_fill_rect(server->composited, ws_server_rect_new_window_button(), gfx_blue);
 
     for (i32 i = 0; i < server->window_count; ++i) {
         ws_window_t* window = server->windows[i];
@@ -172,6 +181,10 @@ static ws_hit_t ws_server_window_hit_check(ws_server_t* server, i32 mx, i32 my)
             // Use rect_total to include border
             return (ws_hit_t) { .window = window, .type = WS_HIT_FRAME };
         }
+    }
+
+    if (gfx_rect_contains(ws_server_rect_new_window_button(), mx, my)) {
+        return (ws_hit_t) { .window = NULL, .type = WS_HIT_NEW_WIN };
     }
 
     return (ws_hit_t) { .window = NULL, .type = WS_HIT_NONE };
@@ -260,6 +273,12 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
             ws_event_t ws_event = ws_event_from_os_event(hit.window, os_event);
             UNUSED(ws_event);
             break;
+        case WS_HIT_NEW_WIN: {
+            ASSERT(!hit.window);
+            ws_window_t* window = exp_dummy_create(alloc, rnd_i32_range(0, 700), rnd_i32_range(0, 500));
+            ws_server_window_take(server, &window);
+            break;
+        }
         }
         return;
     } else if (os_event->type == OS_EVENT_MOUSEBUTTON_UP) {
