@@ -8,6 +8,9 @@
 enum {
     WS_FRAME_BORDER_SIZE = 1,
     WS_FRAME_PADDING_SIZE = 10,
+    WS_FRAME_TITLEBAR_HEIGHT = 25,
+    WS_FRAME_BUTTON_SIZE = 15,
+    WS_FRAME_HANDLE_SIZE = 20,
 };
 
 ws_window_t* ws_window_create(mem_allocator_t* alloc, i32 x, i32 y, i32 width, i32 height)
@@ -84,13 +87,33 @@ gfx_rect_t ws_window_rect_frame(const ws_window_t* window)
     return rect;
 }
 
-gfx_rect_t ws_window_rect_content_border(const ws_window_t* window)
+gfx_rect_t ws_window_rect_titlebar(const ws_window_t* window)
 {
     gfx_rect_t rect = ws_window_rect_frame(window);
     rect.x += WS_FRAME_PADDING_SIZE;
     rect.y += WS_FRAME_PADDING_SIZE;
     rect.width -= (WS_FRAME_PADDING_SIZE * 2);
-    rect.height -= (WS_FRAME_PADDING_SIZE * 2);
+    rect.height = WS_FRAME_TITLEBAR_HEIGHT;
+    return rect;
+}
+
+gfx_rect_t ws_window_rect_button_close(const ws_window_t* window)
+{
+    gfx_rect_t rect = ws_window_rect_titlebar(window);
+    rect.x += 0;
+    rect.y += 0;
+    rect.width = WS_FRAME_BUTTON_SIZE;
+    rect.height = WS_FRAME_BUTTON_SIZE;
+    return rect;
+}
+
+gfx_rect_t ws_window_rect_content_border(const ws_window_t* window)
+{
+    gfx_rect_t rect = ws_window_rect_frame(window);
+    rect.x += WS_FRAME_PADDING_SIZE;
+    rect.y += WS_FRAME_PADDING_SIZE + WS_FRAME_TITLEBAR_HEIGHT;
+    rect.width -= (WS_FRAME_PADDING_SIZE * 2);
+    rect.height -= (WS_FRAME_PADDING_SIZE * 2) + WS_FRAME_TITLEBAR_HEIGHT;
     return rect;
 }
 
@@ -106,12 +129,10 @@ gfx_rect_t ws_window_rect_content(const ws_window_t* window)
 
 gfx_rect_t ws_window_rect_handle_resize(const ws_window_t* window)
 {
-    i32 handle_dim = 20;
-
     gfx_rect_t rect = ws_window_rect_frame(window);
-    rect.x = rect.x + rect.width - handle_dim;
-    rect.y = rect.y + rect.height - handle_dim;
-    rect.width = handle_dim;
-    rect.height = handle_dim;
+    rect.x = rect.x + rect.width - WS_FRAME_HANDLE_SIZE;
+    rect.y = rect.y + rect.height - WS_FRAME_HANDLE_SIZE;
+    rect.width = WS_FRAME_HANDLE_SIZE;
+    rect.height = WS_FRAME_HANDLE_SIZE;
     return rect;
 }

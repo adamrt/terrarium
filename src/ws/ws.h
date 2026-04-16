@@ -27,6 +27,8 @@ void ws_window_move(ws_window_t* window, i32 x, i32 y);
 void ws_window_resize(mem_allocator_t* alloc, ws_window_t* window, i32 width, i32 height);
 gfx_rect_t ws_window_rect_total(const ws_window_t* window);
 gfx_rect_t ws_window_rect_frame(const ws_window_t* window);
+gfx_rect_t ws_window_rect_titlebar(const ws_window_t* window);
+gfx_rect_t ws_window_rect_button_close(const ws_window_t* window);
 gfx_rect_t ws_window_rect_content_border(const ws_window_t* window);
 gfx_rect_t ws_window_rect_content(const ws_window_t* window);
 gfx_rect_t ws_window_rect_handle_resize(const ws_window_t* window);
@@ -67,6 +69,7 @@ typedef enum {
     WS_HIT_NONE,
     WS_HIT_FRAME,
     WS_HIT_RESIZE,
+    WS_HIT_CLOSE,
     WS_HIT_CONTENT,
 } ws_hit_type_e;
 

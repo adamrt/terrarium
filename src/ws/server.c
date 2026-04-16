@@ -105,9 +105,11 @@ static void ws_server_window_draw(ws_server_t* server, ws_window_t* window)
     // Draw frame
     gfx_surface_draw_rect(server->composited, ws_window_rect_total(window), border_color);
     gfx_surface_fill_rect(server->composited, ws_window_rect_frame(window), frame_color);
-    gfx_surface_draw_rect(server->composited, ws_window_rect_content_border(window), border_color);
+    gfx_surface_fill_rect(server->composited, ws_window_rect_titlebar(window), frame_color);
+    gfx_surface_draw_rect(server->composited, ws_window_rect_button_close(window), border_color);
 
     // Draw content
+    gfx_surface_draw_rect(server->composited, ws_window_rect_content_border(window), border_color);
     gfx_rect_t content_rect = ws_window_rect_content(window);
     gfx_surface_blit(server->composited, window->content, content_rect.x, content_rect.y);
 
@@ -149,6 +151,8 @@ ws_hit_t ws_server_window_hit_check(ws_server_t* server, i32 mx, i32 my)
 
         if (gfx_rect_contains(ws_window_rect_handle_resize(window), mx, my)) {
             return (ws_hit_t) { .window = window, .type = WS_HIT_RESIZE };
+        } else if (gfx_rect_contains(ws_window_rect_button_close(window), mx, my)) {
+            return (ws_hit_t) { .window = window, .type = WS_HIT_CLOSE };
         } else if (gfx_rect_contains(ws_window_rect_content(window), mx, my)) {
             return (ws_hit_t) { .window = window, .type = WS_HIT_CONTENT };
         } else if (gfx_rect_contains(ws_window_rect_total(window), mx, my)) {
@@ -181,6 +185,11 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
             server->drag.mouse_start_x = mx;
             server->drag.mouse_start_y = my;
             server->drag.rect_start = hit.window->rect;
+            break;
+        case WS_HIT_CLOSE:
+            ASSERT(hit.window);
+            hit.window->func_close(hit.window);
+            server->window_count--;
             break;
         case WS_HIT_RESIZE:
             ASSERT(hit.window);
