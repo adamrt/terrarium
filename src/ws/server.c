@@ -152,6 +152,23 @@ void ws_server_render(ws_server_t* server)
     os_display_present(server->display, server->composited);
 }
 
+// FIXME: Is there a more elegant way to implement this
+static void ws_server_window_to_front(ws_server_t* server, ws_window_t* window)
+{
+    for (i32 i = 0; i < server->window_count; ++i) {
+        // Find the window in array
+        if (window == server->windows[i]) {
+            // Move all the remaining windows back 1 array position
+            for (; i + 1 < server->window_count; ++i) {
+                server->windows[i] = server->windows[i + 1];
+            }
+            // Place the window in the front
+            server->windows[server->window_count - 1] = window;
+            break;
+        }
+    }
+}
+
 void ws_server_window_take(ws_server_t* server, ws_window_t** window_take)
 {
     ws_window_t* window = *window_take;
@@ -237,6 +254,9 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
         i32 my = os_event->u.mousebutton.pos_y;
 
         ws_hit_t hit = ws_server_window_hit_check(server, mx, my);
+        if (hit.window != NULL) {
+            ws_server_window_to_front(server, hit.window);
+        }
 
         switch (hit.type) {
         case WS_HIT_NONE:
