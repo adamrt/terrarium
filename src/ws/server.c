@@ -213,8 +213,7 @@ static void ws_server_window_close(mem_allocator_t* alloc, ws_server_t* server, 
     ASSERT(server);
     ASSERT(window);
 
-    window->func_close(window);
-    ws_window_destroy(alloc, window);
+    ws_window_close(alloc, window);
     server->window_count--;
 }
 

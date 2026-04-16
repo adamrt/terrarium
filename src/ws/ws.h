@@ -25,6 +25,7 @@ typedef struct ws_window {
 
 ws_window_t* ws_window_create(mem_allocator_t* alloc, i32 x, i32 y, i32 width, i32 height);
 void ws_window_destroy(mem_allocator_t* alloc, ws_window_t* window);
+void ws_window_close(mem_allocator_t* alloc, ws_window_t* window);
 void ws_window_move(ws_window_t* window, i32 x, i32 y);
 void ws_window_resize(mem_allocator_t* alloc, ws_window_t* window, i32 width, i32 height);
 

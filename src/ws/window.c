@@ -40,6 +40,15 @@ void ws_window_destroy(mem_allocator_t* alloc, ws_window_t* window)
     mem_free(alloc, window);
 }
 
+void ws_window_close(mem_allocator_t* alloc, ws_window_t* window)
+{
+    ASSERT(alloc);
+    ASSERT(window);
+
+    window->func_close(window);
+    ws_window_destroy(alloc, window);
+}
+
 void ws_window_move(ws_window_t* window, i32 x, i32 y)
 {
     ASSERT(window);
