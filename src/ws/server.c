@@ -19,7 +19,7 @@ typedef enum {
 } ws_drag_type_e;
 
 // Forward declarations
-static inline ws_event_t event_from_os_event(const ws_window_t* window, const os_event_t* os_event);
+static ws_event_t event_from_os_event(const ws_window_t* window, const os_event_t* os_event);
 
 struct ws_server {
     i32 width, height;
@@ -144,7 +144,7 @@ void ws_server_window_take(ws_server_t* server, ws_window_t** window_take)
     server->windows[server->window_count++] = window;
 }
 
-ws_hit_t ws_server_window_hit_check(ws_server_t* server, i32 mx, i32 my)
+static ws_hit_t ws_server_window_hit_check(ws_server_t* server, i32 mx, i32 my)
 {
     for (i32 i = server->window_count - 1; i >= 0; --i) {
         ws_window_t* window = server->windows[i];
@@ -162,6 +162,16 @@ ws_hit_t ws_server_window_hit_check(ws_server_t* server, i32 mx, i32 my)
     }
 
     return (ws_hit_t) { .window = NULL, .type = WS_HIT_NONE };
+}
+
+static void ws_server_window_close(mem_allocator_t* alloc, ws_server_t* server, ws_window_t* window)
+{
+    ASSERT(server);
+    ASSERT(window);
+
+    window->func_close(window);
+    ws_window_destroy(alloc, window);
+    server->window_count--;
 }
 
 void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const os_event_t* os_event)
@@ -188,8 +198,8 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
             break;
         case WS_HIT_CLOSE:
             ASSERT(hit.window);
-            hit.window->func_close(hit.window);
-            server->window_count--;
+            // FIXME: This should actually happen on mousebutton up
+            ws_server_window_close(alloc, server, hit.window);
             break;
         case WS_HIT_RESIZE:
             ASSERT(hit.window);
@@ -252,17 +262,18 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
     }
 }
 
-static inline ws_event_t event_from_os_event(const ws_window_t* window, const os_event_t* os_event)
+static ws_event_t event_from_os_event(const ws_window_t* window, const os_event_t* os_event)
 {
     ws_event_t ws_event = { 0 };
 
-    // Conver type
+    // Convert type
     ws_event.type = (ws_event_type_e)os_event->type;
 
     // Copy all data
     (void)memcpy(&ws_event.u, &os_event->u, sizeof(os_event->u));
 
     // Localize events to the window
+    // FIXME: This needs to be offset to the content rect, not window
     switch (ws_event.type) {
     case WS_EVENT_MOUSEMOVE:
         ws_event.u.mousemove.pos_x -= window->rect.x;

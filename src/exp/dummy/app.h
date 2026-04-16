@@ -32,7 +32,6 @@ void func_close(ws_window_t* window)
     mem_allocator_t* alloc = state->alloc; // Needed for ws_window_destroy
 
     mem_free(alloc, window->ctx);
-    ws_window_destroy(alloc, window);
 }
 
 ws_window_t* exp_dummy_create(mem_allocator_t* alloc)
