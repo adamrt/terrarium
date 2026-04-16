@@ -12,6 +12,7 @@
 
 enum {
     WS_SERVER_WINDOW_MAX = 10,
+    WS_SERVER_MENUBAR_SIZE = 20,
 };
 
 typedef enum {
@@ -229,8 +230,8 @@ static void ws_server_window_maximize_toggle(mem_allocator_t* alloc, ws_server_t
         window->is_maximized = true;
         window->restore_rect = window->rect;
         window->rect.x = 0;
-        window->rect.y = 0;
-        ws_window_resize(alloc, window, server->width, server->height);
+        window->rect.y = WS_SERVER_MENUBAR_SIZE;
+        ws_window_resize(alloc, window, server->width, server->height - WS_SERVER_MENUBAR_SIZE);
     } else {
         ASSERT(window->restore_rect.width != 0);
         ASSERT(window->restore_rect.height != 0);
