@@ -19,7 +19,8 @@ typedef enum {
 } ws_drag_type_e;
 
 // Forward declarations
-static ws_event_t event_from_os_event(const ws_window_t* window, const os_event_t* os_event);
+static ws_event_t ws_event_from_os_event(const ws_window_t* window, const os_event_t* os_event);
+static void ws_server_window_close(mem_allocator_t* alloc, ws_server_t* server, ws_window_t* window);
 
 struct ws_server {
     i32 width, height;
@@ -85,7 +86,7 @@ void ws_server_destroy(mem_allocator_t* alloc, ws_server_t* server)
 
     for (i32 i = 0; i < server->window_count; ++i) {
         ws_window_t* window = server->windows[i];
-        window->func_close(window);
+        ws_server_window_close(alloc, server, window);
     }
 
     mem_free(alloc, server);
@@ -211,7 +212,7 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
             break;
         case WS_HIT_CONTENT:
             ASSERT(hit.window);
-            ws_event_t ws_event = event_from_os_event(hit.window, os_event);
+            ws_event_t ws_event = ws_event_from_os_event(hit.window, os_event);
             UNUSED(ws_event);
             break;
         }
@@ -262,7 +263,7 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
     }
 }
 
-static ws_event_t event_from_os_event(const ws_window_t* window, const os_event_t* os_event)
+static ws_event_t ws_event_from_os_event(const ws_window_t* window, const os_event_t* os_event)
 {
     ws_event_t ws_event = { 0 };
 
