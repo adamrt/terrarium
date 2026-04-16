@@ -4,14 +4,7 @@
 #include "ak/ak.h"
 #include "gfx/gfx.h"
 #include "ws/ws.h"
-
-enum {
-    WS_FRAME_BORDER_SIZE = 1,
-    WS_FRAME_PADDING_SIZE = 10,
-    WS_FRAME_TITLEBAR_HEIGHT = 25,
-    WS_FRAME_BUTTON_SIZE = 15,
-    WS_FRAME_HANDLE_SIZE = 20,
-};
+#include "ws/ws_internal.h"
 
 ws_window_t* ws_window_create(mem_allocator_t* alloc, i32 x, i32 y, i32 width, i32 height)
 {

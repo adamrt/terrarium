@@ -25,13 +25,6 @@ ws_window_t* ws_window_create(mem_allocator_t* alloc, i32 x, i32 y, i32 width, i
 void ws_window_destroy(mem_allocator_t* alloc, ws_window_t* window);
 void ws_window_move(ws_window_t* window, i32 x, i32 y);
 void ws_window_resize(mem_allocator_t* alloc, ws_window_t* window, i32 width, i32 height);
-gfx_rect_t ws_window_rect_total(const ws_window_t* window);
-gfx_rect_t ws_window_rect_frame(const ws_window_t* window);
-gfx_rect_t ws_window_rect_titlebar(const ws_window_t* window);
-gfx_rect_t ws_window_rect_button_close(const ws_window_t* window);
-gfx_rect_t ws_window_rect_content_border(const ws_window_t* window);
-gfx_rect_t ws_window_rect_content(const ws_window_t* window);
-gfx_rect_t ws_window_rect_handle_resize(const ws_window_t* window);
 
 //
 // Event

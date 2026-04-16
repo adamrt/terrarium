@@ -5,6 +5,7 @@
 #include "gfx/gfx.h"
 #include "os/os.h"
 #include "ws/ws.h"
+#include "ws/ws_internal.h"
 
 #include <string.h>
 
@@ -115,7 +116,10 @@ static void ws_server_window_draw(ws_server_t* server, ws_window_t* window)
     gfx_surface_blit(server->composited, window->content, content_rect.x, content_rect.y);
 
     // Draw resize handle on top of content
-    gfx_surface_fill_rect(server->composited, ws_window_rect_handle_resize(window), gfx_black);
+    gfx_rect_t handle_rect = ws_window_rect_handle_resize(window);
+    gfx_surface_fill_rect(server->composited, handle_rect, frame_color);
+    gfx_surface_draw_line_h(server->composited, handle_rect.x, handle_rect.y, handle_rect.width - WS_FRAME_PADDING_SIZE, border_color);
+    gfx_surface_draw_line_v(server->composited, handle_rect.x, handle_rect.y, handle_rect.height - WS_FRAME_PADDING_SIZE, border_color);
 }
 
 void ws_server_render(ws_server_t* server)
