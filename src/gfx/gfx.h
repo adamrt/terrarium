@@ -5,6 +5,11 @@
 
 #include "ak/ak.h"
 
+enum {
+    GFX_FONT_WIDTH = 8,
+    GFX_FONT_HEIGHT = 8,
+};
+
 //
 // Color
 //
@@ -70,3 +75,9 @@ void gfx_surface_draw_pixel(gfx_surface_t* surface, i32 x, i32 y, gfx_pixel_t pi
 void gfx_surface_draw_line_h(gfx_surface_t* surface, i32 x, i32 y, i32 len, gfx_color_t color);
 void gfx_surface_draw_line_v(gfx_surface_t* surface, i32 x, i32 y, i32 len, gfx_color_t color);
 void gfx_surface_draw_rect(gfx_surface_t* surface, gfx_rect_t rect, gfx_color_t color);
+
+//
+// Font
+//
+
+void gfx_surface_draw_text(gfx_surface_t* surface, i32 x, i32 y, const char* text, gfx_color_t color);

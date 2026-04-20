@@ -13,6 +13,7 @@
 enum {
     WS_SERVER_WINDOW_MAX = 10,
     WS_SERVER_MENUBAR_SIZE = 20,
+    WS_SERVER_BUTTON_PADDING = 6,
 };
 
 typedef enum {
@@ -20,6 +21,8 @@ typedef enum {
     WS_DRAG_MOVE,
     WS_DRAG_RESIZE,
 } ws_drag_type_e;
+
+static const char* new_window_text = "New Window";
 
 // Forward declarations
 static ws_event_t ws_event_from_os_event(const ws_window_t* window, const os_event_t* os_event);
@@ -133,7 +136,13 @@ static void ws_server_window_draw(ws_server_t* server, ws_window_t* window)
 
 static gfx_rect_t ws_server_rect_new_window_button(void)
 {
-    return (gfx_rect_t) { 0, 0, 50, 20 };
+    i32 len = (i32)strlen(new_window_text);
+    return (gfx_rect_t) {
+        .x = 0,
+        .y = 0,
+        .width = GFX_FONT_WIDTH * len + WS_SERVER_BUTTON_PADDING * 2,
+        .height = GFX_FONT_HEIGHT + WS_SERVER_BUTTON_PADDING * 2,
+    };
 }
 
 void ws_server_render(ws_server_t* server)
@@ -142,7 +151,9 @@ void ws_server_render(ws_server_t* server)
 
     ws_server_desktop_draw(server);
 
-    gfx_surface_fill_rect(server->composited, ws_server_rect_new_window_button(), gfx_blue);
+    gfx_rect_t rect_new_window_button = ws_server_rect_new_window_button();
+    gfx_surface_fill_rect(server->composited, rect_new_window_button, gfx_blue);
+    gfx_surface_draw_text(server->composited, rect_new_window_button.x + WS_SERVER_BUTTON_PADDING, rect_new_window_button.y + WS_SERVER_BUTTON_PADDING, new_window_text, gfx_white);
 
     for (i32 i = 0; i < server->window_count; ++i) {
         ws_window_t* window = server->windows[i];
