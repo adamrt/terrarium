@@ -289,16 +289,6 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
             server->drag.mouse_start_y = my;
             server->drag.rect_start = hit.window->rect;
             break;
-        case WS_HIT_CLOSE:
-            ASSERT(hit.window);
-            // FIXME: This should actually happen on mousebutton up
-            ws_server_window_close(alloc, server, hit.window);
-            break;
-        case WS_HIT_MAXIMIZE:
-            ASSERT(hit.window);
-            // FIXME: This should actually happen on mousebutton up
-            ws_server_window_maximize_toggle(alloc, server, hit.window);
-            break;
         case WS_HIT_RESIZE:
             ASSERT(hit.window);
             server->drag.type = WS_DRAG_RESIZE;
@@ -312,15 +302,41 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
             ws_event_t ws_event = ws_event_from_os_event(hit.window, os_event);
             UNUSED(ws_event);
             break;
-        case WS_HIT_NEW_WIN: {
+        case WS_HIT_NEW_WIN:
             ASSERT(!hit.window);
             ws_window_t* window = exp_dummy_create(alloc, rnd_i32_range(0, 700), rnd_i32_range(0, 500));
             ws_server_window_take(server, &window);
             break;
-        }
+        default:
+            break;
         }
         return;
     } else if (os_event->type == OS_EVENT_MOUSEBUTTON_UP) {
+        i32 mx = os_event->u.mousebutton.pos_x;
+        i32 my = os_event->u.mousebutton.pos_y;
+
+        ws_hit_t hit = ws_server_window_hit_check(server, mx, my);
+        if (hit.window != NULL) {
+            ws_server_window_to_front(server, hit.window);
+        }
+
+        switch (hit.type) {
+        case WS_HIT_NONE:
+            ASSERT(hit.window == NULL);
+            break;
+        case WS_HIT_CLOSE:
+            ASSERT(hit.window);
+            ws_server_window_close(alloc, server, hit.window);
+            break;
+        case WS_HIT_MAXIMIZE:
+            ASSERT(hit.window);
+            ws_server_window_maximize_toggle(alloc, server, hit.window);
+            break;
+        default:
+            break;
+        }
+
+        // Reset state
         server->drag.type = WS_DRAG_NONE;
         server->drag.window = NULL;
         server->drag.mouse_start_x = 0;
