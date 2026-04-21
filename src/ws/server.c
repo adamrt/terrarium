@@ -339,6 +339,10 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
             case WS_DRAG_NONE:
                 __builtin_unreachable();
             case WS_DRAG_MOVE: {
+                // Cannot move maximize windows
+                if (window->is_maximized) {
+                    return;
+                }
                 i32 delta_x = mx - server->drag.mouse_start_x;
                 i32 delta_y = my - server->drag.mouse_start_y;
 
