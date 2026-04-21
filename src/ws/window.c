@@ -6,7 +6,7 @@
 #include "ws/ws.h"
 #include "ws/ws_internal.h"
 
-ws_window_t* ws_window_create(mem_allocator_t* alloc, i32 x, i32 y, i32 width, i32 height)
+ws_window_t* ws_window_create(mem_allocator_t* alloc, const char* title, i32 x, i32 y, i32 width, i32 height)
 {
     ASSERT(alloc);
     ASSERT(x >= 0)
@@ -15,6 +15,7 @@ ws_window_t* ws_window_create(mem_allocator_t* alloc, i32 x, i32 y, i32 width, i
     ws_window_t* window = mem_alloc(alloc, sizeof(*window));
     ASSERT(window);
 
+    window->title = title;
     window->rect.x = x;
     window->rect.y = y;
     window->rect.width = width;

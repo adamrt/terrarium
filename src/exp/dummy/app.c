@@ -35,7 +35,7 @@ void func_close(ws_window_t* window)
 
 ws_window_t* exp_dummy_create(mem_allocator_t* alloc, i32 x, i32 y)
 {
-    ws_window_t* window = ws_window_create(alloc, x, y, 300, 300);
+    ws_window_t* window = ws_window_create(alloc, "Dummy App", x, y, 300, 300);
     ASSERT(window);
 
     state_t* state = mem_alloc(alloc, sizeof(*state));
