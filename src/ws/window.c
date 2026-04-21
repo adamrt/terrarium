@@ -62,8 +62,8 @@ void ws_window_resize(mem_allocator_t* alloc, ws_window_t* window, i32 width, i3
     ASSERT(alloc);
     ASSERT(window);
 
-    width = i32_max(width, 50);
-    height = i32_max(height, 50);
+    width = i32_max(width, 100);
+    height = i32_max(height, 100);
 
     if (window->rect.width == width && window->rect.height == height) {
         return;
