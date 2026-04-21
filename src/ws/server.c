@@ -160,8 +160,8 @@ void ws_server_render(ws_server_t* server)
     ws_server_desktop_draw(server);
 
     gfx_rect_t rect_new_window_button = ws_server_rect_new_window_button();
-    gfx_surface_fill_rect(server->composited, rect_new_window_button, gfx_blue);
-    gfx_surface_draw_text(server->composited, rect_new_window_button.x + WS_SERVER_BUTTON_PADDING, rect_new_window_button.y + WS_SERVER_BUTTON_PADDING, new_window_text, gfx_white);
+    gfx_surface_fill_rect(server->composited, rect_new_window_button, gfx_color_rgb(200, 200, 200));
+    gfx_surface_draw_text(server->composited, rect_new_window_button.x + WS_SERVER_BUTTON_PADDING, rect_new_window_button.y + WS_SERVER_BUTTON_PADDING, new_window_text, gfx_black);
 
     for (i32 i = 0; i < server->window_count; ++i) {
         ws_window_t* window = server->windows[i];
