@@ -109,11 +109,19 @@ static void ws_server_window_draw(ws_server_t* server, ws_window_t* window)
 {
     gfx_color_t frame_color = gfx_white;
     gfx_color_t border_color = gfx_black;
+    gfx_color_t titlebar_text_color = gfx_black;
 
     // Draw frame
     gfx_surface_draw_rect(server->composited, ws_window_rect_total(window), border_color);
     gfx_surface_fill_rect(server->composited, ws_window_rect_frame(window), frame_color);
-    gfx_surface_fill_rect(server->composited, ws_window_rect_titlebar(window), frame_color);
+
+    // Titlebar
+    gfx_rect_t tb = ws_window_rect_titlebar(window);
+    gfx_surface_fill_rect(server->composited, tb, frame_color);
+    i32 title_len = (i32)strlen(window->title);
+    gfx_surface_draw_text(server->composited, tb.x + tb.width / 2 - title_len * GFX_FONT_WIDTH / 2, tb.y + 4, window->title, titlebar_text_color);
+
+    // Close button
     gfx_surface_draw_rect(server->composited, ws_window_rect_button_close(window), border_color);
 
     // Maximize button
