@@ -26,13 +26,25 @@ static void gfx_surface_draw_char(gfx_surface_t* surface, i32 pos_x, i32 pos_y, 
     ASSERT(ord <= 127);
     ASSERT(ord >= 0);
 
+    // FIXME: Bail early if we are already off screen
+
     gfx_pixel_t packed = gfx_color_pack(color);
 
     for (i32 y = 0; y < GFX_FONT_HEIGHT; y++) {
         char row = font[ord][y];
         for (i32 x = 0; x < GFX_FONT_WIDTH; x++) {
             if (row & 1 << x) {
-                gfx_surface_draw_pixel(surface, pos_x + x, pos_y + y, packed);
+                i32 dx = pos_x + x;
+                i32 dy = pos_y + y;
+
+                if (dx < 0 || dx >= surface->width) {
+                    continue;
+                }
+                if (dy < 0 || dy >= surface->height) {
+                    continue;
+                }
+
+                gfx_surface_draw_pixel(surface, dx, dy, packed);
             }
         }
     }
