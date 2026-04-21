@@ -1,11 +1,15 @@
 TARGET = terrarium
-CC = clang
+CC ?= gcc
 
-WARN_FLAGS = -Wall -Wextra -Werror -Wshadow -Wdouble-promotion -Wundef -Wformat=2 -Wvla -Wconversion
-DEBUG_FLAGS = -g3 -O0 -fstack-protector-strong -fsanitize=address,undefined
+SDL_FLAGS := $(shell pkg-config --cflags sdl2)
+SDL_LIBS  := $(shell pkg-config --libs sdl2)
 
-CFLAGS = -std=c11 -Isrc -MMD -MP $(DEBUG_FLAGS) $(WARN_FLAGS) `pkg-config --cflags sdl2`
-LDFLAGS = $(DEBUG_FLAGS) -lm `pkg-config --libs sdl2`
+DEBUG_FLAGS = -g3 -O0 -Wall -Wextra -Werror -Wshadow -Wundef -Wformat=2 -Wvla -Wconversion -Wdouble-promotion -fstack-protector-strong
+SAN_FLAGS = -fsanitize=address,undefined
+
+CFLAGS += -std=c11 -Isrc -MMD -MP $(DEBUG_FLAGS) $(SAN_FLAGS) $(SDL_FLAGS)
+LDFLAGS += $(SAN_FLAGS)
+LDLIBS += -lm $(SDL_LIBS)
 
 BUILD_DIR = build
 SOURCES = $(shell find src/ -name "*.c")
@@ -17,12 +21,12 @@ all: $(BUILD_DIR)/$(TARGET)
 
 # Compile
 $(BUILD_DIR)/%.o: %.c
-	mkdir -p $(@D)
-	$(CC) $(CFLAGS) -c $< -o $@
+	@mkdir -p $(@D)
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 # Link
 $(BUILD_DIR)/$(TARGET): $(OBJECTS)
-	$(CC) $(LDFLAGS) $^ -o $@
+	@$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
 # Include header dependencies
 -include $(DEPS)
@@ -30,17 +34,17 @@ $(BUILD_DIR)/$(TARGET): $(OBJECTS)
 # Clean
 .PHONY: clean
 clean:
-	rm -rf $(BUILD_DIR)
+	@rm -rf $(BUILD_DIR)
 
 # Run
 .PHONY: run
 run: $(BUILD_DIR)/$(TARGET)
-	./$<
+	@./$<
 
 .PHONY: debug
 debug: $(BUILD_DIR)/$(TARGET)
-	lldb ./$<
+	@lldb ./$<
 
 .PHONY: fmt
 fmt:
-	find -X src -type f -name "*.c" -o -name "*.h" | xargs clang-format -i
+	@find src -type f \( -name "*.c" -o -name "*.h" \) -exec clang-format -i {} +
