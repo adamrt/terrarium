@@ -34,6 +34,7 @@ gfx_color_t gfx_color_scale(gfx_color_t color, f32 scale)
 
 // (1.0f - t) * a + t * b
 gfx_color_t gfx_color_lerp(gfx_color_t a, gfx_color_t b, f32 t)
+
 {
     t = f32_clamp(t, 0.0f, 1.0f);
     f32 inv_t = 1.0f - t;
@@ -57,10 +58,10 @@ gfx_color_t gfx_color_random(void)
 gfx_color_t gfx_color_unpack(gfx_pixel_t color)
 {
     return (gfx_color_t) {
-        .r = (color >> 24) & 0xFF,
-        .g = (color >> 16) & 0xFF,
-        .b = (color >> 8) & 0xFF,
-        .a = (color >> 0) & 0xFF,
+        .r = (u8)((color >> 24) & 0xFF),
+        .g = (u8)((color >> 16) & 0xFF),
+        .b = (u8)((color >> 8) & 0xFF),
+        .a = (u8)((color >> 0) & 0xFF),
     };
 }
 

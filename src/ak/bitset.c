@@ -25,7 +25,7 @@ void bitset8_set(u8* bitset, u8 position, bool value)
 bool bitset8_get(u8 bitset, u8 position)
 {
     ASSERT(position < 8);
-    return (bool)((bitset >> position) & 1U);
+    return (bool)((bitset >> position) & 1);
 }
 
 //
