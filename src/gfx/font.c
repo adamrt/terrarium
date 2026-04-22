@@ -6,7 +6,7 @@
 #include <string.h>
 
 // Forward declarations
-char font[128][8];
+u8 gfx_font[128][8];
 static void gfx_surface_draw_char(gfx_surface_t* surface, i32 pos_x, i32 pos_y, char c, gfx_color_t color);
 
 void gfx_surface_draw_text(gfx_surface_t* surface, i32 pos_x, i32 pos_y, const char* text, gfx_color_t color)
@@ -24,14 +24,13 @@ static void gfx_surface_draw_char(gfx_surface_t* surface, i32 pos_x, i32 pos_y, 
 
     u8 ord = (u8)c;
     ASSERT(ord <= 127);
-    ASSERT(ord >= 0);
 
     // FIXME: Bail early if we are already off screen
 
     gfx_pixel_t packed = gfx_color_pack(color);
 
     for (i32 y = 0; y < GFX_FONT_HEIGHT; y++) {
-        char row = font[ord][y];
+        u8 row = gfx_font[ord][y];
         for (i32 x = 0; x < GFX_FONT_WIDTH; x++) {
             if (row & 1 << x) {
                 i32 dx = pos_x + x;
@@ -53,7 +52,7 @@ static void gfx_surface_draw_char(gfx_surface_t* surface, i32 pos_x, i32 pos_y, 
 //
 // This font is public domain by Marcel Sondaar.
 //
-char font[128][8] = {
+u8 gfx_font[128][8] = {
     { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, // U+0000 (nul)
     { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, // U+0001
     { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, // U+0002
