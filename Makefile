@@ -38,6 +38,7 @@ clean:
 	@rm -rf $(BUILD_DIR)
 
 # Run
+# LSAN defaults to disabled on MacOS due to how noisy it is.
 .PHONY: run
 run: $(BUILD_DIR)/$(TARGET)
 	@LSAN_OPTIONS=suppressions=meta/suppressions.txt:print_suppressions=0 \
