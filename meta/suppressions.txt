@@ -1,0 +1,8 @@
+# This is to suppress Leak Sanitizer (LSAN) warnings for external libraries.
+# Makefile:run references this file. 
+# https://github.com/google/sanitizers/wiki/AddressSanitizerLeakSanitizer
+
+leak:libLLVM
+leak:libstdc++
+leak:libSDL3
+leak:libSDL2

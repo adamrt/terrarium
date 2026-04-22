@@ -4,10 +4,11 @@ CC ?= gcc
 SDL_FLAGS := $(shell pkg-config --cflags sdl2)
 SDL_LIBS  := $(shell pkg-config --libs sdl2)
 
-DEBUG_FLAGS = -g3 -O0 -Wall -Wextra -Werror -Wshadow -Wundef -Wformat=2 -Wvla -Wconversion -Wdouble-promotion -fstack-protector-strong
+WARN_FLAGS  = -Wall -Wextra -Werror -Wshadow -Wundef -Wformat=2 -Wvla -Wconversion -Wdouble-promotion
+DEBUG_FLAGS = -g3 -O0 -fstack-protector-strong -fno-omit-frame-pointer
 SAN_FLAGS = -fsanitize=address,undefined
 
-CFLAGS += -std=c11 -Isrc -MMD -MP $(DEBUG_FLAGS) $(SAN_FLAGS) $(SDL_FLAGS)
+CFLAGS += -std=c11 -Isrc -MMD -MP $(WARN_FLAGS) $(DEBUG_FLAGS) $(SAN_FLAGS) $(SDL_FLAGS)
 LDFLAGS += $(SAN_FLAGS)
 LDLIBS += -lm $(SDL_LIBS)
 
@@ -39,7 +40,9 @@ clean:
 # Run
 .PHONY: run
 run: $(BUILD_DIR)/$(TARGET)
-	@./$<
+	@LSAN_OPTIONS=suppressions=meta/suppressions.txt:print_suppressions=0 \
+	ASAN_OPTIONS=fast_unwind_on_malloc=0:symbolize=1 \
+	./$<
 
 .PHONY: debug
 debug: $(BUILD_DIR)/$(TARGET)
