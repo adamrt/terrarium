@@ -81,6 +81,15 @@ void rnd_init(void);
 i32 rnd_i32_range(i32 min, i32 max);
 
 //
+// String View
+//
+
+typedef struct {
+    const char* ptr;
+    size_t len;
+} strview_t;
+
+//
 // Macros
 //
 
