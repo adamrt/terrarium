@@ -91,6 +91,9 @@ typedef struct {
     size_t len;
 } strview_t;
 
+static inline strview_t sv(const char* s) { return (strview_t) { .ptr = s, .len = strlen(s) }; }
+char* strview_to_cstr(mem_allocator_t* alloc, strview_t view);
+
 //
 // Macros
 //
