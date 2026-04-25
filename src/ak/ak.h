@@ -108,6 +108,12 @@ void str_destroy(mem_allocator_t* alloc, str_t s);
 strview_t* str_split_lines(mem_allocator_t* alloc, str_t s, size_t* out_count);
 
 //
+// Input/Output
+//
+
+str_t io_file_readall(mem_allocator_t* alloc, strview_t path);
+
+//
 // Macros
 //
 
