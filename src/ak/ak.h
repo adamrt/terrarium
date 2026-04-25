@@ -8,6 +8,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 
 //
 // Types
@@ -62,6 +63,7 @@ mem_allocator_t* mem_debug_create(void);
 #define mem_realloc(a, ptr, size) ((a)->func_realloc((a)->ctx, (ptr), (size_t)(size), __FILE__, __LINE__))
 #define mem_free(a, ptr)          ((a)->func_free((a)->ctx, ptr))
 #define mem_shutdown(a)           ((a)->func_shutdown((a)))
+static inline void mem_zero(void* ptr, size_t size) { memset(ptr, 0, size); }
 
 //
 // Bitset
