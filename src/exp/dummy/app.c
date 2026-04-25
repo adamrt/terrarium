@@ -1,7 +1,8 @@
 // Copyright 2026 Adam Patterson
 // SPDX-License-Identifier: ISC
 
-#include "app.h"
+#include "exp/dummy/app.h"
+
 #include "ak/ak.h"
 #include "gfx/gfx.h"
 #include "ws/ws.h"
@@ -13,7 +14,7 @@ typedef struct {
     gfx_color_t color_b;
 } state_t;
 
-void func_draw(ws_window_t* window)
+static void func_draw(ws_window_t* window)
 {
     state_t* state = window->ctx;
 
@@ -25,7 +26,7 @@ void func_draw(ws_window_t* window)
     state->timer += 0.015f;
 }
 
-void func_close(ws_window_t* window)
+static void func_close(ws_window_t* window)
 {
     state_t* state = window->ctx;
     mem_allocator_t* alloc = state->alloc; // Needed for ws_window_destroy
