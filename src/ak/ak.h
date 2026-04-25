@@ -43,6 +43,15 @@ static inline f32 f32_sin(f32 value) { return sinf(value); }
 static inline f32 f32_cos(f32 value) { return cosf(value); }
 
 //
+// String View
+//
+
+typedef struct {
+    const char* ptr;
+    size_t len;
+} strview_t;
+
+//
 // Memory
 //
 
