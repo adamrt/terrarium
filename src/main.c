@@ -3,6 +3,7 @@
 
 #include "ak/ak.h"
 #include "exp/dummy/app.h"
+#include "exp/logviewer/app.h"
 #include "os/os.h"
 #include "ws/ws.h"
 
@@ -26,8 +27,11 @@ i32 main(i32 argc, char* argv[])
     mem_allocator_t* alloc = mem_debug_create();
     ws_server_t* server = ws_server_create(alloc, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    ws_window_t* window = exp_dummy_create(alloc, 100, 150);
-    ws_server_window_take(server, &window);
+    ws_window_t* dummy_window = exp_dummy_create(alloc, 100, 150);
+    ws_server_window_take(server, &dummy_window);
+
+    ws_window_t* logviewer_window = exp_logviewer_create(alloc, 450, 150);
+    ws_server_window_take(server, &logviewer_window);
 
     // Event Loop
     bool is_running = true;
