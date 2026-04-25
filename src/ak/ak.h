@@ -95,6 +95,19 @@ static inline strview_t sv(const char* s) { return (strview_t) { .ptr = s, .len 
 char* strview_to_cstr(mem_allocator_t* alloc, strview_t view);
 
 //
+// Owning String
+//
+
+typedef struct {
+    char* ptr;
+    size_t len;
+    size_t cap;
+} str_t;
+
+void str_destroy(mem_allocator_t* alloc, str_t s);
+strview_t* str_split_lines(mem_allocator_t* alloc, str_t s, size_t* out_count);
+
+//
 // Macros
 //
 
