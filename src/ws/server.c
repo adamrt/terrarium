@@ -101,12 +101,17 @@ void ws_server_destroy(mem_allocator_t* alloc, ws_server_t* server)
 
 static void ws_server_desktop_draw(ws_server_t* server)
 {
+    ASSERT(server);
+
     gfx_surface_fill(server->desktop, server->background);
     gfx_surface_blit(server->composited, server->desktop, 0, 0);
 }
 
 static void ws_server_window_draw(ws_server_t* server, ws_window_t* window)
 {
+    ASSERT(server);
+    ASSERT(window);
+
     gfx_color_t frame_color = gfx_white;
     gfx_color_t border_color = gfx_black;
     gfx_color_t titlebar_text_color = gfx_black;
@@ -191,6 +196,9 @@ static void ws_server_window_to_front(ws_server_t* server, ws_window_t* window)
 
 void ws_server_window_take(ws_server_t* server, ws_window_t** window_take)
 {
+    ASSERT(server);
+    ASSERT(window_take);
+
     ws_window_t* window = *window_take;
     *window_take = NULL;
 
@@ -203,6 +211,8 @@ void ws_server_window_take(ws_server_t* server, ws_window_t** window_take)
 
 static ws_hit_t ws_server_window_hit_check(ws_server_t* server, i32 mx, i32 my)
 {
+    ASSERT(server);
+
     for (i32 i = server->window_count - 1; i >= 0; --i) {
         ws_window_t* window = server->windows[i];
 
@@ -227,8 +237,10 @@ static ws_hit_t ws_server_window_hit_check(ws_server_t* server, i32 mx, i32 my)
     return (ws_hit_t) { .window = NULL, .type = WS_HIT_NONE };
 }
 
+// FIXME: This depends on the window being at the front but should not.
 static void ws_server_window_close(mem_allocator_t* alloc, ws_server_t* server, ws_window_t* window)
 {
+    ASSERT(alloc);
     ASSERT(server);
     ASSERT(window);
 
@@ -238,6 +250,7 @@ static void ws_server_window_close(mem_allocator_t* alloc, ws_server_t* server, 
 
 static void ws_server_window_maximize_toggle(mem_allocator_t* alloc, ws_server_t* server, ws_window_t* window)
 {
+    ASSERT(alloc);
     ASSERT(server);
     ASSERT(window);
 
@@ -266,7 +279,9 @@ static void ws_server_window_maximize_toggle(mem_allocator_t* alloc, ws_server_t
 
 void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const os_event_t* os_event)
 {
+    ASSERT(alloc);
     ASSERT(server);
+    ASSERT(os_event);
 
     if (os_event->type == OS_EVENT_MOUSEBUTTON_DOWN) {
         i32 mx = os_event->u.mousebutton.pos_x;
@@ -388,6 +403,9 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
 
 static ws_event_t ws_event_from_os_event(const ws_window_t* window, const os_event_t* os_event)
 {
+    ASSERT(window);
+    ASSERT(os_event);
+
     ws_event_t ws_event = { 0 };
 
     // Convert type
