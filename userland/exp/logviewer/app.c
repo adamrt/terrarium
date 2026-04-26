@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <string.h>
 
-static const char* LOG_FILE = "src/main.c";
+static const char* LOG_FILE = "userland/main.c";
 
 enum {
     LINE_HEIGHT = GFX_FONT_HEIGHT + 2,

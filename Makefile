@@ -8,12 +8,12 @@ WARN_FLAGS  = -Wall -Wextra -Werror -Wshadow -Wundef -Wformat=2 -Wvla -Wconversi
 DEBUG_FLAGS = -g3 -O0 -fstack-protector-strong -fno-omit-frame-pointer
 SAN_FLAGS = -fsanitize=address,undefined
 
-CFLAGS += -std=c11 -Isrc -MMD -MP $(WARN_FLAGS) $(DEBUG_FLAGS) $(SAN_FLAGS) $(SDL_FLAGS)
+CFLAGS += -std=c11 -Iuserland -MMD -MP $(WARN_FLAGS) $(DEBUG_FLAGS) $(SAN_FLAGS) $(SDL_FLAGS)
 LDFLAGS += $(SAN_FLAGS)
 LDLIBS += -lm $(SDL_LIBS)
 
 BUILD_DIR = build
-SOURCES = $(shell find src/ -name "*.c")
+SOURCES = $(shell find userland/ -name "*.c")
 OBJECTS = $(SOURCES:%.c=$(BUILD_DIR)/%.o)
 DEPS = $(OBJECTS:%.o=%.d)
 
@@ -51,4 +51,4 @@ debug: $(BUILD_DIR)/$(TARGET)
 
 .PHONY: fmt
 fmt:
-	@find src -type f \( -name "*.c" -o -name "*.h" \) -exec clang-format -i {} +
+	@find userland -type f \( -name "*.c" -o -name "*.h" \) -exec clang-format -i {} +
