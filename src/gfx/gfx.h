@@ -80,5 +80,4 @@ void gfx_surface_draw_rect(gfx_surface_t* surface, gfx_rect_t rect, gfx_color_t 
 // Font
 //
 
-void gfx_surface_draw_text(gfx_surface_t* surface, i32 x, i32 y, const char* text, gfx_color_t color);
-void gfx_surface_draw_strview(gfx_surface_t* surface, i32 x, i32 y, strview_t s, gfx_color_t color);
+void gfx_surface_draw_text(gfx_surface_t* surface, i32 x, i32 y, strview_t s, gfx_color_t color);

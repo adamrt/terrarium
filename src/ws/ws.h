@@ -15,7 +15,7 @@ typedef struct ws_window {
     gfx_rect_t rect;
     gfx_surface_t* content;
 
-    const char* title;
+    strview_t title;
 
     bool is_maximized;
     gfx_rect_t restore_rect; // Rect prior to max
@@ -25,7 +25,7 @@ typedef struct ws_window {
     void* ctx;
 } ws_window_t;
 
-ws_window_t* ws_window_create(mem_allocator_t* alloc, const char* title, i32 x, i32 y, i32 width, i32 height);
+ws_window_t* ws_window_create(mem_allocator_t* alloc, strview_t title, i32 x, i32 y, i32 width, i32 height);
 void ws_window_destroy(mem_allocator_t* alloc, ws_window_t* window);
 void ws_window_close(mem_allocator_t* alloc, ws_window_t* window);
 void ws_window_move(ws_window_t* window, i32 x, i32 y);

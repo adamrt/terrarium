@@ -40,7 +40,7 @@ static void func_draw(ws_window_t* window)
 
     gfx_surface_fill(window->content, state->background_color);
     for (size_t line = 0; line < state->line_count; line++) {
-        gfx_surface_draw_strview(window->content, 0, LINE_HEIGHT * (i32)line, state->lines[line], gfx_white);
+        gfx_surface_draw_text(window->content, 0, LINE_HEIGHT * (i32)line, state->lines[line], gfx_white);
     }
 }
 
@@ -60,7 +60,7 @@ ws_window_t* exp_logviewer_create(mem_allocator_t* alloc, i32 x, i32 y)
 {
     ASSERT(alloc);
 
-    ws_window_t* window = ws_window_create(alloc, "Log Viewer App", x, y, 300, 300);
+    ws_window_t* window = ws_window_create(alloc, sv("Log Viewer App"), x, y, 300, 300);
     ASSERT(window);
 
     state_t* state = mem_alloc(alloc, sizeof(*state));

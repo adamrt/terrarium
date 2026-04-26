@@ -22,7 +22,8 @@ typedef enum {
     WS_DRAG_RESIZE,
 } ws_drag_type_e;
 
-static const char* new_window_text = "New Window";
+// FIXME: This is temporary global until we have menubar
+strview_t new_window_text;
 
 // Forward declarations
 static ws_event_t ws_event_from_os_event(const ws_window_t* window, const os_event_t* os_event);
@@ -78,6 +79,8 @@ ws_server_t* ws_server_create(mem_allocator_t* alloc, i32 width, i32 height)
     server->drag.mouse_start_y = 0;
     server->drag.rect_start = (gfx_rect_t) { 0 };
 
+    new_window_text = sv("New Window");
+
     return server;
 }
 
@@ -123,8 +126,7 @@ static void ws_server_window_draw(ws_server_t* server, ws_window_t* window)
     // Titlebar
     gfx_rect_t tb = ws_window_rect_titlebar(window);
     gfx_surface_fill_rect(server->composited, tb, frame_color);
-    i32 title_len = (i32)strlen(window->title);
-    gfx_surface_draw_text(server->composited, tb.x + tb.width / 2 - title_len * GFX_FONT_WIDTH / 2, tb.y + 4, window->title, titlebar_text_color);
+    gfx_surface_draw_text(server->composited, tb.x + tb.width / 2 - (i32)window->title.len * GFX_FONT_WIDTH / 2, tb.y + 4, window->title, titlebar_text_color);
 
     // Close button
     gfx_surface_draw_rect(server->composited, ws_window_rect_button_close(window), border_color);
@@ -149,11 +151,10 @@ static void ws_server_window_draw(ws_server_t* server, ws_window_t* window)
 
 static gfx_rect_t ws_server_rect_new_window_button(void)
 {
-    i32 len = (i32)strlen(new_window_text);
     return (gfx_rect_t) {
         .x = 0,
         .y = 0,
-        .width = GFX_FONT_WIDTH * len + WS_SERVER_BUTTON_PADDING * 2,
+        .width = GFX_FONT_WIDTH * (i32)new_window_text.len + WS_SERVER_BUTTON_PADDING * 2,
         .height = GFX_FONT_HEIGHT + WS_SERVER_BUTTON_PADDING * 2,
     };
 }
