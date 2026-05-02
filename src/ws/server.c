@@ -400,6 +400,21 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
             }
             return;
         }
+    } else if (os_event->type == OS_EVENT_MOUSEWHEEL) {
+
+        i32 mx = os_event->u.mousemove.pos_x;
+        i32 my = os_event->u.mousemove.pos_y;
+
+        ws_hit_t hit = ws_server_window_hit_check(server, mx, my);
+        if (hit.window != NULL) {
+            ws_server_window_to_front(server, hit.window);
+        }
+
+        if (hit.type == WS_HIT_CONTENT) {
+            ws_event_t ws_event = ws_event_from_os_event(hit.window, os_event);
+            ws_window_event_handle(hit.window, &ws_event);
+        }
+        return;
     }
 }
 

@@ -23,6 +23,8 @@ typedef struct {
     str_t contents;
     strview_t* lines;
     size_t line_count;
+
+    i32 scroll_y;
 } state_t;
 
 static void read_logfile(state_t* state)
@@ -39,8 +41,13 @@ static void func_draw(ws_window_t* window)
     state_t* state = window->ctx;
 
     gfx_surface_fill(window->content, state->background_color);
-    for (size_t line = 0; line < state->line_count; line++) {
-        gfx_surface_draw_text(window->content, 0, LINE_HEIGHT * (i32)line, state->lines[line], gfx_white);
+    for (i32 line = 0; line < (i32)state->line_count; line++) {
+        if (line * LINE_HEIGHT > window->content->height) {
+            break;
+        }
+        i32 index = line + state->scroll_y;
+        index = i32_min(index, (i32)state->line_count - 1);
+        gfx_surface_draw_text(window->content, 0, LINE_HEIGHT * line, state->lines[index], gfx_white);
     }
 }
 
@@ -61,7 +68,11 @@ static void func_event(struct ws_window* window, const ws_event_t* event)
     ASSERT(window);
     ASSERT(event);
 
-    printf("Logviewer got event: %s\n", ws_event_str(event));
+    state_t* state = window->ctx;
+
+    state->scroll_y -= event->u.mousewheel.scroll_y;
+    state->scroll_y = i32_max(0, state->scroll_y);
+    state->scroll_y = i32_min(state->scroll_y, (i32)state->line_count - (window->content->height / LINE_HEIGHT) - 1);
 }
 
 ws_window_t* exp_logviewer_create(mem_allocator_t* alloc, i32 x, i32 y)
@@ -77,6 +88,7 @@ ws_window_t* exp_logviewer_create(mem_allocator_t* alloc, i32 x, i32 y)
     state->alloc = alloc;
     state->background_color = gfx_black;
     state->line_count = 0;
+    state->scroll_y = 0;
 
     window->func_event = func_event;
     window->func_draw = func_draw;
