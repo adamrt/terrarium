@@ -116,8 +116,8 @@ bool os_event_poll(os_event_t* out)
             out->type = OS_EVENT_MOUSEWHEEL;
             out->u.mousewheel.pos_x = event.wheel.mouseX;
             out->u.mousewheel.pos_y = event.wheel.mouseY;
-            out->u.mousewheel.scroll_x = event.wheel.preciseX;
-            out->u.mousewheel.scroll_y = event.wheel.preciseY;
+            out->u.mousewheel.scroll_x = event.wheel.x;
+            out->u.mousewheel.scroll_y = event.wheel.y;
             return true;
 
         case SDL_KEYDOWN:

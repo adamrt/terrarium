@@ -102,7 +102,7 @@ typedef enum {
 // clang-format off
 typedef struct { i32 pos_x, pos_y;                            } os_event_mousemove_t;
 typedef struct { i32 pos_x, pos_y; os_mouse_button_e button;  } os_event_mousebutton_t;
-typedef struct { i32 pos_x, pos_y; f32 scroll_x, scroll_y;    } os_event_mousewheel_t;
+typedef struct { i32 pos_x, pos_y; i32 scroll_x, scroll_y;    } os_event_mousewheel_t;
 typedef struct { os_key_code_e code; bool is_repeat; u8 mods; } os_event_key_t;
 
 typedef struct {
