@@ -14,6 +14,14 @@ typedef struct {
     gfx_color_t color_b;
 } state_t;
 
+static void func_event(ws_window_t* window, const ws_event_t* event)
+{
+    ASSERT(window);
+    ASSERT(event);
+
+    printf("Dummy got event: %s\n", ws_event_str(event));
+}
+
 static void func_draw(ws_window_t* window)
 {
     state_t* state = window->ctx;
@@ -47,6 +55,7 @@ ws_window_t* exp_dummy_create(mem_allocator_t* alloc, i32 x, i32 y)
     state->color_a = gfx_color_random();
     state->color_b = gfx_color_random();
 
+    window->func_event = func_event;
     window->func_draw = func_draw;
     window->func_close = func_close;
     window->ctx = state;

@@ -204,6 +204,7 @@ void ws_server_window_take(ws_server_t* server, ws_window_t** window_take)
     *window_take = NULL;
 
     ASSERT(server->window_count < WS_SERVER_WINDOW_MAX);
+    ASSERT(window->func_event);
     ASSERT(window->func_draw);
     ASSERT(window->func_close);
 
@@ -316,7 +317,7 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
         case WS_HIT_CONTENT:
             ASSERT(hit.window);
             ws_event_t ws_event = ws_event_from_os_event(hit.window, os_event);
-            UNUSED(ws_event);
+            ws_window_event_handle(hit.window, &ws_event);
             break;
         case WS_HIT_NEW_WIN:
             ASSERT(!hit.window);

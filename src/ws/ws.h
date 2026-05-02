@@ -7,6 +7,9 @@
 #include "gfx/gfx.h"
 #include "os/os.h"
 
+// Forward declared from below so Window can stay on top of file.
+typedef struct ws_event ws_event_t;
+
 //
 // Window
 //
@@ -20,6 +23,7 @@ typedef struct ws_window {
     bool is_maximized;
     gfx_rect_t restore_rect; // Rect prior to max
 
+    void (*func_event)(struct ws_window* window, const ws_event_t* event);
     void (*func_draw)(struct ws_window* window);
     void (*func_close)(struct ws_window* window);
     void* ctx;
@@ -27,6 +31,7 @@ typedef struct ws_window {
 
 ws_window_t* ws_window_create(mem_allocator_t* alloc, strview_t title, i32 x, i32 y, i32 width, i32 height);
 void ws_window_destroy(mem_allocator_t* alloc, ws_window_t* window);
+void ws_window_event_handle(ws_window_t* window, const ws_event_t* event);
 void ws_window_close(mem_allocator_t* alloc, ws_window_t* window);
 void ws_window_move(ws_window_t* window, i32 x, i32 y);
 void ws_window_resize(mem_allocator_t* alloc, ws_window_t* window, i32 width, i32 height);
@@ -51,7 +56,7 @@ typedef enum {
     WS_EVENT_WINDOW_LEAVE,
 } ws_event_type_e;
 
-typedef struct {
+struct ws_event {
     ws_event_type_e type;
 
     union {
@@ -60,8 +65,9 @@ typedef struct {
         os_event_mousewheel_t mousewheel;
         os_event_key_t key;
     } u;
+};
 
-} ws_event_t;
+const char* ws_event_str(const ws_event_t* event);
 
 typedef enum {
     WS_HIT_NONE,

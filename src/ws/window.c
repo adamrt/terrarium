@@ -23,6 +23,10 @@ ws_window_t* ws_window_create(mem_allocator_t* alloc, strview_t title, i32 x, i3
     window->restore_rect = (gfx_rect_t) { 0 };
     window->is_maximized = false;
 
+    window->func_event = NULL;
+    window->func_draw = NULL;
+    window->func_close = NULL;
+
     gfx_rect_t content_rect = ws_window_rect_content(window);
     gfx_surface_t* content = gfx_surface_create(alloc, content_rect.width, content_rect.height);
     ASSERT(content);
@@ -39,6 +43,14 @@ void ws_window_destroy(mem_allocator_t* alloc, ws_window_t* window)
 
     gfx_surface_destroy(alloc, window->content);
     mem_free(alloc, window);
+}
+
+void ws_window_event_handle(ws_window_t* window, const ws_event_t* event)
+{
+    ASSERT(window);
+    ASSERT(event);
+
+    window->func_event(window, event);
 }
 
 void ws_window_close(mem_allocator_t* alloc, ws_window_t* window)

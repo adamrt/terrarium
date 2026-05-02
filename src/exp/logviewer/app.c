@@ -56,6 +56,14 @@ static void func_close(ws_window_t* window)
     mem_free(alloc, window->ctx);
 }
 
+static void func_event(struct ws_window* window, const ws_event_t* event)
+{
+    ASSERT(window);
+    ASSERT(event);
+
+    printf("Logviewer got event: %s\n", ws_event_str(event));
+}
+
 ws_window_t* exp_logviewer_create(mem_allocator_t* alloc, i32 x, i32 y)
 {
     ASSERT(alloc);
@@ -70,6 +78,7 @@ ws_window_t* exp_logviewer_create(mem_allocator_t* alloc, i32 x, i32 y)
     state->background_color = gfx_black;
     state->line_count = 0;
 
+    window->func_event = func_event;
     window->func_draw = func_draw;
     window->func_close = func_close;
     window->ctx = state;
