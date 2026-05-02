@@ -416,21 +416,22 @@ static ws_event_t ws_event_from_os_event(const ws_window_t* window, const os_eve
     // Copy all data
     (void)memcpy(&ws_event.u, &os_event->u, sizeof(os_event->u));
 
-    // Localize events to the window
-    // FIXME: This needs to be offset to the content rect, not window
+    // Content relative coordinates
+    gfx_rect_t local_coords = ws_window_rect_content(window);
+
     switch (ws_event.type) {
     case WS_EVENT_MOUSEMOVE:
-        ws_event.u.mousemove.pos_x -= window->rect.x;
-        ws_event.u.mousemove.pos_y -= window->rect.y;
+        ws_event.u.mousemove.pos_x -= local_coords.x;
+        ws_event.u.mousemove.pos_y -= local_coords.y;
         break;
     case WS_EVENT_MOUSEBUTTON_DOWN:
     case WS_EVENT_MOUSEBUTTON_UP:
-        ws_event.u.mousebutton.pos_x -= window->rect.x;
-        ws_event.u.mousebutton.pos_y -= window->rect.y;
+        ws_event.u.mousebutton.pos_x -= local_coords.x;
+        ws_event.u.mousebutton.pos_y -= local_coords.y;
         break;
     case WS_EVENT_MOUSEWHEEL:
-        ws_event.u.mousewheel.pos_x -= window->rect.x;
-        ws_event.u.mousewheel.pos_y -= window->rect.y;
+        ws_event.u.mousewheel.pos_x -= local_coords.x;
+        ws_event.u.mousewheel.pos_y -= local_coords.y;
         break;
     default:
         break;
