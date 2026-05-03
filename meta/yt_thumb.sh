@@ -11,7 +11,8 @@ title="$1"
 episode="$2"
 subtitle="${3:-}"
 out="thumb_ep_${episode}.png"
-font="$HOME/Library/Fonts/BerkeleyMono-Regular.ttf"
+#font="$HOME/Library/Fonts/BerkeleyMono-Regular.ttf"
+font="/usr/local/share/fonts/b/BerkeleyMono_Regular.ttf"
 
 char_count=${#title}
 if   [[ $char_count -le 15 ]]; then pointsize=96
