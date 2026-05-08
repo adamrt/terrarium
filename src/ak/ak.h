@@ -35,6 +35,13 @@ typedef _Bool bool;
 static inline i32 i32_min(i32 a, i32 b) { return (a < b) ? a : b; }
 static inline i32 i32_max(i32 a, i32 b) { return (a > b) ? a : b; }
 static inline i32 i32_clamp(i32 value, i32 lo, i32 hi) { return i32_min(i32_max(value, lo), hi); }
+static inline i32 i32_abs(i32 value) { return (value < 0) ? -value : value; }
+static inline void i32_swap(i32* a, i32* b)
+{
+    i32 tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
 
 // f32
 static inline f32 f32_min(f32 a, f32 b) { return (a < b) ? a : b; }
