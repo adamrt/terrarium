@@ -9,11 +9,12 @@ void gfx_surface_draw_pixel(gfx_surface_t* surface, i32 x, i32 y, gfx_pixel_t pi
     ASSERT(surface);
 
     // You can return early instead of asserting, but we want our caller
-    // functions to handle their own overdraw.
-    ASSERT(x >= 0);
-    ASSERT(y >= 0);
-    ASSERT(x < surface->width);
-    ASSERT(y < surface->height);
+    // functions to handle their own overdraw. We might change this in the
+    // future but for now its helpful to know when overdraw is happening.
+    ASSERT(x >= 0, "x is %d", x);
+    ASSERT(y >= 0, "y is %d", y);
+    ASSERT(x < surface->width, "x is %d >= surface width %d", x, surface->width);
+    ASSERT(y < surface->height, "y is %d >= surface height %d", y, surface->height);
 
     surface->data[y * surface->width + x] = pixel;
 }
@@ -30,6 +31,31 @@ void gfx_surface_fill(gfx_surface_t* surface, gfx_color_t color)
         .height = surface->height,
     };
     gfx_surface_fill_rect(surface, rect, color);
+}
+
+// DDA line drawing algorithm
+// FIXME: Switch to Bresenham's once you understand it.
+// FIXME: Call line_h and line_v and make those functions static (handle right to left).
+void gfx_surface_draw_line(gfx_surface_t* surface, i32 x0, i32 y0, i32 x1, i32 y1, gfx_color_t color)
+{
+    gfx_pixel_t packed = gfx_color_pack(color);
+
+    i32 delta_x = (x1 - x0);
+    i32 delta_y = (y1 - y0);
+
+    i32 longest_side_length = (i32_abs(delta_x) >= i32_abs(delta_y)) ? i32_abs(delta_x) : i32_abs(delta_y);
+
+    f32 x_inc = (f32)delta_x / (f32)longest_side_length;
+    f32 y_inc = (f32)delta_y / (f32)longest_side_length;
+
+    f32 current_x = (f32)x0;
+    f32 current_y = (f32)y0;
+
+    for (i32 i = 0; i <= longest_side_length; i++) {
+        gfx_surface_draw_pixel(surface, (i32)roundf(current_x), (i32)roundf(current_y), packed);
+        current_x += x_inc;
+        current_y += y_inc;
+    }
 }
 
 void gfx_surface_draw_line_h(gfx_surface_t* surface, i32 x, i32 y, i32 len, gfx_color_t color)

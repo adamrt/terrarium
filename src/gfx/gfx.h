@@ -72,6 +72,7 @@ void gfx_surface_fill(gfx_surface_t* surface, gfx_color_t color);
 void gfx_surface_fill_rect(gfx_surface_t* surface, gfx_rect_t rect, gfx_color_t color);
 
 void gfx_surface_draw_pixel(gfx_surface_t* surface, i32 x, i32 y, gfx_pixel_t pixel);
+void gfx_surface_draw_line(gfx_surface_t* surface, i32 x0, i32 y0, i32 x1, i32 y1, gfx_color_t color);
 void gfx_surface_draw_line_h(gfx_surface_t* surface, i32 x, i32 y, i32 len, gfx_color_t color);
 void gfx_surface_draw_line_v(gfx_surface_t* surface, i32 x, i32 y, i32 len, gfx_color_t color);
 void gfx_surface_draw_rect(gfx_surface_t* surface, gfx_rect_t rect, gfx_color_t color);
