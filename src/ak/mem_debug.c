@@ -3,13 +3,12 @@
 
 #include "ak/ak.h"
 
-#include <stddef.h>
 #include <stdlib.h>
 
 static const u32 MEM_MAGIC_ALLOC = 0xA110CAA1;
 
 typedef struct header {
-    alignas(max_align_t) u32 magic;
+    alignas(align_t) u32 magic;
     i32 line;
     usize size;
     const char* file;

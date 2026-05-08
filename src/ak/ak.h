@@ -4,7 +4,6 @@
 #pragma once
 
 #include <math.h>
-#include <stdalign.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -31,6 +30,16 @@ typedef _Bool bool;
 
 typedef unsigned long usize;
 #define USIZE_MAX (u64)(~0ULL)
+
+// This is similar to max_align_t so we can dump stddef.h and stdalign.h
+typedef union {
+    long long ll;
+    long double ld;
+    void* p;
+    void (*fp)(void);
+} align_t;
+
+#define alignas _Alignas
 
 // i32
 static inline i32 i32_min(i32 a, i32 b) { return (a < b) ? a : b; }
