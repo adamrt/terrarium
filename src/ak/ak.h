@@ -6,7 +6,6 @@
 #include <math.h>
 #include <stdalign.h>
 #include <stddef.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -14,15 +13,15 @@
 // Types
 //
 
-typedef uint8_t u8;
-typedef uint16_t u16;
-typedef uint32_t u32;
-typedef uint64_t u64;
+typedef unsigned char u8;
+typedef unsigned short u16;
+typedef unsigned int u32;
+typedef unsigned long long u64;
 
-typedef int8_t i8;
-typedef int16_t i16;
-typedef int32_t i32;
-typedef int64_t i64;
+typedef signed char i8;
+typedef signed short i16;
+typedef signed int i32;
+typedef signed long long i64;
 
 typedef float f32;
 typedef double f64;
@@ -139,3 +138,17 @@ str_t io_file_readall(mem_allocator_t* alloc, strview_t path);
             __builtin_trap();                                                                                  \
         }                                                                                                      \
     } while (0);
+
+//
+// Static Asserts for our standard library
+//
+
+STATIC_ASSERT(sizeof(u8) == 1);
+STATIC_ASSERT(sizeof(u16) == 2);
+STATIC_ASSERT(sizeof(u32) == 4);
+STATIC_ASSERT(sizeof(u64) == 8);
+
+STATIC_ASSERT(sizeof(i8) == 1);
+STATIC_ASSERT(sizeof(i16) == 2);
+STATIC_ASSERT(sizeof(i32) == 4);
+STATIC_ASSERT(sizeof(i64) == 8);
