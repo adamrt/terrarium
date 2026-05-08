@@ -49,6 +49,7 @@ static inline f32 f32_max(f32 a, f32 b) { return (a > b) ? a : b; }
 static inline f32 f32_clamp(f32 value, f32 lo, f32 hi) { return f32_min(f32_max(value, lo), hi); }
 static inline f32 f32_sin(f32 value) { return sinf(value); }
 static inline f32 f32_cos(f32 value) { return cosf(value); }
+static inline i32 f32_round(f32 value) { return (i32)(value + 0.5f); }
 
 //
 // Memory

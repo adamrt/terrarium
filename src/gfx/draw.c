@@ -52,7 +52,9 @@ void gfx_surface_draw_line(gfx_surface_t* surface, i32 x0, i32 y0, i32 x1, i32 y
     f32 current_y = (f32)y0;
 
     for (i32 i = 0; i <= longest_side_length; i++) {
-        gfx_surface_draw_pixel(surface, (i32)roundf(current_x), (i32)roundf(current_y), packed);
+        i32 x = f32_round(current_x);
+        i32 y = f32_round(current_y);
+        gfx_surface_draw_pixel(surface, x, y, packed);
         current_x += x_inc;
         current_y += y_inc;
     }
