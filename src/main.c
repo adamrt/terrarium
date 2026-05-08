@@ -7,9 +7,6 @@
 #include "os/os.h"
 #include "ws/ws.h"
 
-#include <stdio.h>
-#include <string.h>
-
 enum {
     SCREEN_WIDTH = 800,
     SCREEN_HEIGHT = 600,
