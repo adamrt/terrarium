@@ -7,9 +7,6 @@
 #include "gfx/gfx.h"
 #include "ws/ws.h"
 
-#include <stdio.h>
-#include <string.h>
-
 static const char* LOG_FILE = "src/main.c";
 
 enum {
@@ -22,7 +19,7 @@ typedef struct {
 
     str_t contents;
     strview_t* lines;
-    size_t line_count;
+    usize line_count;
 
     i32 scroll_y;
 } state_t;

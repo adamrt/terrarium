@@ -1,9 +1,8 @@
 // Copyright (c) 2026 Adam Patterson
 // SPDX-License-Identifier: ISC
 
+#include "ak/ak.h"
 #include "gfx/gfx.h"
-
-#include <string.h>
 
 // Forward declarations
 u8 gfx_font[128][8];
@@ -11,7 +10,7 @@ static void gfx_surface_draw_char(gfx_surface_t* surface, i32 pos_x, i32 pos_y, 
 
 void gfx_surface_draw_text(gfx_surface_t* surface, i32 pos_x, i32 pos_y, strview_t s, gfx_color_t color)
 {
-    for (size_t i = 0; i < s.len; i++) {
+    for (usize i = 0; i < s.len; i++) {
         gfx_surface_draw_char(surface, pos_x, pos_y, s.ptr[i], color);
         pos_x += GFX_FONT_WIDTH;
     }

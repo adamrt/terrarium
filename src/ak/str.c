@@ -5,11 +5,11 @@ void str_destroy(mem_allocator_t* alloc, str_t s)
     mem_free(alloc, s.ptr);
 }
 
-strview_t* str_split_lines(mem_allocator_t* alloc, str_t s, size_t* out_count)
+strview_t* str_split_lines(mem_allocator_t* alloc, str_t s, usize* out_count)
 {
     // Count lines
-    size_t count = 1; // Start with one
-    for (size_t i = 0; i < s.len; i++) {
+    usize count = 1; // Start with one
+    for (usize i = 0; i < s.len; i++) {
         if (s.ptr[i] == '\n') {
             count++;
         }
@@ -21,9 +21,9 @@ strview_t* str_split_lines(mem_allocator_t* alloc, str_t s, size_t* out_count)
     strview_t* lines = mem_alloc(alloc, sizeof(strview_t) * count);
     mem_zero(lines, sizeof(strview_t) * count);
 
-    size_t start = 0;
-    size_t line_index = 0;
-    for (size_t i = 0; i < s.len; i++) {
+    usize start = 0;
+    usize line_index = 0;
+    for (usize i = 0; i < s.len; i++) {
         if (s.ptr[i] == '\n') {
             lines[line_index++] = (strview_t) {
                 .ptr = &s.ptr[start],

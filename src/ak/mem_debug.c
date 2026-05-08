@@ -3,15 +3,15 @@
 
 #include "ak/ak.h"
 
+#include <stddef.h>
 #include <stdlib.h>
-#include <string.h>
 
 static const u32 MEM_MAGIC_ALLOC = 0xA110CAA1;
 
 typedef struct header {
     alignas(max_align_t) u32 magic;
     i32 line;
-    size_t size;
+    usize size;
     const char* file;
     struct header* next;
 } header_t;
@@ -19,18 +19,18 @@ typedef struct header {
 typedef struct {
     header_t* head;
 
-    size_t allocation_count_total;
-    size_t allocation_count_current;
+    usize allocation_count_total;
+    usize allocation_count_current;
 
-    size_t allocation_size_total;
-    size_t allocation_size_current;
+    usize allocation_size_total;
+    usize allocation_size_current;
 } state_t;
 
-static void* debug_alloc(void* ctx, size_t size, const char* file, i32 line)
+static void* debug_alloc(void* ctx, usize size, const char* file, i32 line)
 {
     ASSERT(ctx);
     ASSERT(size > 0);
-    ASSERT(size <= SIZE_MAX - sizeof(header_t));
+    ASSERT(size <= USIZE_MAX - sizeof(header_t));
 
     state_t* state = ctx;
 
@@ -59,17 +59,17 @@ static void* debug_alloc(void* ctx, size_t size, const char* file, i32 line)
 
 // debug_realloc forbids NULL ptr. This will help catch unintentional memory
 // issues at the expense of a little more verbose code in a handful of places.
-static void* debug_realloc(void* ctx, void* ptr, size_t new_size, const char* file, int line)
+static void* debug_realloc(void* ctx, void* ptr, usize new_size, const char* file, int line)
 {
     ASSERT(ctx);
     ASSERT(ptr);
     ASSERT(new_size > 0);
-    ASSERT(new_size <= SIZE_MAX - sizeof(header_t));
+    ASSERT(new_size <= USIZE_MAX - sizeof(header_t));
 
     state_t* state = ctx;
 
     header_t* old_header = ((header_t*)ptr) - 1;
-    size_t old_size = old_header->size;
+    usize old_size = old_header->size;
     ASSERT(old_header->magic == MEM_MAGIC_ALLOC);
 
     header_t* header = NULL;

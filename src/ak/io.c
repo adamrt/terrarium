@@ -1,10 +1,11 @@
 #include "ak/ak.h"
 
+#include <stdio.h>
 #include <sys/stat.h>
 
 typedef struct {
-    size_t size;
-    size_t modified;
+    usize size;
+    usize modified;
 } io_stat_t;
 
 io_stat_t io_file_stat(mem_allocator_t* alloc, strview_t path)
@@ -18,8 +19,8 @@ io_stat_t io_file_stat(mem_allocator_t* alloc, strview_t path)
     mem_free(alloc, copy);
 
     return (io_stat_t) {
-        .size = (size_t)st.st_size,
-        .modified = (size_t)st.st_mtime,
+        .size = (usize)st.st_size,
+        .modified = (usize)st.st_mtime,
     };
 }
 
@@ -36,7 +37,7 @@ str_t io_file_readall(mem_allocator_t* alloc, strview_t path)
     ASSERT(f);
     mem_free(alloc, copy);
 
-    size_t n = fread(str.ptr, sizeof(char), str.len, f);
+    usize n = fread(str.ptr, sizeof(char), str.len, f);
     ASSERT(n > 0);
 
     if (str.ptr[str.len - 1] == '\0') {

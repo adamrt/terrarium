@@ -8,7 +8,7 @@ static u32 s_state = 0;
 // This is terrible entropy but we are avoiding using time.h
 void rnd_init(void)
 {
-    s_state = (u32)(uintptr_t)&s_state;
+    s_state = (u32)(usize)&s_state;
 }
 
 // random_i32_range is a basic LCG using the same constants as GCC.

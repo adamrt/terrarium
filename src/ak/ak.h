@@ -5,7 +5,6 @@
 
 #include <math.h>
 #include <stdalign.h>
-#include <stddef.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -29,6 +28,9 @@ typedef double f64;
 typedef _Bool bool;
 #define true  1
 #define false 0
+
+typedef unsigned long usize;
+#define USIZE_MAX (u64)(~0ULL)
 
 // i32
 static inline i32 i32_min(i32 a, i32 b) { return (a < b) ? a : b; }
@@ -55,8 +57,8 @@ static inline i32 f32_round(f32 value) { return (i32)(value + 0.5f); }
 //
 
 typedef struct mem_allocator {
-    void* (*func_alloc)(void* ctx, size_t size, const char* file, i32 line);
-    void* (*func_realloc)(void* ctx, void* ptr, size_t new_size, const char* file, int line);
+    void* (*func_alloc)(void* ctx, usize size, const char* file, i32 line);
+    void* (*func_realloc)(void* ctx, void* ptr, usize new_size, const char* file, int line);
     void (*func_free)(void* ctx, void* ptr);
     void (*func_shutdown)(struct mem_allocator* self);
 
@@ -67,10 +69,10 @@ mem_allocator_t* mem_heap_create(void);
 mem_allocator_t* mem_debug_create(void);
 
 #define mem_alloc(a, size)        ((a)->func_alloc((a)->ctx, size, __FILE__, __LINE__))
-#define mem_realloc(a, ptr, size) ((a)->func_realloc((a)->ctx, (ptr), (size_t)(size), __FILE__, __LINE__))
+#define mem_realloc(a, ptr, size) ((a)->func_realloc((a)->ctx, (ptr), (usize)(size), __FILE__, __LINE__))
 #define mem_free(a, ptr)          ((a)->func_free((a)->ctx, ptr))
 #define mem_shutdown(a)           ((a)->func_shutdown((a)))
-static inline void mem_zero(void* ptr, size_t size) { memset(ptr, 0, size); }
+static inline void mem_zero(void* ptr, usize size) { memset(ptr, 0, size); }
 
 //
 // Bitset
@@ -95,7 +97,7 @@ i32 rnd_i32_range(i32 min, i32 max);
 
 typedef struct {
     const char* ptr;
-    size_t len;
+    usize len;
 } strview_t;
 
 static inline strview_t sv(const char* s) { return (strview_t) { .ptr = s, .len = strlen(s) }; }
@@ -107,12 +109,12 @@ char* strview_to_cstr(mem_allocator_t* alloc, strview_t view);
 
 typedef struct {
     char* ptr;
-    size_t len;
-    size_t cap;
+    usize len;
+    usize cap;
 } str_t;
 
 void str_destroy(mem_allocator_t* alloc, str_t s);
-strview_t* str_split_lines(mem_allocator_t* alloc, str_t s, size_t* out_count);
+strview_t* str_split_lines(mem_allocator_t* alloc, str_t s, usize* out_count);
 
 //
 // Input/Output
