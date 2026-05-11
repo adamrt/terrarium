@@ -52,3 +52,9 @@ debug: $(BUILD_DIR)/$(TARGET)
 .PHONY: fmt
 fmt:
 	@find src -type f \( -name "*.c" -o -name "*.h" \) -exec clang-format -i {} +
+
+.PHONY: check
+check:
+	@find src -type f \( -name "*.c" -o -name "*.h" \) -exec sh -c 'head -n 1 "$$1" | grep -q "Copyright" || (echo "missing license: $$1" && exit 1)' _ {} \;
+	@find src -type f -name "*.h" -exec sh -c 'grep -q "^#pragma once$$" "$$1" || (echo "missing #pragma once: $$1" && exit 1)' _ {} \;
+	@find src -type f \( -name "*.c" -o -name "*.h" \) -exec clang-format --dry-run --Werror {} +

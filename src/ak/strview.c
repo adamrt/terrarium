@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Adam Patterson
+// SPDX-License-Identifier: ISC
+
 #include "ak/ak.h"
 
 char* strview_to_cstr(mem_allocator_t* alloc, strview_t view)

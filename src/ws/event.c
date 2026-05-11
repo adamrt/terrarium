@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Adam Patterson
+// SPDX-License-Identifier: ISC
+
 #include "ws/ws.h"
 
 const char* ws_event_str(const ws_event_t* event)

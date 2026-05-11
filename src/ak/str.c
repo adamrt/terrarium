@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Adam Patterson
+// SPDX-License-Identifier: ISC
+
 #include "ak/ak.h"
 
 void str_destroy(mem_allocator_t* alloc, str_t s)

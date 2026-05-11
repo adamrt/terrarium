@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Adam Patterson
+// SPDX-License-Identifier: ISC
+
 #include "ak/ak.h"
 
 #include <stdio.h>
