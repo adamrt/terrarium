@@ -24,12 +24,8 @@ typedef struct {
     i32 scroll_y;
 } state_t;
 
-static void read_logfile(state_t* state)
-{
-    // Contents needs to out live lines
-    state->contents = io_file_readall(state->alloc, sv(LOG_FILE));
-    state->lines = str_split_lines(state->alloc, state->contents, &state->line_count);
-}
+// Forward declarations
+static void read_logfile(state_t* state);
 
 static void func_draw(ws_window_t* window)
 {
@@ -67,9 +63,11 @@ static void func_event(struct ws_window* window, const ws_event_t* event)
 
     state_t* state = window->ctx;
 
-    state->scroll_y -= event->u.mousewheel.scroll_y;
-    state->scroll_y = i32_max(0, state->scroll_y);
-    state->scroll_y = i32_min(state->scroll_y, (i32)state->line_count - (window->content->height / LINE_HEIGHT) - 1);
+    if (event->type == WS_EVENT_MOUSEWHEEL) {
+        state->scroll_y -= event->u.mousewheel.scroll_y;
+        state->scroll_y = i32_max(0, state->scroll_y);
+        state->scroll_y = i32_min(state->scroll_y, (i32)state->line_count - (window->content->height / LINE_HEIGHT) - 1);
+    }
 }
 
 ws_window_t* exp_logviewer_create(mem_allocator_t* alloc, i32 x, i32 y)
@@ -95,4 +93,11 @@ ws_window_t* exp_logviewer_create(mem_allocator_t* alloc, i32 x, i32 y)
     read_logfile(state);
 
     return window;
+}
+
+static void read_logfile(state_t* state)
+{
+    // Contents needs to out live lines
+    state->contents = io_file_readall(state->alloc, sv(LOG_FILE));
+    state->lines = str_split_lines(state->alloc, state->contents, &state->line_count);
 }
