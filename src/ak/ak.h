@@ -24,12 +24,21 @@ typedef signed long long i64;
 typedef float f32;
 typedef double f64;
 
+typedef unsigned long usize;
+
 typedef _Bool bool;
 #define true  1
 #define false 0
 
-typedef unsigned long usize;
-#define USIZE_MAX (u64)(~0ULL)
+#define U8_MAX    (255)
+#define U16_MAX   (65535)
+#define U32_MAX   (4294967295U)
+#define U64_MAX   (18446744073709551615ULL)
+#define I8_MAX    (127)
+#define I16_MAX   (32767)
+#define I32_MAX   (2147483647)
+#define I64_MAX   (9223372036854775807LL)
+#define USIZE_MAX ((u64)(~0ULL))
 
 // This is similar to max_align_t so we can dump stddef.h and stdalign.h
 typedef union {
@@ -163,3 +172,5 @@ STATIC_ASSERT(sizeof(i8) == 1);
 STATIC_ASSERT(sizeof(i16) == 2);
 STATIC_ASSERT(sizeof(i32) == 4);
 STATIC_ASSERT(sizeof(i64) == 8);
+
+STATIC_ASSERT(sizeof(usize) == 8);
