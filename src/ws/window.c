@@ -159,6 +159,8 @@ gfx_rect_t ws_window_rect_handle_resize(const ws_window_t* window)
     gfx_rect_t rect = ws_window_rect_frame(window);
     rect.x = rect.x + rect.width - WS_FRAME_HANDLE_SIZE;
     rect.y = rect.y + rect.height - WS_FRAME_HANDLE_SIZE;
+    // Entire bottom right corner, including the window padding to allow
+    // grabbing the padding for resizing.
     rect.width = WS_FRAME_HANDLE_SIZE;
     rect.height = WS_FRAME_HANDLE_SIZE;
     return rect;
