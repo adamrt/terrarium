@@ -7,6 +7,14 @@
 #include "gfx/gfx.h"
 #include "os/os.h"
 
+enum {
+    WS_FRAME_BORDER_SIZE = 1,
+    WS_FRAME_PADDING_SIZE = 8,
+    WS_FRAME_TITLEBAR_HEIGHT = 24,
+    WS_FRAME_BUTTON_SIZE = 16,
+    WS_FRAME_HANDLE_SIZE = 24,
+};
+
 // Forward declared from below so Window can stay on top of file.
 typedef struct ws_event ws_event_t;
 
