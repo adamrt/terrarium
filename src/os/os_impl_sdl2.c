@@ -88,6 +88,8 @@ bool os_event_poll(os_event_t* out)
             out->type = OS_EVENT_MOUSEMOVE;
             out->u.mousemove.pos_x = event.motion.x;
             out->u.mousemove.pos_y = event.motion.y;
+            out->u.mousemove.rel_x = event.motion.xrel;
+            out->u.mousemove.rel_y = event.motion.yrel;
             return true;
 
         case SDL_MOUSEBUTTONDOWN:
