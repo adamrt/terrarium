@@ -24,6 +24,7 @@ typedef struct {
 
     i32 scroll_y;
     bool thumb_grabbed;
+    i32 thumb_grab_offset_y;
 } state_t;
 
 // Forward declarations
@@ -55,24 +56,30 @@ static void func_event(struct ws_window* window, const ws_event_t* event)
 
         if (gfx_rect_contains(thumb_rect, mx, my)) {
             state->thumb_grabbed = true;
+            state->thumb_grab_offset_y = my - thumb_rect.y;
         }
     } break;
 
     case WS_EVENT_MOUSEBUTTON_UP:
         state->thumb_grabbed = false;
+        state->thumb_grab_offset_y = 0;
         break;
 
     case WS_EVENT_MOUSEMOVE:
         if (state->thumb_grabbed) {
-            i32 max_scroll_height = get_max_scroll_height(window);
-            f32 visible_ratio = get_visible_ratio(window);
+            gfx_rect_t thumb_rect = scrollbar_thumb_rect(window);
+            gfx_rect_t track_rect = scrollbar_track_rect(window);
+            i32 travel_distance = track_rect.height - thumb_rect.height;
 
-            i32 my = event->u.mousemove.rel_y * LINE_HEIGHT;
-            // FIXME: Why is 9.0f the magic number here.
-            my = (i32)((f32)my / visible_ratio / 9.0f);
+            if (travel_distance > 0) {
+                i32 thumb_y = event->u.mousemove.pos_y - state->thumb_grab_offset_y;
+                thumb_y = i32_clamp(thumb_y, 0, travel_distance);
 
-            state->scroll_y += my;
-            state->scroll_y = i32_clamp(state->scroll_y, 0, i32_max(0, max_scroll_height));
+                i32 max_scroll_height = get_max_scroll_height(window);
+                f32 scroll_percent = (f32)thumb_y / (f32)travel_distance;
+                state->scroll_y = (i32)(scroll_percent * (f32)max_scroll_height);
+                state->scroll_y = i32_clamp(state->scroll_y, 0, max_scroll_height);
+            }
         }
         break;
 
@@ -132,6 +139,7 @@ ws_window_t* exp_logviewer_create(mem_allocator_t* alloc, i32 x, i32 y)
     state->line_count = 0;
     state->scroll_y = 0;
     state->thumb_grabbed = false;
+    state->thumb_grab_offset_y = 0;
 
     window->func_event = func_event;
     window->func_draw = func_draw;
