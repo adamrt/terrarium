@@ -285,19 +285,24 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
     ASSERT(server);
     ASSERT(os_event);
 
-    if (os_event->type == OS_EVENT_MOUSEBUTTON_DOWN) {
-        i32 mx = os_event->u.mousebutton.pos_x;
-        i32 my = os_event->u.mousebutton.pos_y;
+    i32 mx = 0;
+    i32 my = 0;
 
-        ws_hit_t hit = ws_server_window_hit_check(server, mx, my);
-        if (hit.window != NULL) {
-            ws_server_window_to_front(server, hit.window);
-        }
+    os_mouse_position_from_event(os_event, &mx, &my);
+    ws_hit_t hit = ws_server_window_hit_check(server, mx, my);
+    if (hit.window != NULL) {
+        ws_server_window_to_front(server, hit.window);
+    }
 
+    switch (os_event->type) {
+
+    case OS_EVENT_MOUSEBUTTON_DOWN:
         switch (hit.type) {
+
         case WS_HIT_NONE:
             ASSERT(hit.window == NULL);
             break;
+
         case WS_HIT_FRAME:
             ASSERT(hit.window);
             server->drag.type = WS_DRAG_MOVE;
@@ -306,6 +311,7 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
             server->drag.mouse_start_y = my;
             server->drag.rect_start = hit.window->rect;
             break;
+
         case WS_HIT_RESIZE:
             ASSERT(hit.window);
             server->drag.type = WS_DRAG_RESIZE;
@@ -314,41 +320,47 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
             server->drag.mouse_start_y = my;
             server->drag.rect_start = hit.window->rect;
             break;
+
         case WS_HIT_CONTENT:
             ASSERT(hit.window);
             ws_event_t ws_event = ws_event_from_os_event(hit.window, os_event);
             ws_window_event_handle(hit.window, &ws_event);
             break;
+
         case WS_HIT_NEW_WIN:
             ASSERT(!hit.window);
             ws_window_t* window = exp_dummy_create(alloc, rnd_i32_range(0, 700), rnd_i32_range(0, 500));
             ws_server_window_take(server, &window);
             break;
+
         default:
             break;
         }
         return;
-    } else if (os_event->type == OS_EVENT_MOUSEBUTTON_UP) {
-        i32 mx = os_event->u.mousebutton.pos_x;
-        i32 my = os_event->u.mousebutton.pos_y;
 
-        ws_hit_t hit = ws_server_window_hit_check(server, mx, my);
-        if (hit.window != NULL) {
-            ws_server_window_to_front(server, hit.window);
-        }
-
+    case OS_EVENT_MOUSEBUTTON_UP:
         switch (hit.type) {
+
         case WS_HIT_NONE:
             ASSERT(hit.window == NULL);
             break;
+
         case WS_HIT_CLOSE:
             ASSERT(hit.window);
             ws_server_window_close(alloc, server, hit.window);
             break;
+
         case WS_HIT_MAXIMIZE:
             ASSERT(hit.window);
             ws_server_window_maximize_toggle(alloc, server, hit.window);
             break;
+
+        case WS_HIT_CONTENT:
+            ASSERT(hit.window);
+            ws_event_t ws_event = ws_event_from_os_event(hit.window, os_event);
+            ws_window_event_handle(hit.window, &ws_event);
+            break;
+
         default:
             break;
         }
@@ -360,17 +372,18 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
         server->drag.mouse_start_y = 0;
         server->drag.rect_start = (gfx_rect_t) { 0 };
         return;
-    } else if (os_event->type == OS_EVENT_MOUSEMOVE) {
+
+    case OS_EVENT_MOUSEMOVE:
         if (server->drag.window) {
             ASSERT(server->drag.type != WS_DRAG_NONE);
 
             ws_window_t* window = server->drag.window;
-            i32 mx = os_event->u.mousemove.pos_x;
-            i32 my = os_event->u.mousemove.pos_y;
 
             switch (server->drag.type) {
+
             case WS_DRAG_NONE:
                 __builtin_unreachable();
+
             case WS_DRAG_MOVE: {
                 // Cannot move maximize windows
                 if (window->is_maximized) {
@@ -385,6 +398,7 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
                 ws_window_move(window, new_x, new_y);
                 break;
             }
+
             case WS_DRAG_RESIZE: {
                 i32 delta_x = mx - server->drag.mouse_start_x;
                 i32 delta_y = my - server->drag.mouse_start_y;
@@ -395,25 +409,42 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
                 ws_window_resize(alloc, window, new_width, new_height);
                 break;
             }
+
             default:
                 __builtin_unreachable();
             }
-            return;
+        } else {
+
+            switch (hit.type) {
+
+            case WS_HIT_CONTENT:
+                ASSERT(hit.window);
+                ws_event_t ws_event = ws_event_from_os_event(hit.window, os_event);
+                ws_window_event_handle(hit.window, &ws_event);
+                break;
+
+            default:
+                break;
+            }
         }
-    } else if (os_event->type == OS_EVENT_MOUSEWHEEL) {
 
-        i32 mx = os_event->u.mousemove.pos_x;
-        i32 my = os_event->u.mousemove.pos_y;
+        return;
 
-        ws_hit_t hit = ws_server_window_hit_check(server, mx, my);
-        if (hit.window != NULL) {
-            ws_server_window_to_front(server, hit.window);
-        }
+    case OS_EVENT_MOUSEWHEEL:
+        switch (hit.type) {
 
-        if (hit.type == WS_HIT_CONTENT) {
+        case WS_HIT_CONTENT:
+            ASSERT(hit.window);
             ws_event_t ws_event = ws_event_from_os_event(hit.window, os_event);
             ws_window_event_handle(hit.window, &ws_event);
+            break;
+
+        default:
+            break;
         }
+        return;
+
+    default:
         return;
     }
 }
