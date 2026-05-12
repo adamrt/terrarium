@@ -23,12 +23,15 @@ typedef struct {
     usize line_count;
 
     i32 scroll_y;
+    bool thumb_grabbed;
 } state_t;
 
 // Forward declarations
 static void read_logfile(state_t* state);
 static gfx_rect_t scrollbar_thumb_rect(ws_window_t* window);
 static gfx_rect_t scrollbar_track_rect(ws_window_t* window);
+static i32 get_max_scroll_height(ws_window_t* window);
+static f32 get_visible_ratio(ws_window_t* window);
 
 static void func_event(struct ws_window* window, const ws_event_t* event)
 {
@@ -37,12 +40,44 @@ static void func_event(struct ws_window* window, const ws_event_t* event)
 
     state_t* state = window->ctx;
 
-    if (event->type == WS_EVENT_MOUSEWHEEL) {
-        i32 visible_line_count = window->content->height / LINE_HEIGHT;
-        i32 max_scroll_line = (i32)state->line_count - visible_line_count;
+    switch (event->type) {
+    case WS_EVENT_MOUSEWHEEL: {
+        i32 max_scroll_height = get_max_scroll_height(window);
 
-        state->scroll_y -= event->u.mousewheel.scroll_y;
-        state->scroll_y = i32_clamp(state->scroll_y, 0, i32_max(0, max_scroll_line));
+        state->scroll_y -= event->u.mousewheel.scroll_y * LINE_HEIGHT;
+        state->scroll_y = i32_clamp(state->scroll_y, 0, i32_max(0, max_scroll_height));
+    } break;
+
+    case WS_EVENT_MOUSEBUTTON_DOWN: {
+        i32 mx = event->u.mousebutton.pos_x;
+        i32 my = event->u.mousebutton.pos_y;
+        gfx_rect_t thumb_rect = scrollbar_thumb_rect(window);
+
+        if (gfx_rect_contains(thumb_rect, mx, my)) {
+            state->thumb_grabbed = true;
+        }
+    } break;
+
+    case WS_EVENT_MOUSEBUTTON_UP:
+        state->thumb_grabbed = false;
+        break;
+
+    case WS_EVENT_MOUSEMOVE:
+        if (state->thumb_grabbed) {
+            i32 max_scroll_height = get_max_scroll_height(window);
+            f32 visible_ratio = get_visible_ratio(window);
+
+            i32 my = event->u.mousemove.rel_y * LINE_HEIGHT;
+            // FIXME: Why is 9.0f the magic number here.
+            my = (i32)((f32)my / visible_ratio / 9.0f);
+
+            state->scroll_y += my;
+            state->scroll_y = i32_clamp(state->scroll_y, 0, i32_max(0, max_scroll_height));
+        }
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -58,7 +93,7 @@ static void func_draw(ws_window_t* window)
         if (line * LINE_HEIGHT > window->content->height) {
             break;
         }
-        i32 index = line + state->scroll_y;
+        i32 index = line + state->scroll_y / LINE_HEIGHT;
         index = i32_min(index, (i32)state->line_count - 1);
         gfx_surface_draw_text(window->content, 0, LINE_HEIGHT * line, state->lines[index], gfx_white);
     }
@@ -96,6 +131,7 @@ ws_window_t* exp_logviewer_create(mem_allocator_t* alloc, i32 x, i32 y)
     state->background_color = gfx_black;
     state->line_count = 0;
     state->scroll_y = 0;
+    state->thumb_grabbed = false;
 
     window->func_event = func_event;
     window->func_draw = func_draw;
@@ -141,28 +177,25 @@ static gfx_rect_t scrollbar_thumb_rect(ws_window_t* window)
 
     state_t* state = window->ctx;
 
-    i32 content_height = (i32)state->line_count * LINE_HEIGHT;
-    i32 viewport_height = window->content->height;
     i32 track_height = scrollbar_track_height(window);
 
     // Full size thumb
     i32 thumb_y = 0;
     i32 thumb_height = track_height;
 
+    i32 max_scroll_height = get_max_scroll_height(window);
+    f32 visible_ratio = get_visible_ratio(window);
+
     // Partial size thumb
-    if (content_height > viewport_height) {
+    if (max_scroll_height > 0) {
         i32 thumb_min_height = 20;
-        f32 visible_ratio = (f32)viewport_height / (f32)content_height;
 
         thumb_height = (i32)((f32)track_height * visible_ratio);
         thumb_height = i32_max(thumb_height, thumb_min_height);
 
-        i32 visible_line_count = viewport_height / LINE_HEIGHT;
-        i32 hidden_line_count = (i32)state->line_count - visible_line_count;
-
-        if (hidden_line_count > 0) {
-            i32 current_scroll = i32_min(state->scroll_y, hidden_line_count);
-            f32 scroll_percent = (f32)current_scroll / (f32)hidden_line_count;
+        if (max_scroll_height > 0) {
+            i32 current_scroll = i32_min(state->scroll_y, max_scroll_height);
+            f32 scroll_percent = (f32)current_scroll / (f32)max_scroll_height;
 
             i32 travel_distance = track_height - thumb_height;
             thumb_y = (i32)(scroll_percent * (f32)travel_distance);
@@ -175,4 +208,26 @@ static gfx_rect_t scrollbar_thumb_rect(ws_window_t* window)
         .width = SCROLLBAR_TRACK_WIDTH,
         .height = thumb_height,
     };
+}
+
+static i32 get_max_scroll_height(ws_window_t* window)
+{
+    ASSERT(window);
+
+    state_t* state = window->ctx;
+
+    i32 content_height = (i32)state->line_count * LINE_HEIGHT;
+    i32 viewport_height = window->content->height;
+    return content_height - viewport_height;
+}
+
+static f32 get_visible_ratio(ws_window_t* window)
+{
+    ASSERT(window);
+
+    state_t* state = window->ctx;
+
+    i32 content_height = (i32)state->line_count * LINE_HEIGHT;
+    i32 viewport_height = window->content->height;
+    return (f32)viewport_height / (f32)content_height;
 }
