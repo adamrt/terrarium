@@ -120,6 +120,7 @@ typedef struct {
 
 bool os_event_poll(os_event_t* out);
 
+void os_mouse_position_from_event(const os_event_t* event, i32* out_mx, i32* out_my);
 u8 os_mod_bitset(void);
 void os_mod_bitset_set(os_mod_e code, bool is_down);
 os_mod_e os_key_to_mod(os_key_code_e);

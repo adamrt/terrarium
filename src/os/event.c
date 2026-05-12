@@ -39,3 +39,32 @@ os_mod_e os_key_to_mod(os_key_code_e code)
 
     return table[code];
 }
+
+void os_mouse_position_from_event(const os_event_t* event, i32* out_mx, i32* out_my)
+{
+    ASSERT(event);
+
+    switch (event->type) {
+    case OS_EVENT_MOUSEMOVE:
+        *out_mx = event->u.mousemove.pos_x;
+        *out_my = event->u.mousemove.pos_y;
+        break;
+    case OS_EVENT_MOUSEBUTTON_DOWN:
+        *out_mx = event->u.mousebutton.pos_x;
+        *out_my = event->u.mousebutton.pos_y;
+        break;
+    case OS_EVENT_MOUSEBUTTON_UP:
+        *out_mx = event->u.mousebutton.pos_x;
+        *out_my = event->u.mousebutton.pos_y;
+        break;
+    case OS_EVENT_MOUSEWHEEL:
+        *out_mx = event->u.mousewheel.pos_x;
+        *out_my = event->u.mousewheel.pos_y;
+        break;
+    default:
+        // -1 is invalid because the x,y should be within screen coordinates.
+        *out_mx = -1;
+        *out_my = -1;
+        break;
+    }
+}
