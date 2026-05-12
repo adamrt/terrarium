@@ -90,7 +90,7 @@ static void func_draw(ws_window_t* window)
     gfx_surface_fill(window->content, state->background_color);
 
     for (i32 line = 0; line < (i32)state->line_count; line++) {
-        if (line * LINE_HEIGHT > window->content->height) {
+        if (line * LINE_HEIGHT >= window->content->height) {
             break;
         }
         i32 index = line + state->scroll_y / LINE_HEIGHT;
@@ -193,13 +193,11 @@ static gfx_rect_t scrollbar_thumb_rect(ws_window_t* window)
         thumb_height = (i32)((f32)track_height * visible_ratio);
         thumb_height = i32_max(thumb_height, thumb_min_height);
 
-        if (max_scroll_height > 0) {
-            i32 current_scroll = i32_min(state->scroll_y, max_scroll_height);
-            f32 scroll_percent = (f32)current_scroll / (f32)max_scroll_height;
+        i32 current_scroll = i32_min(state->scroll_y, max_scroll_height);
+        f32 scroll_percent = (f32)current_scroll / (f32)max_scroll_height;
 
-            i32 travel_distance = track_height - thumb_height;
-            thumb_y = (i32)(scroll_percent * (f32)travel_distance);
-        }
+        i32 travel_distance = track_height - thumb_height;
+        thumb_y = (i32)(scroll_percent * (f32)travel_distance);
     }
 
     return (gfx_rect_t) {
@@ -218,7 +216,10 @@ static i32 get_max_scroll_height(ws_window_t* window)
 
     i32 content_height = (i32)state->line_count * LINE_HEIGHT;
     i32 viewport_height = window->content->height;
-    return content_height - viewport_height;
+    i32 max_scroll = content_height - viewport_height;
+    max_scroll = i32_max(0, max_scroll);
+
+    return max_scroll;
 }
 
 static f32 get_visible_ratio(ws_window_t* window)
@@ -226,6 +227,8 @@ static f32 get_visible_ratio(ws_window_t* window)
     ASSERT(window);
 
     state_t* state = window->ctx;
+
+    ASSERT(state->line_count > 0); // Avoid division by 0 below
 
     i32 content_height = (i32)state->line_count * LINE_HEIGHT;
     i32 viewport_height = window->content->height;
