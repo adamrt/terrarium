@@ -38,7 +38,7 @@ void func_event(struct ui_scrollbar* scrollbar, const ws_event_t* event)
 
             if (travel_distance > 0) {
                 i32 thumb_y = event->u.mousemove.pos_y - scrollbar->thumb_grab_offset_y;
-                thumb_y = i32_clamp(thumb_y, 0, travel_distance);
+                thumb_y = i32_clamp(thumb_y, scrollbar->track_rect.y, travel_distance);
 
                 f32 scroll_percent = (f32)thumb_y / (f32)travel_distance;
                 i32 scroll_y = (i32)(scroll_percent * (f32)max_scroll_height);
@@ -137,7 +137,7 @@ static gfx_rect_t scrollbar_thumb_rect(struct ui_scrollbar* scrollbar)
 
     return (gfx_rect_t) {
         .x = scrollbar->track_rect.x,
-        .y = thumb_y,
+        .y = scrollbar->track_rect.y + thumb_y,
         .width = scrollbar->track_rect.width,
         .height = thumb_height,
     };
