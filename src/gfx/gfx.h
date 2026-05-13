@@ -48,6 +48,7 @@ typedef struct {
 } gfx_rect_t;
 
 bool gfx_rect_contains(gfx_rect_t rect, i32 x, i32 y);
+bool gfx_rect_is_empty(gfx_rect_t rect);
 
 //
 // Surface
