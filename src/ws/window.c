@@ -87,6 +87,8 @@ void ws_window_resize(mem_allocator_t* alloc, ws_window_t* window, i32 width, i3
 
     gfx_rect_t content_rect = ws_window_rect_content(window);
     gfx_surface_resize(alloc, window->content, content_rect.width, content_rect.height);
+
+    ws_window_event_handle(window, &(ws_event_t) { .type = WS_EVENT_WINDOW_RESIZE });
 }
 
 gfx_rect_t ws_window_rect_total(const ws_window_t* window)

@@ -60,6 +60,7 @@ typedef enum {
     WS_EVENT_KEY_UP,
 
     // ws specific
+    WS_EVENT_WINDOW_RESIZE,
     WS_EVENT_WINDOW_ENTER,
     WS_EVENT_WINDOW_LEAVE,
 } ws_event_type_e;

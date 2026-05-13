@@ -40,6 +40,21 @@ static void func_event(struct ws_window* window, const ws_event_t* event)
     state_t* state = window->ctx;
 
     switch (event->type) {
+    case WS_EVENT_WINDOW_RESIZE: {
+        i32 content_height = (i32)state->line_count * LINE_HEIGHT;
+        i32 viewport_height = window->content->height;
+        i32 max_scroll = i32_max(0, content_height - viewport_height);
+
+        state->scroll_y -= event->u.mousewheel.scroll_y * LINE_HEIGHT;
+        state->scroll_y = i32_clamp(state->scroll_y, 0, max_scroll);
+        state->scrollbar->func_update(state->scrollbar, &(ui_scrollbar_update_desc) {
+                                                            .track_rect = scrollbar_track_rect(window),
+                                                            .content_height = content_height,
+                                                            .viewport_height = viewport_height,
+                                                            .scroll_y = state->scroll_y,
+                                                        });
+    } break;
+
     case WS_EVENT_MOUSEWHEEL: {
         i32 content_height = (i32)state->line_count * LINE_HEIGHT;
         i32 viewport_height = window->content->height;

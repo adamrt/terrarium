@@ -23,6 +23,8 @@ const char* ws_event_str(const ws_event_t* event)
         return "WS_EVENT_KEY_DOWN";
     case WS_EVENT_KEY_UP:
         return "WS_EVENT_KEY_UP";
+    case WS_EVENT_WINDOW_RESIZE:
+        return "WS_EVENT_WINDOW_RESIZE";
     case WS_EVENT_WINDOW_ENTER:
         return "WS_EVENT_WINDOW_ENTER";
     case WS_EVENT_WINDOW_LEAVE:
