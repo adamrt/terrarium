@@ -45,7 +45,6 @@ static void func_event(struct ws_window* window, const ws_event_t* event)
         i32 viewport_height = window->content->height;
         i32 max_scroll = i32_max(0, content_height - viewport_height);
 
-        state->scroll_y -= event->u.mousewheel.scroll_y * LINE_HEIGHT;
         state->scroll_y = i32_clamp(state->scroll_y, 0, max_scroll);
         state->scrollbar->func_update(state->scrollbar, &(ui_scrollbar_update_desc) {
                                                             .track_rect = scrollbar_track_rect(window),
