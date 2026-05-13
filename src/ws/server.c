@@ -290,9 +290,6 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
 
     os_mouse_position_from_event(os_event, &mx, &my);
     ws_hit_t hit = ws_server_window_hit_check(server, mx, my);
-    if (hit.window != NULL) {
-        ws_server_window_to_front(server, hit.window);
-    }
 
     switch (os_event->type) {
 
@@ -305,6 +302,8 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
 
         case WS_HIT_FRAME:
             ASSERT(hit.window);
+            ws_server_window_to_front(server, hit.window);
+
             server->drag.type = WS_DRAG_MOVE;
             server->drag.window = hit.window;
             server->drag.mouse_start_x = mx;
@@ -314,6 +313,8 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
 
         case WS_HIT_RESIZE:
             ASSERT(hit.window);
+            ws_server_window_to_front(server, hit.window);
+
             server->drag.type = WS_DRAG_RESIZE;
             server->drag.window = hit.window;
             server->drag.mouse_start_x = mx;
@@ -347,16 +348,19 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
 
         case WS_HIT_CLOSE:
             ASSERT(hit.window);
+            ws_server_window_to_front(server, hit.window);
             ws_server_window_close(alloc, server, hit.window);
             break;
 
         case WS_HIT_MAXIMIZE:
             ASSERT(hit.window);
+            ws_server_window_to_front(server, hit.window);
             ws_server_window_maximize_toggle(alloc, server, hit.window);
             break;
 
         case WS_HIT_CONTENT:
             ASSERT(hit.window);
+            ws_server_window_to_front(server, hit.window);
             ws_event_t ws_event = ws_event_from_os_event(hit.window, os_event);
             ws_window_event_handle(hit.window, &ws_event);
             break;
