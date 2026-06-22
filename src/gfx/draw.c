@@ -44,6 +44,7 @@ void gfx_surface_draw_line(gfx_surface_t* surface, i32 x0, i32 y0, i32 x1, i32 y
     i32 delta_y = (y1 - y0);
 
     i32 longest_side_length = (i32_abs(delta_x) >= i32_abs(delta_y)) ? i32_abs(delta_x) : i32_abs(delta_y);
+    ASSERT(longest_side_length > 0);
 
     f32 x_inc = (f32)delta_x / (f32)longest_side_length;
     f32 y_inc = (f32)delta_y / (f32)longest_side_length;

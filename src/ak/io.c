@@ -41,7 +41,9 @@ str_t io_file_readall(mem_allocator_t* alloc, strview_t path)
     mem_free(alloc, copy);
 
     usize n = fread(str.ptr, sizeof(char), str.len, f);
-    ASSERT(n > 0);
+    ASSERT(n == str.len);
+
+    fclose(f);
 
     if (str.ptr[str.len - 1] == '\0') {
         str.len--;
