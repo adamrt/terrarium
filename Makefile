@@ -1,8 +1,8 @@
 TARGET = terrarium
 CC ?= gcc
 
-SDL_FLAGS := $(shell pkg-config --cflags sdl2)
-SDL_LIBS  := $(shell pkg-config --libs sdl2)
+SDL_FLAGS := $(shell pkg-config --cflags sdl3)
+SDL_LIBS  := $(shell pkg-config --libs sdl3)
 
 WARN_FLAGS  = -Wall -Wextra -Werror -Wshadow -Wundef -Wformat=2 -Wvla -Wconversion -Wdouble-promotion
 DEBUG_FLAGS = -g3 -O0 -fstack-protector-strong -fno-omit-frame-pointer
@@ -13,7 +13,9 @@ LDFLAGS += $(SAN_FLAGS)
 LDLIBS += -lm $(SDL_LIBS)
 
 BUILD_DIR = build
-SOURCES = $(shell find src/ -name "*.c")
+# We build against SDL3 everywhere for now. The SDL2 implementation is kept in
+# the tree for reference but excluded from the build to avoid duplicate symbols.
+SOURCES = $(filter-out src/os/os_impl_sdl2.c,$(shell find src/ -name "*.c"))
 OBJECTS = $(SOURCES:%.c=$(BUILD_DIR)/%.o)
 DEPS = $(OBJECTS:%.o=%.d)
 
