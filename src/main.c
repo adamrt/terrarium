@@ -8,8 +8,8 @@
 #include "ws/ws.h"
 
 enum {
-    SCREEN_WIDTH = 800,
-    SCREEN_HEIGHT = 600,
+    SCREEN_WIDTH = 1024,
+    SCREEN_HEIGHT = 768,
 };
 
 i32 main(i32 argc, char* argv[])
