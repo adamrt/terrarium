@@ -1,10 +1,12 @@
 TARGET = terrarium
-CC ?= gcc
 
 SDL_FLAGS := $(shell pkg-config --cflags sdl3)
 SDL_LIBS  := $(shell pkg-config --libs sdl3)
 
-WARN_FLAGS  = -Wall -Wextra -Werror -Wshadow -Wundef -Wformat=2 -Wvla -Wconversion -Wdouble-promotion
+WARN_FLAGS  = -Wall -Wextra -Werror -Wshadow -Wundef -Wformat=2 -Wvla \
+              -Wconversion -Wdouble-promotion -Wmissing-prototypes \
+              -Wmissing-variable-declarations -Wimplicit-fallthrough \
+			  -Wstrict-prototypes -Wcast-qual -Wpointer-arith
 DEBUG_FLAGS = -g3 -O0 -fstack-protector-strong -fno-omit-frame-pointer
 SAN_FLAGS = -fsanitize=address,undefined
 

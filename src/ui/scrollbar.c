@@ -8,7 +8,7 @@
 // Forward declared
 static gfx_rect_t scrollbar_thumb_rect(struct ui_scrollbar* scrollbar);
 
-void func_event(struct ui_scrollbar* scrollbar, const ws_event_t* event)
+static void func_event(struct ui_scrollbar* scrollbar, const ws_event_t* event)
 {
     gfx_rect_t thumb_rect = scrollbar_thumb_rect(scrollbar);
 
@@ -45,13 +45,14 @@ void func_event(struct ui_scrollbar* scrollbar, const ws_event_t* event)
                 scrollbar->scroll_y = i32_clamp(scroll_y, 0, max_scroll_height);
             }
         }
+        break;
 
     default:
         break;
     }
 }
 
-void func_update(struct ui_scrollbar* scrollbar, const ui_scrollbar_update_desc* update)
+static void func_update(struct ui_scrollbar* scrollbar, const ui_scrollbar_update_desc* update)
 {
     ASSERT(scrollbar);
     ASSERT(update);
@@ -72,7 +73,7 @@ void func_update(struct ui_scrollbar* scrollbar, const ui_scrollbar_update_desc*
     }
 }
 
-void func_draw(struct ui_scrollbar* scrollbar, gfx_surface_t* surface)
+static void func_draw(struct ui_scrollbar* scrollbar, gfx_surface_t* surface)
 {
 
     gfx_surface_fill_rect(surface, scrollbar->track_rect, gfx_color_rgb(100, 100, 100));

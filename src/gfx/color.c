@@ -55,7 +55,7 @@ gfx_color_t gfx_color_random(void)
     return gfx_color_rgb(r, g, b);
 }
 
-gfx_color_t gfx_color_unpack(gfx_pixel_t color)
+gfx_color_t gfx_pixel_unpack(gfx_pixel_t color)
 {
     return (gfx_color_t) {
         .r = (u8)((color >> 24) & 0xFF),

@@ -24,7 +24,7 @@ typedef signed long long i64;
 typedef float f32;
 typedef double f64;
 
-typedef unsigned long usize;
+typedef __SIZE_TYPE__ usize;
 
 typedef _Bool bool;
 #define true  1
@@ -150,13 +150,13 @@ str_t io_file_readall(mem_allocator_t* alloc, strview_t path);
 #define BYTES_TO_MB(x) ((f64)(x) / (1024.0 * 1024.0))
 
 #define STATIC_ASSERT(exp) _Static_assert(exp, #exp)
-#define ASSERT(cond, ...)                                                                                      \
-    do {                                                                                                       \
-        if (!(cond)) {                                                                                         \
-            fprintf(stderr, "Assertion failed: " __VA_ARGS__);                                                 \
-            fprintf(stderr, " (%s) function %s, file %s, line %d\n", #cond, __FUNCTION__, __FILE__, __LINE__); \
-            __builtin_trap();                                                                                  \
-        }                                                                                                      \
+#define ASSERT(cond, ...)                                                                                  \
+    do {                                                                                                   \
+        if (!(cond)) {                                                                                     \
+            fprintf(stderr, "Assertion failed: " __VA_ARGS__);                                             \
+            fprintf(stderr, " (%s) function %s, file %s, line %d\n", #cond, __func__, __FILE__, __LINE__); \
+            __builtin_trap();                                                                              \
+        }                                                                                                  \
     } while (0)
 
 //

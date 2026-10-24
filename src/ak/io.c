@@ -11,7 +11,7 @@ typedef struct {
     usize modified;
 } io_stat_t;
 
-io_stat_t io_file_stat(mem_allocator_t* alloc, strview_t path)
+static io_stat_t io_file_stat(mem_allocator_t* alloc, strview_t path)
 {
     struct stat st = { 0 };
     char* copy = strview_to_cstr(alloc, path);

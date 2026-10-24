@@ -5,7 +5,7 @@
 
 #include <stdlib.h>
 
-void* heap_alloc(void* ctx, usize size, const char* file, i32 line)
+static void* heap_alloc(void* ctx, usize size, const char* file, i32 line)
 {
     UNUSED(ctx);
     UNUSED(file);
@@ -17,7 +17,7 @@ void* heap_alloc(void* ctx, usize size, const char* file, i32 line)
     return ptr;
 }
 
-void* heap_realloc(void* ctx, void* ptr, usize size, const char* file, i32 line)
+static void* heap_realloc(void* ctx, void* ptr, usize size, const char* file, i32 line)
 {
     UNUSED(ctx);
     UNUSED(file);
@@ -31,7 +31,7 @@ void* heap_realloc(void* ctx, void* ptr, usize size, const char* file, i32 line)
     return ptr;
 }
 
-void heap_free(void* ctx, void* ptr)
+static void heap_free(void* ctx, void* ptr)
 {
     UNUSED(ctx);
 
@@ -40,7 +40,7 @@ void heap_free(void* ctx, void* ptr)
     free(ptr);
 }
 
-void heap_shutdown(struct mem_allocator* self)
+static void heap_shutdown(struct mem_allocator* self)
 {
     ASSERT(self);
 

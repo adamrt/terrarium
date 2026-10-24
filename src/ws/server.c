@@ -23,7 +23,7 @@ typedef enum {
 } ws_drag_type_e;
 
 // FIXME: This is temporary global until we have menubar
-strview_t new_window_text;
+static strview_t new_window_text;
 
 // Forward declarations
 static ws_event_t ws_event_from_os_event(const ws_window_t* window, const os_event_t* os_event);
