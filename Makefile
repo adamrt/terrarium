@@ -1,3 +1,6 @@
+# This is GNUMake, requiring gmake on OpenBSD
+UNAME_S := $(shell uname -s)
+
 TARGET = terrarium
 
 SDL_FLAGS := $(shell pkg-config --cflags sdl3)
@@ -8,7 +11,14 @@ WARN_FLAGS  = -Wall -Wextra -Werror -Wshadow -Wundef -Wformat=2 -Wvla \
               -Wmissing-variable-declarations -Wimplicit-fallthrough \
               -Wstrict-prototypes -Wcast-qual -Wpointer-arith
 DEBUG_FLAGS = -g3 -O1 -fstack-protector-strong -fno-omit-frame-pointer
-SAN_FLAGS = -fsanitize=address,undefined
+
+# OpenBSD specifics
+ifeq ($(UNAME_S),OpenBSD)
+    SAN_FLAGS = -fsanitize=undefined -fsanitize-trap=all
+    LDFLAGS += -Wl,--no-execute-only
+else
+    SAN_FLAGS = -fsanitize=address,undefined
+endif
 
 CFLAGS += -std=c11 -Isrc -MMD -MP $(WARN_FLAGS) $(DEBUG_FLAGS) $(SAN_FLAGS) $(SDL_FLAGS)
 LDFLAGS += $(SAN_FLAGS)
