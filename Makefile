@@ -13,9 +13,7 @@ LDFLAGS += $(SAN_FLAGS)
 LDLIBS += -lm $(SDL_LIBS)
 
 BUILD_DIR = build
-# We build against SDL3 everywhere for now. The SDL2 implementation is kept in
-# the tree for reference but excluded from the build to avoid duplicate symbols.
-SOURCES = $(filter-out src/os/os_impl_sdl2.c,$(shell find src/ -name "*.c"))
+SOURCES = $(shell find src/ -name "*.c")
 OBJECTS = $(SOURCES:%.c=$(BUILD_DIR)/%.o)
 DEPS = $(OBJECTS:%.o=%.d)
 
