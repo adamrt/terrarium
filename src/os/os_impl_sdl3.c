@@ -37,8 +37,13 @@ os_display_t* os_display_create(mem_allocator_t* alloc, i32 width, i32 height)
 
     display->window = SDL_CreateWindow("Terrarium", width, height, 0);
     ASSERT(display->window);
+
     display->renderer = SDL_CreateRenderer(display->window, NULL);
     ASSERT(display->renderer);
+    if (!SDL_SetRenderVSync(display->renderer, 1)) {
+        fprintf(stderr, "vsync unavailable: %s\n", SDL_GetError());
+    }
+
     display->texture = SDL_CreateTexture(display->renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, width, height);
     ASSERT(display->texture);
 
