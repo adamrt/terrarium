@@ -28,6 +28,11 @@ void os_shutdown(void)
     SDL_Quit();
 }
 
+u64 os_time_ns(void)
+{
+    return SDL_GetTicksNS();
+}
+
 os_display_t* os_display_create(mem_allocator_t* alloc, i32 width, i32 height)
 {
     ASSERT(width > 0);

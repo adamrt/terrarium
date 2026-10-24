@@ -47,6 +47,11 @@ struct ws_server {
         i32 mouse_start_x, mouse_start_y;
         gfx_rect_t rect_start;
     } drag;
+    struct {
+        u64 start_ns;
+        i32 frames;
+        i32 value;
+    } fps;
 };
 
 ws_server_t* ws_server_create(mem_allocator_t* alloc, i32 width, i32 height)
@@ -70,6 +75,10 @@ ws_server_t* ws_server_create(mem_allocator_t* alloc, i32 width, i32 height)
     server->drag.mouse_start_x = 0;
     server->drag.mouse_start_y = 0;
     server->drag.rect_start = (gfx_rect_t) { 0 };
+
+    server->fps.start_ns = os_time_ns();
+    server->fps.frames = 0;
+    server->fps.value = 0;
 
     new_window_text = sv("New Window");
 
@@ -150,6 +159,35 @@ static gfx_rect_t ws_server_rect_new_window_button(void)
     };
 }
 
+static void ws_server_fps_draw(ws_server_t* server)
+{
+    const u64 one_second_ns = 1000000000ULL;
+
+    // Average over one second so the number is readable
+    server->fps.frames++;
+    u64 now_ns = os_time_ns();
+    u64 elapsed_ns = now_ns - server->fps.start_ns;
+    if (elapsed_ns >= one_second_ns) {
+        server->fps.value = (i32)((u64)server->fps.frames * one_second_ns / elapsed_ns);
+        server->fps.frames = 0;
+        server->fps.start_ns = now_ns;
+    }
+
+    char buf[16];
+    snprintf(buf, sizeof(buf), "%d FPS", server->fps.value);
+    strview_t text = sv(buf);
+
+    gfx_rect_t rect = {
+        .width = GFX_FONT_WIDTH * (i32)text.len + WS_SERVER_BUTTON_PADDING * 2,
+        .height = GFX_FONT_HEIGHT + WS_SERVER_BUTTON_PADDING * 2,
+    };
+    rect.x = server->width - rect.width;
+    rect.y = 0;
+
+    gfx_surface_fill_rect(&server->composited, rect, gfx_black);
+    gfx_surface_draw_text(&server->composited, rect.x + WS_SERVER_BUTTON_PADDING, rect.y + WS_SERVER_BUTTON_PADDING, text, gfx_white);
+}
+
 void ws_server_render(ws_server_t* server)
 {
     ASSERT(server);
@@ -165,6 +203,9 @@ void ws_server_render(ws_server_t* server)
         window->func_draw(window);
         ws_server_window_draw(server, window);
     }
+
+    // Drawn last so it stays on top of windows
+    ws_server_fps_draw(server);
 
     os_display_present(server->display, &server->composited);
 }

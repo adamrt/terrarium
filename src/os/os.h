@@ -14,6 +14,13 @@ void os_init(void);
 void os_shutdown(void);
 
 //
+// Time
+//
+
+// Monotonic nanoseconds since os_init.
+u64 os_time_ns(void);
+
+//
 // Display
 //
 
