@@ -157,7 +157,7 @@ str_t io_file_readall(mem_allocator_t* alloc, strview_t path);
             fprintf(stderr, " (%s) function %s, file %s, line %d\n", #cond, __FUNCTION__, __FILE__, __LINE__); \
             __builtin_trap();                                                                                  \
         }                                                                                                      \
-    } while (0);
+    } while (0)
 
 //
 // Static Asserts for our standard library

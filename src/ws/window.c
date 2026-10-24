@@ -9,8 +9,8 @@
 ws_window_t* ws_window_create(mem_allocator_t* alloc, strview_t title, i32 x, i32 y, i32 width, i32 height)
 {
     ASSERT(alloc);
-    ASSERT(x >= 0)
-    ASSERT(y >= 0)
+    ASSERT(x >= 0);
+    ASSERT(y >= 0);
 
     ws_window_t* window = mem_alloc(alloc, sizeof(*window));
     ASSERT(window);
