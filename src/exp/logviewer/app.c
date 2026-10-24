@@ -42,7 +42,7 @@ static void func_event(struct ws_window* window, const ws_event_t* event)
     switch (event->type) {
     case WS_EVENT_WINDOW_RESIZE: {
         i32 content_height = (i32)state->line_count * LINE_HEIGHT;
-        i32 viewport_height = window->content->height;
+        i32 viewport_height = window->content.height;
         i32 max_scroll = i32_max(0, content_height - viewport_height);
 
         state->scroll_y = i32_clamp(state->scroll_y, 0, max_scroll);
@@ -56,7 +56,7 @@ static void func_event(struct ws_window* window, const ws_event_t* event)
 
     case WS_EVENT_MOUSEWHEEL: {
         i32 content_height = (i32)state->line_count * LINE_HEIGHT;
-        i32 viewport_height = window->content->height;
+        i32 viewport_height = window->content.height;
         i32 max_scroll = i32_max(0, content_height - viewport_height);
 
         state->scroll_y -= event->u.mousewheel.scroll_y * LINE_HEIGHT;
@@ -93,18 +93,18 @@ static void func_draw(ws_window_t* window)
 
     state_t* state = window->ctx;
 
-    gfx_surface_fill(window->content, state->background_color);
+    gfx_surface_fill(&window->content, state->background_color);
 
     for (i32 line = 0; line < (i32)state->line_count; line++) {
-        if (line * LINE_HEIGHT >= window->content->height) {
+        if (line * LINE_HEIGHT >= window->content.height) {
             break;
         }
         i32 index = line + state->scroll_y / LINE_HEIGHT;
         index = i32_min(index, (i32)state->line_count - 1);
-        gfx_surface_draw_text(window->content, 0, LINE_HEIGHT * line, state->lines[index], gfx_white);
+        gfx_surface_draw_text(&window->content, 0, LINE_HEIGHT * line, state->lines[index], gfx_white);
     }
 
-    state->scrollbar->func_draw(state->scrollbar, window->content);
+    state->scrollbar->func_draw(state->scrollbar, &window->content);
 }
 
 static void func_close(ws_window_t* window)
@@ -144,7 +144,7 @@ ws_window_t* exp_logviewer_create(mem_allocator_t* alloc, i32 x, i32 y)
 
     gfx_rect_t track_rect = scrollbar_track_rect(window);
     i32 content_height = (i32)state->line_count * LINE_HEIGHT;
-    i32 viewport_height = window->content->height;
+    i32 viewport_height = window->content.height;
 
     ui_scrollbar_t* scrollbar = ui_scrollbar_create(alloc, track_rect, content_height, viewport_height);
     ASSERT(scrollbar);
@@ -166,10 +166,10 @@ static gfx_rect_t scrollbar_track_rect(ws_window_t* window)
 {
     ASSERT(window);
 
-    i32 track_height = window->content->height - WS_FRAME_HANDLE_SIZE + WS_FRAME_PADDING_SIZE + (1 * WS_FRAME_BORDER_SIZE);
+    i32 track_height = window->content.height - WS_FRAME_HANDLE_SIZE + WS_FRAME_PADDING_SIZE + (1 * WS_FRAME_BORDER_SIZE);
 
     return (gfx_rect_t) {
-        .x = window->content->width - SCROLLBAR_TRACK_WIDTH,
+        .x = window->content.width - SCROLLBAR_TRACK_WIDTH,
         .y = 0,
         .width = SCROLLBAR_TRACK_WIDTH,
         .height = track_height,

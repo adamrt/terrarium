@@ -39,15 +39,15 @@ static void func_draw(ws_window_t* window)
     f32 t = (f32_sin(state->timer) + 1.0f) * 0.5f;
 
     gfx_color_t color = gfx_color_lerp(state->color_a, state->color_b, t);
-    gfx_surface_fill(window->content, color);
+    gfx_surface_fill(&window->content, color);
 
-    gfx_surface_draw_line(window->content, 0, 0, window->content->width - 1, window->content->height - 1, gfx_red);
-    gfx_surface_draw_line(window->content, window->content->width - 1, 0, 0, window->content->height - 1, gfx_red);
+    gfx_surface_draw_line(&window->content, 0, 0, window->content.width - 1, window->content.height - 1, gfx_red);
+    gfx_surface_draw_line(&window->content, window->content.width - 1, 0, 0, window->content.height - 1, gfx_red);
 
     if (state->frames > 0) {
         char pos_str[10];
         snprintf(pos_str, 10, "%dx%d\n", state->hit_x, state->hit_y);
-        gfx_surface_draw_text(window->content, state->hit_x, state->hit_y, sv(pos_str), gfx_white);
+        gfx_surface_draw_text(&window->content, state->hit_x, state->hit_y, sv(pos_str), gfx_white);
         state->frames--;
     }
 

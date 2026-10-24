@@ -24,7 +24,7 @@ typedef struct ws_event ws_event_t;
 
 typedef struct ws_window {
     gfx_rect_t rect;
-    gfx_surface_t* content;
+    gfx_surface_t content;
 
     strview_t title;
 

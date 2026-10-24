@@ -4,29 +4,27 @@
 #include "ak/ak.h"
 #include "gfx/gfx.h"
 
-gfx_surface_t* gfx_surface_create(mem_allocator_t* alloc, i32 width, i32 height)
+void gfx_surface_init(mem_allocator_t* alloc, gfx_surface_t* surface, i32 width, i32 height)
 {
+    ASSERT(surface);
     ASSERT(width > 0);
     ASSERT(height > 0);
 
-    gfx_surface_t* surface = mem_alloc(alloc, sizeof(*surface));
-    surface->data = mem_alloc(alloc, (usize)width * (usize)height * sizeof(u32));
+    surface->data = mem_alloc(alloc, (usize)width * (usize)height * sizeof(gfx_pixel_t));
 
     surface->width = width;
     surface->height = height;
     surface->width_capacity = width;
     surface->height_capacity = height;
-
-    return surface;
 }
 
-void gfx_surface_destroy(mem_allocator_t* alloc, gfx_surface_t* surface)
+void gfx_surface_deinit(mem_allocator_t* alloc, gfx_surface_t* surface)
 {
     ASSERT(surface);
     ASSERT(surface->data);
 
     mem_free(alloc, surface->data);
-    mem_free(alloc, surface);
+    *surface = (gfx_surface_t) { 0 };
 }
 
 void gfx_surface_resize(mem_allocator_t* alloc, gfx_surface_t* surface, i32 width, i32 height)

@@ -28,10 +28,7 @@ ws_window_t* ws_window_create(mem_allocator_t* alloc, strview_t title, i32 x, i3
     window->func_close = NULL;
 
     gfx_rect_t content_rect = ws_window_rect_content(window);
-    gfx_surface_t* content = gfx_surface_create(alloc, content_rect.width, content_rect.height);
-    ASSERT(content);
-
-    window->content = content;
+    gfx_surface_init(alloc, &window->content, content_rect.width, content_rect.height);
 
     return window;
 }
@@ -41,7 +38,7 @@ void ws_window_destroy(mem_allocator_t* alloc, ws_window_t* window)
     ASSERT(alloc);
     ASSERT(window);
 
-    gfx_surface_destroy(alloc, window->content);
+    gfx_surface_deinit(alloc, &window->content);
     mem_free(alloc, window);
 }
 
@@ -86,7 +83,7 @@ void ws_window_resize(mem_allocator_t* alloc, ws_window_t* window, i32 width, i3
     window->rect.height = height;
 
     gfx_rect_t content_rect = ws_window_rect_content(window);
-    gfx_surface_resize(alloc, window->content, content_rect.width, content_rect.height);
+    gfx_surface_resize(alloc, &window->content, content_rect.width, content_rect.height);
 
     ws_window_event_handle(window, &(ws_event_t) { .type = WS_EVENT_WINDOW_RESIZE });
 }

@@ -34,8 +34,8 @@ struct ws_server {
     gfx_color_t background;
 
     os_display_t* display;
-    gfx_surface_t* desktop;
-    gfx_surface_t* composited;
+    gfx_surface_t desktop;
+    gfx_surface_t composited;
 
     ws_window_t* windows[WS_SERVER_WINDOW_MAX];
     i32 window_count;
@@ -54,24 +54,13 @@ ws_server_t* ws_server_create(mem_allocator_t* alloc, i32 width, i32 height)
     ASSERT(height > 0);
 
     ws_server_t* server = mem_alloc(alloc, sizeof(*server));
-    ASSERT(server);
-
-    os_display_t* display = os_display_create(alloc, width, height);
-    ASSERT(display);
-
-    gfx_surface_t* desktop = gfx_surface_create(alloc, width, height);
-    ASSERT(desktop);
-
-    gfx_surface_t* composited = gfx_surface_create(alloc, width, height);
-    ASSERT(composited);
+    server->display = os_display_create(alloc, width, height);
+    gfx_surface_init(alloc, &server->desktop, width, height);
+    gfx_surface_init(alloc, &server->composited, width, height);
 
     server->width = width;
     server->height = height;
     server->background = gfx_color_rgb(82, 151, 153);
-
-    server->display = display;
-    server->desktop = desktop;
-    server->composited = composited;
 
     server->window_count = 0;
     server->drag.window = NULL;
@@ -89,9 +78,9 @@ void ws_server_destroy(mem_allocator_t* alloc, ws_server_t* server)
     ASSERT(alloc);
     ASSERT(server);
 
+    gfx_surface_deinit(alloc, &server->desktop);
+    gfx_surface_deinit(alloc, &server->composited);
     os_display_destroy(alloc, server->display);
-    gfx_surface_destroy(alloc, server->desktop);
-    gfx_surface_destroy(alloc, server->composited);
 
     i32 window_count = server->window_count;
     for (i32 i = 0; i < window_count; ++i) {
@@ -106,8 +95,8 @@ static void ws_server_desktop_draw(ws_server_t* server)
 {
     ASSERT(server);
 
-    gfx_surface_fill(server->desktop, server->background);
-    gfx_surface_blit(server->composited, server->desktop, 0, 0);
+    gfx_surface_fill(&server->desktop, server->background);
+    gfx_surface_blit(&server->composited, &server->desktop, 0, 0);
 }
 
 static void ws_server_window_draw(ws_server_t* server, ws_window_t* window)
@@ -120,33 +109,33 @@ static void ws_server_window_draw(ws_server_t* server, ws_window_t* window)
     gfx_color_t titlebar_text_color = gfx_black;
 
     // Draw frame
-    gfx_surface_draw_rect(server->composited, ws_window_rect_total(window), border_color);
-    gfx_surface_fill_rect(server->composited, ws_window_rect_frame(window), frame_color);
+    gfx_surface_draw_rect(&server->composited, ws_window_rect_total(window), border_color);
+    gfx_surface_fill_rect(&server->composited, ws_window_rect_frame(window), frame_color);
 
     // Titlebar
     gfx_rect_t tb = ws_window_rect_titlebar(window);
-    gfx_surface_fill_rect(server->composited, tb, frame_color);
-    gfx_surface_draw_text(server->composited, tb.x + tb.width / 2 - (i32)window->title.len * GFX_FONT_WIDTH / 2, tb.y + 4, window->title, titlebar_text_color);
+    gfx_surface_fill_rect(&server->composited, tb, frame_color);
+    gfx_surface_draw_text(&server->composited, tb.x + tb.width / 2 - (i32)window->title.len * GFX_FONT_WIDTH / 2, tb.y + 4, window->title, titlebar_text_color);
 
     // Close button
-    gfx_surface_draw_rect(server->composited, ws_window_rect_button_close(window), border_color);
+    gfx_surface_draw_rect(&server->composited, ws_window_rect_button_close(window), border_color);
 
     // Maximize button
     gfx_rect_t max_rect = ws_window_rect_button_maximize(window);
-    gfx_surface_draw_rect(server->composited, max_rect, border_color);
+    gfx_surface_draw_rect(&server->composited, max_rect, border_color);
     i32 half = max_rect.width - WS_FRAME_BUTTON_SIZE / 2;
-    gfx_surface_draw_rect(server->composited, (gfx_rect_t) { max_rect.x, max_rect.y, half, half }, border_color);
+    gfx_surface_draw_rect(&server->composited, (gfx_rect_t) { max_rect.x, max_rect.y, half, half }, border_color);
 
     // Draw content
-    gfx_surface_draw_rect(server->composited, ws_window_rect_content_border(window), border_color);
+    gfx_surface_draw_rect(&server->composited, ws_window_rect_content_border(window), border_color);
     gfx_rect_t content_rect = ws_window_rect_content(window);
-    gfx_surface_blit(server->composited, window->content, content_rect.x, content_rect.y);
+    gfx_surface_blit(&server->composited, &window->content, content_rect.x, content_rect.y);
 
     // Draw resize handle on top of content
     gfx_rect_t handle_rect = ws_window_rect_handle_resize(window);
-    gfx_surface_fill_rect(server->composited, handle_rect, frame_color);
-    gfx_surface_draw_line_h(server->composited, handle_rect.x, handle_rect.y, handle_rect.width - WS_FRAME_PADDING_SIZE, border_color);
-    gfx_surface_draw_line_v(server->composited, handle_rect.x, handle_rect.y, handle_rect.height - WS_FRAME_PADDING_SIZE, border_color);
+    gfx_surface_fill_rect(&server->composited, handle_rect, frame_color);
+    gfx_surface_draw_line_h(&server->composited, handle_rect.x, handle_rect.y, handle_rect.width - WS_FRAME_PADDING_SIZE, border_color);
+    gfx_surface_draw_line_v(&server->composited, handle_rect.x, handle_rect.y, handle_rect.height - WS_FRAME_PADDING_SIZE, border_color);
 }
 
 static gfx_rect_t ws_server_rect_new_window_button(void)
@@ -166,8 +155,8 @@ void ws_server_render(ws_server_t* server)
     ws_server_desktop_draw(server);
 
     gfx_rect_t rect_new_window_button = ws_server_rect_new_window_button();
-    gfx_surface_fill_rect(server->composited, rect_new_window_button, gfx_color_rgb(200, 200, 200));
-    gfx_surface_draw_text(server->composited, rect_new_window_button.x + WS_SERVER_BUTTON_PADDING, rect_new_window_button.y + WS_SERVER_BUTTON_PADDING, new_window_text, gfx_black);
+    gfx_surface_fill_rect(&server->composited, rect_new_window_button, gfx_color_rgb(200, 200, 200));
+    gfx_surface_draw_text(&server->composited, rect_new_window_button.x + WS_SERVER_BUTTON_PADDING, rect_new_window_button.y + WS_SERVER_BUTTON_PADDING, new_window_text, gfx_black);
 
     for (i32 i = 0; i < server->window_count; ++i) {
         ws_window_t* window = server->windows[i];
@@ -175,7 +164,7 @@ void ws_server_render(ws_server_t* server)
         ws_server_window_draw(server, window);
     }
 
-    os_display_present(server->display, server->composited);
+    os_display_present(server->display, &server->composited);
 }
 
 // FIXME: Is there a more elegant way to implement this
