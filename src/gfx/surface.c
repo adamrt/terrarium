@@ -11,25 +11,24 @@ void gfx_surface_init(mem_allocator_t* alloc, gfx_surface_t* surface, i32 width,
     ASSERT(height > 0);
 
     surface->data = mem_alloc(alloc, (usize)width * (usize)height * sizeof(gfx_pixel_t));
-
+    surface->alloc = alloc;
     surface->width = width;
     surface->height = height;
     surface->width_capacity = width;
     surface->height_capacity = height;
 }
 
-void gfx_surface_deinit(mem_allocator_t* alloc, gfx_surface_t* surface)
+void gfx_surface_deinit(gfx_surface_t* surface)
 {
     ASSERT(surface);
     ASSERT(surface->data);
 
-    mem_free(alloc, surface->data);
+    mem_free(surface->alloc, surface->data);
     *surface = (gfx_surface_t) { 0 };
 }
 
-void gfx_surface_resize(mem_allocator_t* alloc, gfx_surface_t* surface, i32 width, i32 height)
+void gfx_surface_resize(gfx_surface_t* surface, i32 width, i32 height)
 {
-    ASSERT(alloc);
     ASSERT(surface);
 
     if (width <= surface->width_capacity && height <= surface->height_capacity) {
@@ -44,7 +43,7 @@ void gfx_surface_resize(mem_allocator_t* alloc, gfx_surface_t* surface, i32 widt
     surface->height_capacity = i32_max(height, surface->height_capacity * 2);
 
     usize new_size = (usize)surface->width_capacity * (usize)surface->height_capacity * sizeof(gfx_pixel_t);
-    surface->data = mem_realloc(alloc, surface->data, new_size);
+    surface->data = mem_realloc(surface->alloc, surface->data, new_size);
     ASSERT(surface->data);
 }
 

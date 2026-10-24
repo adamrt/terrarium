@@ -126,12 +126,13 @@ char* strview_to_cstr(mem_allocator_t* alloc, strview_t view);
 //
 
 typedef struct {
+    mem_allocator_t* alloc;
     char* ptr;
     usize len;
-    usize cap;
+    usize cap; // Currently unused until we have str_append or something
 } str_t;
 
-void str_destroy(mem_allocator_t* alloc, str_t s);
+void str_destroy(str_t* s);
 strview_t* str_split_lines(mem_allocator_t* alloc, str_t s, usize* out_count);
 
 //

@@ -11,6 +11,7 @@
 static os_key_code_e scancode_to_keycode(SDL_Scancode scancode);
 
 struct os_display {
+    mem_allocator_t* alloc;
     SDL_Window* window;
     SDL_Renderer* renderer;
     SDL_Texture* texture;
@@ -34,6 +35,7 @@ os_display_t* os_display_create(mem_allocator_t* alloc, i32 width, i32 height)
 
     os_display_t* display = mem_alloc(alloc, sizeof(*display));
     ASSERT(display);
+    display->alloc = alloc;
 
     display->window = SDL_CreateWindow("Terrarium", width, height, 0);
     ASSERT(display->window);
@@ -53,12 +55,12 @@ os_display_t* os_display_create(mem_allocator_t* alloc, i32 width, i32 height)
     return display;
 }
 
-void os_display_destroy(mem_allocator_t* alloc, os_display_t* display)
+void os_display_destroy(os_display_t* display)
 {
     SDL_DestroyTexture(display->texture);
     SDL_DestroyRenderer(display->renderer);
     SDL_DestroyWindow(display->window);
-    mem_free(alloc, display);
+    mem_free(display->alloc, display);
 }
 
 void os_display_present(os_display_t* display, gfx_surface_t* surface)

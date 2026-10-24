@@ -13,8 +13,8 @@ ws_window_t* ws_window_create(mem_allocator_t* alloc, strview_t title, i32 x, i3
     ASSERT(y >= 0);
 
     ws_window_t* window = mem_alloc(alloc, sizeof(*window));
-    ASSERT(window);
 
+    window->alloc = alloc;
     window->title = title;
     window->rect.x = x;
     window->rect.y = y;
@@ -23,23 +23,24 @@ ws_window_t* ws_window_create(mem_allocator_t* alloc, strview_t title, i32 x, i3
     window->restore_rect = (gfx_rect_t) { 0 };
     window->is_maximized = false;
 
+    // Callbacks
     window->func_event = NULL;
     window->func_draw = NULL;
     window->func_close = NULL;
 
+    // Surface
     gfx_rect_t content_rect = ws_window_rect_content(window);
     gfx_surface_init(alloc, &window->content, content_rect.width, content_rect.height);
 
     return window;
 }
 
-void ws_window_destroy(mem_allocator_t* alloc, ws_window_t* window)
+void ws_window_destroy(ws_window_t* window)
 {
-    ASSERT(alloc);
     ASSERT(window);
 
-    gfx_surface_deinit(alloc, &window->content);
-    mem_free(alloc, window);
+    gfx_surface_deinit(&window->content);
+    mem_free(window->alloc, window);
 }
 
 void ws_window_event_handle(ws_window_t* window, const ws_event_t* event)
@@ -50,13 +51,12 @@ void ws_window_event_handle(ws_window_t* window, const ws_event_t* event)
     window->func_event(window, event);
 }
 
-void ws_window_close(mem_allocator_t* alloc, ws_window_t* window)
+void ws_window_close(ws_window_t* window)
 {
-    ASSERT(alloc);
     ASSERT(window);
 
     window->func_close(window);
-    ws_window_destroy(alloc, window);
+    ws_window_destroy(window);
 }
 
 void ws_window_move(ws_window_t* window, i32 x, i32 y)
@@ -67,9 +67,8 @@ void ws_window_move(ws_window_t* window, i32 x, i32 y)
     window->rect.y = y;
 }
 
-void ws_window_resize(mem_allocator_t* alloc, ws_window_t* window, i32 width, i32 height)
+void ws_window_resize(ws_window_t* window, i32 width, i32 height)
 {
-    ASSERT(alloc);
     ASSERT(window);
 
     width = i32_max(width, 100);
@@ -83,7 +82,7 @@ void ws_window_resize(mem_allocator_t* alloc, ws_window_t* window, i32 width, i3
     window->rect.height = height;
 
     gfx_rect_t content_rect = ws_window_rect_content(window);
-    gfx_surface_resize(alloc, &window->content, content_rect.width, content_rect.height);
+    gfx_surface_resize(&window->content, content_rect.width, content_rect.height);
 
     ws_window_event_handle(window, &(ws_event_t) { .type = WS_EVENT_WINDOW_RESIZE });
 }

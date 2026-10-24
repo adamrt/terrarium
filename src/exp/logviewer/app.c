@@ -112,12 +112,11 @@ static void func_close(ws_window_t* window)
     ASSERT(window);
 
     state_t* state = window->ctx;
-    mem_allocator_t* alloc = state->alloc; // Needed for ws_window_destroy
 
-    ui_scrollbar_destroy(alloc, state->scrollbar);
-    str_destroy(alloc, state->contents);
-    mem_free(alloc, state->lines);
-    mem_free(alloc, window->ctx);
+    ui_scrollbar_destroy(window->alloc, state->scrollbar);
+    str_destroy(&state->contents);
+    mem_free(window->alloc, state->lines);
+    mem_free(window->alloc, window->ctx);
 }
 
 ws_window_t* exp_logviewer_create(mem_allocator_t* alloc, i32 x, i32 y)

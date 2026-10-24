@@ -27,9 +27,11 @@ static strview_t new_window_text;
 
 // Forward declarations
 static ws_event_t ws_event_from_os_event(const ws_window_t* window, const os_event_t* os_event);
-static void ws_server_window_close(mem_allocator_t* alloc, ws_server_t* server, ws_window_t* window);
+static void ws_server_window_close(ws_server_t* server, ws_window_t* window);
 
 struct ws_server {
+    mem_allocator_t* alloc;
+
     i32 width, height;
     gfx_color_t background;
 
@@ -54,6 +56,7 @@ ws_server_t* ws_server_create(mem_allocator_t* alloc, i32 width, i32 height)
     ASSERT(height > 0);
 
     ws_server_t* server = mem_alloc(alloc, sizeof(*server));
+    server->alloc = alloc;
     server->display = os_display_create(alloc, width, height);
     gfx_surface_init(alloc, &server->desktop, width, height);
     gfx_surface_init(alloc, &server->composited, width, height);
@@ -73,22 +76,21 @@ ws_server_t* ws_server_create(mem_allocator_t* alloc, i32 width, i32 height)
     return server;
 }
 
-void ws_server_destroy(mem_allocator_t* alloc, ws_server_t* server)
+void ws_server_destroy(ws_server_t* server)
 {
-    ASSERT(alloc);
     ASSERT(server);
 
-    gfx_surface_deinit(alloc, &server->desktop);
-    gfx_surface_deinit(alloc, &server->composited);
-    os_display_destroy(alloc, server->display);
+    gfx_surface_deinit(&server->desktop);
+    gfx_surface_deinit(&server->composited);
+    os_display_destroy(server->display);
 
     i32 window_count = server->window_count;
     for (i32 i = 0; i < window_count; ++i) {
         ws_window_t* window = server->windows[i];
-        ws_server_window_close(alloc, server, window);
+        ws_server_window_close(server, window);
     }
 
-    mem_free(alloc, server);
+    mem_free(server->alloc, server);
 }
 
 static void ws_server_desktop_draw(ws_server_t* server)
@@ -229,19 +231,17 @@ static ws_hit_t ws_server_window_hit_check(ws_server_t* server, i32 mx, i32 my)
 }
 
 // FIXME: This depends on the window being at the front but should not.
-static void ws_server_window_close(mem_allocator_t* alloc, ws_server_t* server, ws_window_t* window)
+static void ws_server_window_close(ws_server_t* server, ws_window_t* window)
 {
-    ASSERT(alloc);
     ASSERT(server);
     ASSERT(window);
 
-    ws_window_close(alloc, window);
+    ws_window_close(window);
     server->window_count--;
 }
 
-static void ws_server_window_maximize_toggle(mem_allocator_t* alloc, ws_server_t* server, ws_window_t* window)
+static void ws_server_window_maximize_toggle(ws_server_t* server, ws_window_t* window)
 {
-    ASSERT(alloc);
     ASSERT(server);
     ASSERT(window);
 
@@ -253,7 +253,7 @@ static void ws_server_window_maximize_toggle(mem_allocator_t* alloc, ws_server_t
         window->restore_rect = window->rect;
         window->rect.x = 0;
         window->rect.y = WS_SERVER_MENUBAR_SIZE;
-        ws_window_resize(alloc, window, server->width, server->height - WS_SERVER_MENUBAR_SIZE);
+        ws_window_resize(window, server->width, server->height - WS_SERVER_MENUBAR_SIZE);
     } else {
         ASSERT(window->restore_rect.width != 0);
         ASSERT(window->restore_rect.height != 0);
@@ -264,13 +264,12 @@ static void ws_server_window_maximize_toggle(mem_allocator_t* alloc, ws_server_t
         window->restore_rect = (gfx_rect_t) { 0 };
         window->rect.x = rect.x;
         window->rect.y = rect.y;
-        ws_window_resize(alloc, window, rect.width, rect.height);
+        ws_window_resize(window, rect.width, rect.height);
     }
 }
 
-void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const os_event_t* os_event)
+void ws_server_event_handle(ws_server_t* server, const os_event_t* os_event)
 {
-    ASSERT(alloc);
     ASSERT(server);
     ASSERT(os_event);
 
@@ -319,7 +318,7 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
 
         case WS_HIT_NEW_WIN:
             ASSERT(!hit.window);
-            ws_window_t* window = exp_dummy_create(alloc, rnd_i32_range(0, 700), rnd_i32_range(0, 500));
+            ws_window_t* window = exp_dummy_create(server->alloc, rnd_i32_range(0, 700), rnd_i32_range(0, 500));
             ws_server_window_take(server, &window);
             break;
 
@@ -338,13 +337,13 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
         case WS_HIT_CLOSE:
             ASSERT(hit.window);
             ws_server_window_to_front(server, hit.window);
-            ws_server_window_close(alloc, server, hit.window);
+            ws_server_window_close(server, hit.window);
             break;
 
         case WS_HIT_MAXIMIZE:
             ASSERT(hit.window);
             ws_server_window_to_front(server, hit.window);
-            ws_server_window_maximize_toggle(alloc, server, hit.window);
+            ws_server_window_maximize_toggle(server, hit.window);
             break;
 
         case WS_HIT_CONTENT:
@@ -399,7 +398,7 @@ void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const o
                 i32 new_width = server->drag.rect_start.width + delta_x;
                 i32 new_height = server->drag.rect_start.height + delta_y;
 
-                ws_window_resize(alloc, window, new_width, new_height);
+                ws_window_resize(window, new_width, new_height);
                 break;
             }
 

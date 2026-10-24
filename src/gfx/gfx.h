@@ -55,14 +55,15 @@ bool gfx_rect_is_empty(gfx_rect_t rect);
 //
 
 typedef struct {
+    mem_allocator_t* alloc;
     gfx_pixel_t* data;
     i32 width, height;
     i32 width_capacity, height_capacity;
 } gfx_surface_t;
 
 void gfx_surface_init(mem_allocator_t* alloc, gfx_surface_t* surface, i32 width, i32 height);
-void gfx_surface_deinit(mem_allocator_t* alloc, gfx_surface_t* surface);
-void gfx_surface_resize(mem_allocator_t* alloc, gfx_surface_t* surface, i32 width, i32 height);
+void gfx_surface_deinit(gfx_surface_t* surface);
+void gfx_surface_resize(gfx_surface_t* surface, i32 width, i32 height);
 void gfx_surface_blit(gfx_surface_t* target, const gfx_surface_t* source, i32 x, i32 y);
 
 //

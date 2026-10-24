@@ -29,11 +29,12 @@ static io_stat_t io_file_stat(mem_allocator_t* alloc, strview_t path)
 
 str_t io_file_readall(mem_allocator_t* alloc, strview_t path)
 {
-    io_stat_t st = io_file_stat(alloc, path);
+    io_stat_t stat = io_file_stat(alloc, path);
     str_t str = { 0 };
-    str.ptr = mem_alloc(alloc, st.size);
-    str.len = st.size;
-    str.cap = st.size;
+    str.ptr = mem_alloc(alloc, stat.size);
+    str.alloc = alloc;
+    str.len = stat.size;
+    str.cap = stat.size;
 
     char* copy = strview_to_cstr(alloc, path);
     FILE* f = fopen(copy, "r");

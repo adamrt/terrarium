@@ -3,9 +3,11 @@
 
 #include "ak/ak.h"
 
-void str_destroy(mem_allocator_t* alloc, str_t s)
+void str_destroy(str_t* s)
 {
-    mem_free(alloc, s.ptr);
+    ASSERT(s->ptr);
+    mem_free(s->alloc, s->ptr);
+    *s = (str_t) { 0 };
 }
 
 strview_t* str_split_lines(mem_allocator_t* alloc, str_t s, usize* out_count)

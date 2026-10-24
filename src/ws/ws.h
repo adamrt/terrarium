@@ -23,6 +23,8 @@ typedef struct ws_event ws_event_t;
 //
 
 typedef struct ws_window {
+    mem_allocator_t* alloc;
+
     gfx_rect_t rect;
     gfx_surface_t content;
 
@@ -38,11 +40,11 @@ typedef struct ws_window {
 } ws_window_t;
 
 ws_window_t* ws_window_create(mem_allocator_t* alloc, strview_t title, i32 x, i32 y, i32 width, i32 height);
-void ws_window_destroy(mem_allocator_t* alloc, ws_window_t* window);
+void ws_window_destroy(ws_window_t* window);
 void ws_window_event_handle(ws_window_t* window, const ws_event_t* event);
-void ws_window_close(mem_allocator_t* alloc, ws_window_t* window);
+void ws_window_close(ws_window_t* window);
 void ws_window_move(ws_window_t* window, i32 x, i32 y);
-void ws_window_resize(mem_allocator_t* alloc, ws_window_t* window, i32 width, i32 height);
+void ws_window_resize(ws_window_t* window, i32 width, i32 height);
 
 //
 // Event
@@ -103,7 +105,7 @@ typedef struct {
 typedef struct ws_server ws_server_t;
 
 ws_server_t* ws_server_create(mem_allocator_t* alloc, i32 width, i32 height);
-void ws_server_destroy(mem_allocator_t* alloc, ws_server_t* server);
+void ws_server_destroy(ws_server_t* server);
 void ws_server_render(ws_server_t* server);
 void ws_server_window_take(ws_server_t* server, ws_window_t** window);
-void ws_server_event_handle(mem_allocator_t* alloc, ws_server_t* server, const os_event_t* os_event);
+void ws_server_event_handle(ws_server_t* server, const os_event_t* os_event);
